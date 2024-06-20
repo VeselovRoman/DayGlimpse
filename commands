@@ -1,0 +1,144 @@
+dotnet - Ставим с сайта последнюю версию
+dotnet watch run                            - запустить сервер
+dotnet watch --no-hot-reload                - запустить сервер без горячего обновления
+dotnet dev-certs https --trust              - доверять сертификатам в режиме разработчика
+dotnet ef migrations add UserPasswordAdded  - добавить Migrations для БД
+dotnet ef migrations add LikeEntityAdded    - добавить Migration для лайков в БД
+dotnet ef database update                   - после Migrations добавить структуру в БД
+dotnet ef database drop                     - удалить БД
+
+node - Ставим с сайта последнюю версию
+либо версию отсюда https://nodejs.org/download/release/
+node -v                                     - версия Node
+brew install node@16                        - установка Node
+
+Angular Ставим через Terminal
+You could remove your node_modules/ folder and then reinstall the dependencies from package.json. 
+npm cache clean --force
+rm -rf node_modules/ package-lock.json
+npm install
+
+npm install -g @angular/cli                 - установка Angular
+npm install -g @angular/cli@latest          - установка последней версии Angular
+ng version                                  - версия Angular
+ng new <my-project>                         - создать проект Angular
+ng serve                                    - запустить приложение Angular
+ng add ngx-bootstrap                        - установка bootstrap
+npm install font-awesome                    - установка шрифтов
+ng g c nav --dry-run                        - генерация компонента nav
+ng g c home --skip-tests                    - генерация компонента home
+ng g c register --skip-tests                - генерация компонента Register
+ng g c member/member-list --skip-tests      - генерация компонента Member для меню
+ng g c member/member-detail --skip-tests    - генерация компонента Member для меню
+ng g c lists --skip-tests                   - генерация компонента lists
+ng g g _guards/auth --skip-tests            - генерация компонента guard
+npm install bootswatch                      - установка тем bootswatch
+npm install ngx-toastr                      - установка toaster для уведомлений
+https://ngx-gallery.netlify.app/#/          - компонент для показа фото
+
+
+---------------------
+uninstall Node.js
+sudo rm -rf /usr/local/{bin/{node,npm,npx},lib/node_modules/npm,lib/node,share/man/*/node.*}
+
+install Node.js
+VERSION="18.17.0"
+brew install nvm
+source $(brew --prefix nvm)/nvm.sh
+nvm install ${VERSION}
+nvm use ${VERSION}
+
+---------------------
+Выпуска сертификатов локальных
+https://github.com/FiloSottile/mkcert
+
+mkcert -install
+Created a new local CA 💥
+The local CA is now installed in the system trust store! ⚡️
+The local CA is now installed in the Firefox trust store (requires browser restart)! 🦊
+
+install scoop Powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+scoop bucket add extras
+scoop install mkcert
+
+-----------------------
+Добавляем новый компонент для редактирования данных пользователя
+1. Установим командой
+ng g c members/member-edit --skip-tests
+2. В файл app-routing.module.ts добавляем маршрут 
+const routes: Routes = [
+...
+    children: [
+...
+      { path: 'member/edit', component: MemberEditComponent},
+...
+    ]
+  },
+3. Добавляем модуль
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+4. В файл client/src/app/nav/nav.component.html
+В контейнер div компонента dropdown-menu добавляем routerLink="/member/edit"
+<a class="dropdown-item" routerLink="/member/edit">Edit profile</a>
+5. Все. Далее идет настройка самого компонента
+
+-----------------------
+Создаем API для обновления данный пользователя в базе данных
+1. Создали класс API/DTOs/MemberUpdateDto.cs
+2. В файл API/Helpers/AutoMapperProfiles.cs добавили
+CreateMap<MemberUpdateDto, AppUser>();
+3. В файле API/Controllers/UsersController.cs создали новый метод
+[HttpPut]
+
+[token]
+https://jwt.ms/ token parse
+
+
+DOCKER-------------------------------
+docker build -t romanveselov/datingapp .
+docker run --rm -it -p 8080:80 romanveselov/datingapp:latest
+dotnet ef database drop
+docker push romanveselov/datingapp:latest
+
+POSTGRES-------------------------------
+//запустить пустой контейнер с БД
+docker run --name postgres -e POSTGRES_PASSWORD=postgrespw -p 5432:5432 -d postgres:latest
+
+
+SSH Keys------------
+Сервисный аккаунт   datingapp
+Имя  VM             datingapp
+passphrase          iamgoingtodubai
+OAuth-токен         y0_AgAAAAAABw5KAATuwQAAAAEEMoHHAACE7CGHTklNo7tmITF2DPiqovS9uw
+
+REGISTRY_ID         cr.yandex/crpgooad6obt6pekb52h
+
+docker login \
+  --username oauth \
+  --password y0_AgAAAAAABw5KAATuwQAAAAEEMoHHAACE7CGHTklNo7tmITF2DPiqovS9uw \
+  cr.yandex
+
+docker build . -t cr.yandex/crpgooad6obt6pekb52h/datingapp:latest -f Dockerfile
+docker push cr.yandex/crpgooad6obt6pekb52h/datingapp:latest
+
+docker tag postgres \
+cr.yandex/crpgooad6obt6pekb52h/postgres:latest
+
+docker push cr.yandex/crpgooad6obt6pekb52h/postgres:latest
+
+ssh datingapp@158.160.43.25
+
+yc iam create-token //get token
+
+docker login \
+  --username iam \
+  --password t1.9euelZqdlMqak82Tnp7Mz4mOkMaVyO3rnpWak5CRkp2Pmo-OyJ3Pz82Xkpjl8_dLORJO-e8ccw1i_N3z9wtoD0757xxzDWL8zef1656VmsfOnpnJlZacms_JlM3GyJyM7_zF656VmsfOnpnJlZacms_JlM3GyJyMveuelZqUl5iczZeUz5GYm5CMm5mZjbXehpzRnJCSj4qLmtGLmdKckJKPioua0pKai56bnoue0oye.m9Gd8ANod9LBApDuL0JzJqya0iQwS7C1y9IJldVWYkbo8kGvVYPdnoGE1udeLoHHPrRW_1nMAxOQhKdunDBKAw \                                                      
+  cr.yandex
+
+docker pull cr.yandex/crpgooad6obt6pekb52h/postgres:latest
+
+yc iam service-account --folder-id b1gf4cgg0f3nu1vjpau0 list
+yc iam key create --service-account-name veselov --output key.json --folder-id b1gf4cgg0f3nu1vjpau0
+
