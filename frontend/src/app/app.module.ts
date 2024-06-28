@@ -6,18 +6,23 @@ import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from './nav/nav.component';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
+import { BranchListComponent } from './branch-list/branch-list.component';
+// Импорт модулей ngx-bootstrap
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent
+    NavComponent,
+    BranchListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    ModalModule.forRoot()
   ],
   providers: [
     provideClientHydration(),

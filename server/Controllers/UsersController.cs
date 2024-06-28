@@ -10,21 +10,21 @@ public class UsersController(DataContext context) : BaseApiController
 {
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<Agent>>> GetUsers()
     {
-        var users = await context.Users.ToListAsync();
+        var agents = await context.Agents.ToListAsync();
 
-        return users;
+        return agents;
     }
 
     [Authorize]
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<AppUser>> GetUser(int id)
+    public async Task<ActionResult<Agent>> GetUser(int id)
     {
-        var user = await context.Users.FindAsync(id);
+        var agent = await context.Agents.FindAsync(id);
 
-        if (user == null) return NotFound();
+        if (agent == null) return NotFound();
 
-        return user;
+        return agent;
     }
 }

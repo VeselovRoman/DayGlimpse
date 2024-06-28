@@ -5,8 +5,9 @@ namespace server.DTOs;
 public class RegisterDTO
 {
     [Required]
-    public string Username { get; set; }
+    public string Agentname { get; set; }
 
     [Required]
     public string Password { get; set; }
+    public int BranchId { get; set; }
 }

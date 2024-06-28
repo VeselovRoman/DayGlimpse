@@ -10,7 +10,7 @@ namespace server.Services
 {
     public class TokenService(IConfiguration config) : ITokenService
     {      
-        public string CreateToken(AppUser user)
+        public string CreateToken(Agent agent)
         {
             var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey");
             if (tokenKey.Length < 64) throw new Exception("token need to be longer");
@@ -18,7 +18,7 @@ namespace server.Services
             
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, user.UserName)
+                new(ClaimTypes.NameIdentifier, agent.AgentName)
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
