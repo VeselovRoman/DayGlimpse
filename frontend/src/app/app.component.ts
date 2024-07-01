@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -7,16 +7,17 @@ import { Component, OnInit, inject } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  http = inject(HttpClient);
-  title = 'Day Glimpse';
-  users: any;
+  accountService = inject(AccountService);
   
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => console.log('Request has completed')
-    })
+    this.setCurrentAgent();
+  }
+
+  setCurrentAgent() {
+    const userString = localStorage.getItem('agent');
+    if (!userString) return;
+    const agent = JSON.parse(userString);
+    this.accountService.currentAgent.set(agent);
   }
 
 

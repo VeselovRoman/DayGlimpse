@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
@@ -9,8 +10,28 @@ using server.Interfaces;
 
 namespace server.Controllers;
 
-public class AgentController(DataContext context, ITokenService tokenService) : BaseApiController
+public class AgentsController(DataContext context, ITokenService tokenService) : BaseApiController
 {
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Agent>>> GetAgents()
+    {
+        var agents = await context.Agents.ToListAsync();
+
+        return agents;
+    }
+
+    [Authorize]
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Agent>> GetAgent(int id)
+    {
+        var agent = await context.Agents.FindAsync(id);
+
+        if (agent == null) return NotFound();
+
+        return agent;
+    }
+
     [HttpPost("register")] //POST: api/agent/register?Agentname=dave&password=pwd
     public async Task<ActionResult<AgentDto>> Register(RegisterDTO registerDTO)
     {

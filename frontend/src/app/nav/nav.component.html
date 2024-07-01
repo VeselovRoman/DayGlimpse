@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
     <div class="container">
         <a class="navbar-brand" href="#">DayGlimpse</a>
 
      
-        <ul *ngIf="loggedIn" class="navbar-nav me-auto mb-2 mb-md-0">
+        <ul *ngIf="accountService.currentAgent()" class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
             <a class="nav-link">Агенты</a>
             </li>
@@ -21,15 +21,16 @@
             </li>          
         </ul> 
         
-        <div *ngIf="loggedIn" class="dropdown">
-            <a class="dropdown-toggle text-light text-decoration-none">Welcome {{model.username}}</a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item">Edit profile</a>
-                <a class="dropdown-item" (click)="logout()">Logout</a>
+        <div *ngIf="accountService.currentAgent()" dropdown class="dropdown">
+            <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">Welcome {{model.username}}</a>
+            <div *dropdownMenu  class="dropdown-menu">
+                <a class="dropdown-item">Изменить...</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" (click)="logout()">Выход</a>
             </div>
         </div>
         
-        <form *ngIf="!loggedIn" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
+        <form *ngIf="!accountService.currentAgent()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
             <input 
                 name="username" 
                 [(ngModel)]="model.Agentname" 
