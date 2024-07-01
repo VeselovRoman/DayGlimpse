@@ -42,7 +42,7 @@ public class AgentController(DataContext context, ITokenService tokenService) : 
     [HttpPost("login")]
     public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
     {
-        var agent = await context.Agents.FirstOrDefaultAsync(x => x.AgentName == loginDto.agentname.ToLower());
+        var agent = await context.Agents.FirstOrDefaultAsync(x => x.AgentName == loginDto.Agentname.ToLower());
 
         if (agent == null) return Unauthorized("Неверное имя пользователя");
 

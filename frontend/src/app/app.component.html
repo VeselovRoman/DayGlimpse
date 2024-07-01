@@ -4,13 +4,3 @@
     <h1>Welcome to the Main Page</h1>
     <app-branch-list></app-branch-list>
   </div>
-
-<div class="container" style="margin-top: 100px">
-    <ul>
-        @for (user of users; track user.id) {
-        <li>
-            {{user.id}} - {{user.userName}} - {{user.passwordHash}}
-        </li>
-        }
-    </ul>
-</div>

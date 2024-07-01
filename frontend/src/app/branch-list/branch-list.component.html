@@ -1,12 +1,12 @@
 <div class="container">
-    <h2>Branch List</h2>
+    <h2>Список филиалов</h2>
     <button class="btn btn-primary" (click)="openModal(template)">Добавить филиал</button>
     <table class="table table-bordered mt-3">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
-          <th>Actions</th>
+          <th>Наименование</th>
+          <th>Действие</th>
         </tr>
       </thead>
       <tbody>
@@ -14,8 +14,8 @@
           <td>{{ branch.id }}</td>
           <td>{{ branch.name }}</td>
           <td>
-            <button class="btn btn-sm btn-warning" (click)="openModal(template, branch)">Edit</button>
-            <button class="btn btn-sm btn-danger" (click)="deleteBranch(branch.id)">Delete</button>
+            <button class="btn btn-sm btn-warning" (click)="openModal(template, branch)">Изменить...</button>
+            <!--<button class="btn btn-sm btn-danger" (click)="deleteBranch(branch.id)">Удалить</button>-->
           </td>
         </tr>
       </tbody>
@@ -42,4 +42,3 @@
       </div>
     </ng-template>
   </div>
-  

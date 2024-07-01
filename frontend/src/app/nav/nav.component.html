@@ -2,51 +2,46 @@
     <div class="container">
         <a class="navbar-brand" href="#">DayGlimpse</a>
 
-
+     
+        <ul *ngIf="loggedIn" class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+            <a class="nav-link">Агенты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Респонденты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Филиалы</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Отчеты</a>
+            </li> 
+            <li class="nav-item">
+                <a class="nav-link" (click)="logout()">Выход</a>
+            </li>          
+        </ul> 
         
-
-            @if (loggedIn) {
-               <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link">Агенты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link">Респонденты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link">Отчеты</a>
-                    </li> 
-                    <li class="nav-item">
-                        <a class="nav-link" (click)="logout()">Выход</a>
-                    </li>          
-                </ul> 
-          }
-        
-        @if (loggedIn) {
-            <div class="dropdown">
-                <a class="dropdown-toggle text-light text-decoration-none">Welcome {{model.username}}</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item">Edit profile</a>
-                    <a class="dropdown-item" (click)="logout()">Logout</a>
-                </div>
+        <div *ngIf="loggedIn" class="dropdown">
+            <a class="dropdown-toggle text-light text-decoration-none">Welcome {{model.username}}</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item">Edit profile</a>
+                <a class="dropdown-item" (click)="logout()">Logout</a>
             </div>
-        }
-
-        @if (!loggedIn) {
-        <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
+        </div>
+        
+        <form *ngIf="!loggedIn" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
             <input 
                 name="username" 
-                [(ngModel)]="model.username" 
+                [(ngModel)]="model.Agentname" 
                 class="form-control me-2" 
                 placeholder="Username">
             <input 
                 name="password"
-                [(ngModel)]="model.password"
+                [(ngModel)]="model.Password"
                 class="form-control me-2" 
                 placeholder="Password" 
                 type="password">
             <button class="btn btn-outline-success" type="submit">Login</button>
-        </form>
-        }        
+        </form>     
     </div>
 </nav>

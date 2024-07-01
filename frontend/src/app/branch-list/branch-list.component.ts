@@ -19,12 +19,12 @@ export class BranchListComponent implements OnInit {
 
   loadBranches() {
     this.branchService.getBranches().subscribe(data => {
-      this.branches = data;
+      this.branches = data.sort((a, b) => a.id - b.id); // Сортируем филиалы по id
     });
   }
 
   openModal(template: TemplateRef<any>, branch?: any) {
-    this.selectedBranch = branch ? { ...branch } : { id: null, name: '' };
+    this.selectedBranch = branch ? { ...branch } : {Name: '' };
     this.modalRef = this.modalService.show(template);
   }
 
