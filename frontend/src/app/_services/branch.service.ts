@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Branch } from '../_models/branch';
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +11,25 @@ export class BranchService {
 
   constructor(private http: HttpClient) {}
 
-  getBranches(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl + 'branches');
+  getBranches(): Observable<Branch[]> {
+    return this.http.get<Branch[]>(this.apiUrl + 'branches');
   }
 
-  getBranch(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl + 'branches'}/${id}`);
+  getBranch(id: number): Observable<Branch> {
+    return this.http.get<Branch>(`${this.apiUrl + 'branches'}/${id}`);
   }
 
-  addBranch(branchDto: any): Observable<any> {
+  addBranch(branchDto: any): Observable<Branch> {
     console.log(branchDto);
-    return this.http.post<any>(this.apiUrl + 'branches/register', branchDto);
+    return this.http.post<Branch>(this.apiUrl + 'branches/register', branchDto);
   }
 
-  updateBranch(branch: any): Observable<any> {
+  updateBranch(branch: any): Observable<Branch> {
     console.log(branch);
-    return this.http.put<any>(this.apiUrl + 'branches/' + branch.id, branch);
+    return this.http.put<Branch>(this.apiUrl + 'branches/' + branch.id, branch);
   }
 
-  deleteBranch(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  deleteBranch(id: number): Observable<Branch> {
+    return this.http.delete<Branch>(`${this.apiUrl}/${id}`);
   }
 }

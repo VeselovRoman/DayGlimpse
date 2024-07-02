@@ -1,13 +1,14 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { BranchService } from '../_services/branch.service';
+import { Branch } from '../_models/branch';
 
 @Component({
   selector: 'app-branch-list',
   templateUrl: './branch-list.component.html'
 })
 export class BranchListComponent implements OnInit {
-  branches: any[] = [];
+  branches: Branch[] = [];
   selectedBranch: any;
   modalRef?: BsModalRef;
 

@@ -18,20 +18,21 @@ export class AccountService {
         if (agent) {
           this.setCurrentUser(agent);
         }
+        return agent;
       })
     )
   }
 
   setCurrentUser(agent: Agent) {
     localStorage.setItem('agent', JSON.stringify(agent));
+    this.currentAgent.set(agent)
   }
 
   login(model: any) {
-    return this.http.post<Agent>(this.baseUrl + 'agent/login', model).pipe(
+    return this.http.post<Agent>(this.baseUrl + 'agents/login', model).pipe(
       map(agent => {
         if (agent) {
-          localStorage.setItem('agent', JSON.stringify(agent));
-          this.currentAgent.set(agent)
+          this.setCurrentUser(agent)
         }
       })
     );

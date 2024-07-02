@@ -5,16 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "C#: server Debug",
+            "type": "dotnet",
             "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/frontend/src/app/_services/branch.service.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
+            "projectPath": "${workspaceFolder}/server.csproj"
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
         }
     ]
 }
