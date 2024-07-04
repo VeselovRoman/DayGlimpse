@@ -13,7 +13,11 @@ export class RegisterComponent {
   //private accountService = inject(AccountService);
   //private branchService = inject(BranchService);
   cancelRegister = output<boolean>();
-  model: any = {}
+  model: any = {
+    Agentname: '',
+    Password: '',
+    City: '', // Новое поле для города
+  };
   branches: Branch[] = []; // массив для хранения списка филиалов
   selectedBranchId: number | null = null; // выбранный филиал
   branchesLoaded = false; // Переменная для отслеживания загрузки данных филиалов
@@ -21,7 +25,7 @@ export class RegisterComponent {
   constructor(
     private accountService: AccountService,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     //this.intializeForm();
@@ -51,18 +55,19 @@ export class RegisterComponent {
   }*/
 
   register() {
-    // Добавьте выбранный филиал к модели перед отправкой на сервер
+    console.log('Register method called');
+    // Добавляем выбранный филиал к модели перед отправкой на сервер
     this.model.branchId = this.selectedBranchId;
 
     // Отправка данных на сервер для регистрации
     this.accountService.register(this.model).subscribe({
       next: response => {
-        console.log(response);
+        console.log('Registration successful');
         this.cancel();
       },
-      error: error => console.log(error)
+      error: error => {
+          console.log('Registration error', error);}
     })
-   console.log(this.model)
   }
 
   cancel() {
@@ -75,7 +80,6 @@ export class RegisterComponent {
       next: (branches: Branch[]) => {
         this.branches = branches;
         this.branchesLoaded = true; // Устанавливаем флаг загрузки данных
-        console.log('Загруженные филиалы:', this.branches); // console.log внутрь функции next
       },
       error: error => console.error(error)
     });

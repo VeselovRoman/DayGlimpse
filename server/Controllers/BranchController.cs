@@ -12,7 +12,8 @@ public class BranchesController(DataContext context) : BaseApiController
     {
         var branches = await context.Branches.ToListAsync();
 
-        return branches;
+        return Ok(branches);
+        
     }
 
     [HttpGet("{id:int}")]

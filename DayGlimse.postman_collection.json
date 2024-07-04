@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "767267ed-a642-4899-a832-bf6407b03be6",
+		"name": "DayGlimse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26310016"
+	},
+	"item": [
+		{
+			"name": "Branches",
+			"item": [
+				{
+					"name": "Register branch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Name\": \"Северный\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/branches/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/branches",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Branch",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJyb21hbiIsIm5iZiI6MTcwOTEyOTc1MiwiZXhwIjoxNzA5NzM0NTUyLCJpYXQiOjE3MDkxMjk3NTJ9.4DpgvusuGmq27L2RjqXbQAJ-9-wCuLIEWyF4g4OfHmw_dWhH1ebEAEt9UZ1yGZjPCT4j-JfVafmDYhZtrhewBw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/branches/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update branch",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 3,\n  \"name\": \"Северный2\",\n  \"agents\": null,\n  \"respondents\":null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/branches/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agents",
+			"item": [
+				{
+					"name": "Register agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Agentname\": \"bob\",\n\t\"Password\": \"password\",\n    \"BranchId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/agent/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"agent",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Roman",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Agentname\": \"roman\",\n\t\"Password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/agent/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"agent",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/branches",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJyb21hbiIsIm5iZiI6MTcwOTEyOTc1MiwiZXhwIjoxNzA5NzM0NTUyLCJpYXQiOjE3MDkxMjk3NTJ9.4DpgvusuGmq27L2RjqXbQAJ-9-wCuLIEWyF4g4OfHmw_dWhH1ebEAEt9UZ1yGZjPCT4j-JfVafmDYhZtrhewBw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/branches/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Agent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 3,\n  \"name\": \"Северный2\",\n  \"agents\": null,\n  \"respondents\":null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/branches/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"branches",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://localhost:5001",
+			"type": "string"
+		}
+	]
+}

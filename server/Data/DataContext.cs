@@ -3,11 +3,8 @@ using server.Entities;
 
 namespace server.Data;
 
-public class DataContext : DbContext
+public class DataContext(DbContextOptions options) : DbContext(options)
 {
-    public DataContext(DbContextOptions options) : base(options)
-    {
-    }
     public DbSet<Agent> Agents { get; set; }
     public DbSet<Respondent> Respondents { get; set; }
     public DbSet<Report> Reports { get; set; }

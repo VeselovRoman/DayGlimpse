@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.getAgents()
+
   }
 
   registerToggle() {
@@ -26,11 +26,4 @@ export class HomeComponent implements OnInit {
     this.registerMode = event;
   }
 
-  getAgents() {
-    this.http.get('https://localhost:5001/api/agents').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => console.log('Request has completed')
-    })
-  }
 }

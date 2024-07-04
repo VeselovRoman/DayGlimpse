@@ -2,6 +2,6 @@
 
 public class LoginDto
 {
-    public string Agentname { get; set; }
+    public string AgentName { get; set; }
     public string Password { get; set; }
 }

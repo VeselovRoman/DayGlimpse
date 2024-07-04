@@ -30,6 +30,18 @@
         </select>
         <label>Выберите филиал</label>
     </div>
+
+    <!--поле для ввода города -->
+    <div class="mb-3 form-floating">
+        <input 
+            type="text"
+            class="form-control"
+            name="City"
+            [(ngModel)]="model.City"
+            placeholder="City"
+        >
+        <label>Город</label>
+    </div>
     
     <div class="form-group text-center">
         <button class="btn btn-success me-2" (click)="register()" type="submit">Ok</button>

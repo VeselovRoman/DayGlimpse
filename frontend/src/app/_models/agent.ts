@@ -1,4 +1,7 @@
 export interface Agent {
-    username: string;
+    id: number;
+    agentName: string;
     token: string;
+    branchId: number;
+    city: string;
 }
