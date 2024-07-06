@@ -1,15 +1,18 @@
 <div class="container">
+  <a class="btn btn-light mb-3" routerLink="/reports">
+    <i class="bi bi-arrow-left"></i>
+  </a>
   <form [formGroup]="reportForm" (ngSubmit)="submitReport()">
     <div class="form-group">
       <label for="reportNumber">Report Number</label>
       <input type="text" id="reportNumber" formControlName="reportNumber" class="form-control">
     </div>
-    
+
     <div class="form-group">
       <label for="reportDate">Report Date</label>
       <input type="date" id="reportDate" formControlName="reportDate" class="form-control">
     </div>
-    
+
     <div class="form-group">
       <label for="respondentId">Respondent</label>
       <select id="respondentId" formControlName="respondentId" class="form-control">
@@ -26,17 +29,17 @@
             <label for="procedureName">Procedure Name</label>
             <input type="text" id="procedureName" formControlName="procedureName" class="form-control">
           </div>
-          
+
           <div class="form-group">
             <label for="startTime">Start Time</label>
             <input type="datetime-local" id="startTime" formControlName="startTime" class="form-control">
           </div>
-          
+
           <div class="form-group">
             <label for="endTime">End Time</label>
             <input type="datetime-local" id="endTime" formControlName="endTime" class="form-control">
           </div>
-          
+
           <div class="form-group">
             <label for="comment">Comment</label>
             <textarea id="comment" formControlName="comment" class="form-control"></textarea>
@@ -44,8 +47,8 @@
         </div>
       </div>
     </div>
-    
+
     <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Add Procedure Entry</button>
-    <button type="submit" class="btn btn-primary">Submit Report</button>
+    <button type="submit" class="btn btn-primary ms-2">Submit Report</button>
   </form>
 </div>
