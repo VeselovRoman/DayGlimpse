@@ -1,13 +1,16 @@
-namespace server.DTOs;
+using server.DTOs.server.DTOs;
 
-public class ReportDto
+namespace server.DTOs
 {
-    public int Id { get; set; }
-    public int ActionID { get; set; }
-    public int AgentId { get; set; }
-    public int RespondentId { get; set; }
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
-    public string Commment { get; set; }
-    public TimeSpan Duration => EndTime - StartTime;
+    public class ReportDto
+    {
+        public int Id { get; set; }
+        public DateTime ReportDate { get; set; }
+        public int AgentId { get; set; }
+        public string AgentName { get; set; } // Добавлено поле для имени агента
+        public int RespondentId { get; set; }
+        public string RespondentName { get; set; } // Добавлено поле для имени респондента
+        public List<ReportEntryDto> ReportEntries { get; set; }
+    }
+
 }

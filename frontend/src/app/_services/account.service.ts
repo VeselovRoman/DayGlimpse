@@ -43,6 +43,10 @@ export class AccountService {
     this.currentAgent.set(null);
   }
 
+  currentAgentValue(): Agent | null {
+    return this.currentAgent();
+  }
+  
   getDecodedToken(token: string) {
     return JSON.parse(atob(token.split('.')[1]))
   }

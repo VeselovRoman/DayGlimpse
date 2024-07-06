@@ -8,7 +8,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from './nav/nav.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BranchListComponent } from './branch-list/branch-list.component';
 // Импорт модулей ngx-bootstrap
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -17,6 +17,9 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { AgentDetailComponent } from './agent-detail/agent-detail.component';
 import { AgentListComponent } from './agent-list/agent-list.component';
+import { AddReportComponent } from './add-report/add-report.component';
+import { ReportService } from './_services/report.service';
+import { RespondentService } from './_services/respondent.service';
 
 @NgModule({
   declarations: [
@@ -27,13 +30,16 @@ import { AgentListComponent } from './agent-list/agent-list.component';
     RegisterComponent,
     AgentListComponent,
     AgentDetailComponent,
+    AddReportComponent
   ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     CommonModule,
-    FormsModule, 
+    FormsModule,
+    AddReportComponent, 
     ModalModule.forRoot(),
     BsDropdownModule.forRoot()
   ],
@@ -41,7 +47,8 @@ import { AgentListComponent } from './agent-list/agent-list.component';
     provideClientHydration(),
     provideHttpClient(),
     provideAnimations(),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    [ReportService, RespondentService]
   ],
   bootstrap: [AppComponent]
 })
