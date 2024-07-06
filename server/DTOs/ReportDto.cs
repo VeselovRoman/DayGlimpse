@@ -10,7 +10,7 @@ namespace server.DTOs
         public string AgentName { get; set; } // Добавлено поле для имени агента
         public int RespondentId { get; set; }
         public string RespondentName { get; set; } // Добавлено поле для имени респондента
-        public List<ReportEntryDto> ReportEntries { get; set; }
+        public List<ReportEntryDto> ReportEntries { get; set; } // Добавлено поле для записей отчета
     }
-
 }
+

@@ -25,6 +25,42 @@ namespace server.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ReportDto>>> GetReports()
+        {
+            var reports = await _context.Reports
+                .Include(r => r.Agent) // Включаем данные об агенте
+                .Include(r => r.Respondent) // Включаем данные о респонденте
+                .Include(r => r.ReportEntries) // Включаем данные о записях отчета
+                    .ThenInclude(re => re.Procedure) // Включаем данные о процедуре
+                .Select(report => new ReportDto
+                {
+                    Id = report.Id,
+                    ReportDate = report.ReportDate,
+                    AgentId = report.AgentId,
+                    AgentName = report.Agent.AgentName, // Включаем имя агента
+                    RespondentId = report.RespondentId,
+                    RespondentName = report.Respondent.Name, // Включаем имя респондента
+                    ReportEntries = report.ReportEntries.Select(entry => new ReportEntryDto
+                    {
+                        Id = entry.Id,
+                        ProcedureId = entry.ProcedureId,
+                        ProcedureName = entry.Procedure.Name,
+                        StartTime = entry.StartTime,
+                        EndTime = entry.EndTime,
+                        Comment = entry.Comment,
+                        AgentId = entry.AgentId,
+                        AgentName = entry.Agent.AgentName,
+                        RespondentId = entry.RespondentId,
+                        RespondentName = entry.Respondent.Name
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return reports;
+        }
+
         [HttpPost]
         public async Task<ActionResult<ReportDto>> CreateReport(CreateReportDto createReportDto)
         {

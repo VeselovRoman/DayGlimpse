@@ -3,6 +3,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Id агента</th>
                 <th>Имя агента</th>
                 <th>Город</th>
                 <th>Филиал</th>
@@ -11,6 +12,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let agent of agents">
+                <td>{{ agent.id }}</td>
                 <td>{{ agent.agentName }}</td>
                 <td>{{ agent.city }}</td>
                 <td>{{ getBranchName(agent.branchId) }}</td>

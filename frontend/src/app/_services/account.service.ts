@@ -38,6 +38,13 @@ export class AccountService {
     );
   }
 
+  isLoggedIn(): boolean {
+    // Проверяем, есть ли информация о текущем пользователе или токен аутентификации
+    // Верните true, если пользователь аутентифицирован, иначе false
+    // Пример проверки на основе наличия информации о пользователе в localStorage:
+    return localStorage.getItem('agent') !== null;
+  }
+
   logout() {
     localStorage.removeItem('agent');
     this.currentAgent.set(null);

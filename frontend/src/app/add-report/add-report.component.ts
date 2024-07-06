@@ -58,6 +58,10 @@ export class AddReportComponent implements OnInit {
     });
   }
 
+  get entries(): FormArray {
+    return this.reportForm.get('entries') as FormArray;
+  }
+
   submitReport() {
     if (this.reportForm.invalid) {
       return;

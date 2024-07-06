@@ -18,7 +18,7 @@
     </div>
 
     <div formArrayName="entries">
-      <div *ngFor="let entry of reportForm.get('entries').controls; let i = index" [formGroupName]="i" class="card my-3">
+      <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="card my-3">
         <div class="card-body">
           <h5 class="card-title">Procedure Entry {{ i + 1 }}</h5>
 

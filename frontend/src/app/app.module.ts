@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NavComponent } from './nav/nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BranchListComponent } from './branch-list/branch-list.component';
@@ -20,6 +20,7 @@ import { AgentListComponent } from './agent-list/agent-list.component';
 import { AddReportComponent } from './add-report/add-report.component';
 import { ReportService } from './_services/report.service';
 import { RespondentService } from './_services/respondent.service';
+import { ReportListComponent } from './report-list/report-list.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { RespondentService } from './_services/respondent.service';
     RegisterComponent,
     AgentListComponent,
     AgentDetailComponent,
-    AddReportComponent
+    AddReportComponent,
+    ReportListComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -39,7 +41,6 @@ import { RespondentService } from './_services/respondent.service';
     AppRoutingModule,
     CommonModule,
     FormsModule,
-    AddReportComponent, 
     ModalModule.forRoot(),
     BsDropdownModule.forRoot()
   ],
@@ -48,7 +49,7 @@ import { RespondentService } from './_services/respondent.service';
     provideHttpClient(),
     provideAnimations(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    [ReportService, RespondentService]
+    [ReportService, RespondentService, DatePipe]
   ],
   bootstrap: [AppComponent]
 })
