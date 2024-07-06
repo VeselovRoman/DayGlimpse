@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AccountService } from '../_services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -8,6 +9,7 @@ import { AccountService } from '../_services/account.service';
 })
 export class NavComponent {
   accountService = inject(AccountService);
+  router = inject(Router);
   model: any = {};
 
   constructor () {}
@@ -20,7 +22,12 @@ export class NavComponent {
     })
   }
 
-  logout(){
-    this.accountService.logout()
+  logout() {
+    this.accountService.logout();
+    // Проверяем текущий маршрут перед редиректом
+    const currentUrl = this.router.url;
+    if (currentUrl !== '/') {
+      this.router.navigate(['/']);
+    }
   }
 }
