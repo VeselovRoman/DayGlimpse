@@ -4,9 +4,8 @@ namespace server.DTOs;
 
 public class RegisterDTO
 {
-    [Required]
-    public string Username { get; set; }
-
-    [Required]
+    public string AgentName { get; set; }
     public string Password { get; set; }
+    public int BranchId { get; set; }
+    public string City { get; set; } // поле для города
 }

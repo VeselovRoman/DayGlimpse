@@ -1,0 +1,50 @@
+<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+    <h2 class="text-center text-primary">Регистрация</h2>
+    <hr>
+    <div class="mb-3 form-floating">
+        <input 
+            type="text"
+            class="form-control"
+            name="Agentname"
+            [(ngModel)]="model.Agentname"
+            placeholder="Username"
+        >
+        <label>Username</label>
+    </div>
+
+    <div class="mb-3 form-floating">
+        <input 
+            type="password"
+            class="form-control"
+            name="Password"
+            [(ngModel)]="model.Password"
+            placeholder="Password"
+        >
+        <label>Password</label>
+    </div>
+
+    <!-- Выпадающий список филиалов -->
+    <div class="mb-3 form-floating">
+        <select class="form-select" name="BranchId" [(ngModel)]="selectedBranchId" [disabled]="!branchesLoaded">
+            <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
+        </select>
+        <label>Выберите филиал</label>
+    </div>
+
+    <!--поле для ввода города -->
+    <div class="mb-3 form-floating">
+        <input 
+            type="text"
+            class="form-control"
+            name="City"
+            [(ngModel)]="model.City"
+            placeholder="City"
+        >
+        <label>Город</label>
+    </div>
+    
+    <div class="form-group text-center">
+        <button class="btn btn-success me-2" (click)="register()" type="submit">Ok</button>
+        <button class="btn btn-default me-2" (click)="cancel()" type="button">Отмена</button>
+    </div>
+</form>

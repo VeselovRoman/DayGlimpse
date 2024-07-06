@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AccountService } from '../_services/account.service';
 
 @Component({
@@ -7,22 +7,20 @@ import { AccountService } from '../_services/account.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent {
+  accountService = inject(AccountService);
   model: any = {};
-  loggedIn = false;
 
-  constructor (private accountService: AccountService) {}
+  constructor () {}
 
   login() {
     this.accountService.login(this.model).subscribe({
       next: response => {
-        console.log(response);
-        this.loggedIn = true;
       },
       error: error => console.log(error)
     })
   }
 
   logout(){
-    this.loggedIn = false;
+    this.accountService.logout()
   }
 }

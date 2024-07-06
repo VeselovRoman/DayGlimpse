@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <h2>Детали агента</h2>
+  <form #agentForm="ngForm" (ngSubmit)="saveAgent()">
+    <div class="form-group">
+      <label>Имя агента:</label>
+      <input type="text" class="form-control" name="agentname" [(ngModel)]="agent.agentName" required>
+    </div>
+    <div class="form-group">
+      <label>Город:</label>
+      <input type="text" class="form-control" name="city" [(ngModel)]="agent.city">
+    </div>
+    <div class="form-group">
+      <label>Выберите филиал:</label>
+      <select class="form-control" name="branchId" [(ngModel)]="agent.branchId">
+        <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+      <button type="button" class="btn btn-default" (click)="cancel()">Отмена</button>
+    </div>
+  </form>
+</div>
