@@ -17,6 +17,7 @@ public static class ApplicationServiceExtentions
             opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
         });
         services.AddCors();
+        services.AddScoped<IProcedureService, ProcedureService>();
         services.AddScoped<ITokenService, TokenService>();
 
         return services;

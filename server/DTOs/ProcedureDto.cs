@@ -4,6 +4,6 @@ namespace server.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Standart { get; set; }
+        public int StandardTime { get; set; }
     }
 }

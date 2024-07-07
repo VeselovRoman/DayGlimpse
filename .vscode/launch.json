@@ -8,7 +8,7 @@
             "name": "C#: server Debug",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/server.csproj"
+            "projectPath": "${workspaceFolder}/server/server.csproj"
         },
         {
             "name": ".NET Core Attach",

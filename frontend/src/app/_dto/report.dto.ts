@@ -1,14 +1,19 @@
 // create-report.dto.ts
 export interface CreateReportDto {
-    respondentId: number;
+  reportDate: Date;
+  agentId: number;  
+  respondentId: number;
   }
   
   // create-report-entry.dto.ts
   export interface CreateReportEntryDto {
+    agentId: number;
+    respondentId: number;
     procedureId: number;
     startTime: Date;
     endTime: Date;
     comment: string;
+    reportId: number;
   }
   
   // report.dto.ts

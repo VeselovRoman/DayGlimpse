@@ -12,7 +12,6 @@ export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
 
-
   constructor(private reportService: ReportService) { }
 
   ngOnInit(): void {
@@ -23,7 +22,7 @@ export class ReportListComponent implements OnInit {
     this.reportService.getReports().subscribe({
       next: (reports) => {
         this.reports = reports,
-        console.log('Загруженные агенты:', this.reports); // console.log внутрь функции next
+        console.log('Загруженные отчеты:', this.reports); // console.log внутрь функции next
 
       },
       error: (error) => console.error('Error fetching reports:', error)

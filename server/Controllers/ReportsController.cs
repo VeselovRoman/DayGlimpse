@@ -60,13 +60,13 @@ namespace server.Controllers
 
             return reports;
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ReportDto>> CreateReport(CreateReportDto createReportDto)
         {
             try
             {
-                var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                /*var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (nameIdClaim == null)
                 {
                     // Обработка случая, когда поле nameid отсутствует в токене
@@ -80,13 +80,13 @@ namespace server.Controllers
                 {
                     // Обработка случая, когда агент не найден
                     return NotFound("Agent not found.");
-                }
+                }*/
 
                 // Используем agent.Id для сохранения в качестве AgentId в другой сущности
                 var report = new Report
                 {
                     ReportDate = DateTime.UtcNow,
-                    AgentId = agent.Id,
+                    AgentId = createReportDto.AgentId,
                     RespondentId = createReportDto.RespondentId
                 };
 
@@ -97,7 +97,7 @@ namespace server.Controllers
                 {
                     Id = report.Id,
                     ReportDate = report.ReportDate,
-                    AgentId = agent.Id,
+                    AgentId = report.AgentId,
                     RespondentId = report.RespondentId,
                 };
 
@@ -109,12 +109,13 @@ namespace server.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("{reportId}/entries")]
         public async Task<ActionResult<ReportEntryDto>> CreateReportEntry(int reportId, CreateReportEntryDto createReportEntryDto)
         {
             try
             {
-                var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                /*var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (nameIdClaim == null)
                 {
                     // Обработка случая, когда поле nameid отсутствует в токене
@@ -137,18 +138,17 @@ namespace server.Controllers
                 {
                     // Обработка случая, когда отчет не найден
                     return NotFound("Report not found.");
-                }
+                }*/
 
                 var reportEntry = new ReportEntry
                 {
+                    AgentId = createReportEntryDto.AgentId,
+                    RespondentId = createReportEntryDto.RespondentId,
                     ProcedureId = createReportEntryDto.ProcedureId,
-                    StartTime = createReportEntryDto.StartTime,
-                    EndTime = createReportEntryDto.EndTime,
+                    StartTime = DateTime.SpecifyKind(createReportEntryDto.StartTime, DateTimeKind.Utc),
+                    EndTime = DateTime.SpecifyKind(createReportEntryDto.EndTime, DateTimeKind.Utc),
                     Comment = createReportEntryDto.Comment,
-                    ReportId = reportId,
-                    AgentId = agent.Id,
-                    RespondentId = report.RespondentId
-                    //RespondentId = (await _context.Reports.FindAsync(reportId)).RespondentId
+                    ReportId = createReportEntryDto.ReportId
                 };
 
                 _context.ReportEntries.Add(reportEntry);
@@ -157,12 +157,13 @@ namespace server.Controllers
                 return new ReportEntryDto
                 {
                     Id = reportEntry.Id,
+                    AgentId = reportEntry.AgentId,
+                    RespondentId = reportEntry.RespondentId,
                     ProcedureId = reportEntry.ProcedureId,
                     StartTime = reportEntry.StartTime,
                     EndTime = reportEntry.EndTime,
                     Comment = reportEntry.Comment,
-                    AgentId = reportEntry.AgentId,
-                    RespondentId = reportEntry.RespondentId
+                    ReportId = reportEntry.ReportId
                 };
             }
             catch (Exception ex)

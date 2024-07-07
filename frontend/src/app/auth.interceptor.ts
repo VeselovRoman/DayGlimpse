@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AccountService } from './_services/account.service';
 
 @Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const agentDataString = localStorage.getItem('agent');
-    if (agentDataString) {
-      const agentData = JSON.parse(agentDataString);
-      const token = agentData.token;
+export class JwtInterceptor implements HttpInterceptor {
+  constructor(private accountService: AccountService) {}
 
-      if (token) {
-        const cloned = req.clone({
-          headers: req.headers.set('Authorization', `Bearer ${token}`)
-        });
-        return next.handle(cloned);
-      }
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = this.accountService.getToken();
+    if (token) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
     }
 
-    return next.handle(req);
+    return next.handle(request);
   }
 }

@@ -4,17 +4,17 @@
   </a>
   <form [formGroup]="reportForm" (ngSubmit)="submitReport()">
     <div class="form-group">
-      <label for="reportNumber">Report Number</label>
+      <label for="reportNumber">Номер отчета</label>
       <input type="text" id="reportNumber" formControlName="reportNumber" class="form-control">
     </div>
 
     <div class="form-group">
-      <label for="reportDate">Report Date</label>
+      <label for="reportDate">Дата отчета</label>
       <input type="date" id="reportDate" formControlName="reportDate" class="form-control">
     </div>
 
     <div class="form-group">
-      <label for="respondentId">Respondent</label>
+      <label for="respondentId">Респондент</label>
       <select id="respondentId" formControlName="respondentId" class="form-control">
         <option *ngFor="let respondent of respondents" [value]="respondent.id">{{ respondent.name }}</option>
       </select>
@@ -26,22 +26,24 @@
           <h5 class="card-title">Procedure Entry {{ i + 1 }}</h5>
 
           <div class="form-group">
-            <label for="procedureName">Procedure Name</label>
-            <input type="text" id="procedureName" formControlName="procedureName" class="form-control">
+            <label for="procedureId">Процедура</label>
+            <select id="procedureId" formControlName="procedureId" class="form-control" required>
+              <option *ngFor="let procedure of procedures" [value]="procedure.id">{{procedure.id}} - {{ procedure.name }}</option>
+            </select>
           </div>
 
           <div class="form-group">
-            <label for="startTime">Start Time</label>
+            <label for="startTime">Начало выполнения</label>
             <input type="datetime-local" id="startTime" formControlName="startTime" class="form-control">
           </div>
 
           <div class="form-group">
-            <label for="endTime">End Time</label>
+            <label for="endTime">Окончание выполнения</label>
             <input type="datetime-local" id="endTime" formControlName="endTime" class="form-control">
           </div>
 
           <div class="form-group">
-            <label for="comment">Comment</label>
+            <label for="comment">Комментарий</label>
             <textarea id="comment" formControlName="comment" class="form-control"></textarea>
           </div>
         </div>

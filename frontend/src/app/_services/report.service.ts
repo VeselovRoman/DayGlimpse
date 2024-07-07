@@ -33,7 +33,8 @@ export class ReportService {
   }
 
   createReportEntry(reportId: number, createReportEntryDto: CreateReportEntryDto): Observable<Entry> {
-    return this.http.post<Entry>(`${this.baseUrl}${reportId}/entries`, createReportEntryDto).pipe(
+    console.log(`${this.baseUrl}/${reportId}/entries`);
+    return this.http.post<Entry>(`${this.baseUrl}/${reportId}/entries`, createReportEntryDto).pipe(
       catchError((error: any) => {
         console.error('Error creating report entry:', error);
         return throwError(() => new Error('Error creating report entry'));
@@ -42,7 +43,7 @@ export class ReportService {
   }
 
   getReport(id: number): Observable<Report> {
-    return this.http.get<Report>(`${this.baseUrl}${id}`).pipe(
+    return this.http.get<Report>(`${this.baseUrl}/${id}`).pipe(
       catchError((error: any) => {
         console.error('Error fetching report:', error);
         return throwError(() => new Error('Error fetching report'));
@@ -51,7 +52,7 @@ export class ReportService {
   }
 
   getReportEntry(entryId: number): Observable<Entry> {
-    return this.http.get<Entry>(`${this.baseUrl}entries/${entryId}`).pipe(
+    return this.http.get<Entry>(`${this.baseUrl}/entries/${entryId}`).pipe(
       catchError((error: any) => {
         console.error('Error fetching report entry:', error);
         return throwError(() => new Error('Error fetching report entry'));

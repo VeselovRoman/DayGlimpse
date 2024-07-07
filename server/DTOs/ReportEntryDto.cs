@@ -14,6 +14,7 @@ namespace server.DTOs
             public string AgentName { get; set; } // Добавляем имя агента
             public int RespondentId { get; set; }
             public string RespondentName { get; set; } // Добавляем имя респондента
+            public int ReportId { get; set; }
         }
     }
 }

@@ -24,6 +24,7 @@ export class AccountService {
   }
 
   setCurrentUser(agent: Agent) {
+    console.log(agent);
     localStorage.setItem('agent', JSON.stringify(agent));
     this.currentAgent.set(agent)
   }
@@ -56,6 +57,11 @@ export class AccountService {
   
   getDecodedToken(token: string) {
     return JSON.parse(atob(token.split('.')[1]))
+  }
+
+  getToken(): string | null {
+    const agent = this.currentAgentValue();
+    return agent ? agent.token : null; // Assuming the Agent model has a token field
   }
 
 }
