@@ -8,6 +8,7 @@ namespace server.Entities
         public Agent Agent { get; set; }
         public int RespondentId { get; set; }
         public Respondent Respondent { get; set; }
+        public bool IsConfirmed { get; set; } // Флаг подтверждения отчета
         public ICollection<ReportEntry> ReportEntries { get; set; } = new List<ReportEntry>();
     }
 }

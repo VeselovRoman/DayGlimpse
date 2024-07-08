@@ -9,6 +9,7 @@ namespace server.DTOs
         public DateTime EndTime { get; set; }
         public string Comment { get; set; }
         public int ReportId { get; set; }
+        
         public CreateReportEntryDto()
         {
             StartTime = DateTime.SpecifyKind(StartTime, DateTimeKind.Utc);

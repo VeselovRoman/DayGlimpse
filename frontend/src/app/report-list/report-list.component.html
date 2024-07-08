@@ -1,64 +1,30 @@
 <div class="container mt-4">
-    <h2>Список отчетов</h2>
-    <button class="btn btn-primary mb-3" routerLink="/add-report">Добавить новый отчет</button>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Номер отчета</th>
-                <th>Дата отчета</th>
-                <th>Агент</th>
-                <th>Респондент</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let report of reports">
-                <td>{{ report.id }}</td>
-                <td>{{ report.reportDate | date }}</td>
-                <td>{{ report.agentName }}</td>
-                <td>{{ report.respondentName }}</td>
-                <td>
-                    <button class="btn btn-secondary me-2" (click)="viewEntries(report)">Просмотреть записи</button>
-                    <button class="btn btn-primary">Редактировать</button>
-                </td>
-            </tr>
-        </tbody>
+  <a class="btn btn-light mb-3" (click)="closeViewReport()" *ngIf="selectedReport">
+    <i class="bi bi-arrow-left" *ngIf="selectedReport"></i> Вернуться к списку отчетов
+  </a>
+    <app-view-report [report]="selectedReport" *ngIf="selectedReport"></app-view-report>
+  
+    <table class="table table-bordered" *ngIf="!selectedReport">
+      <thead>
+        <tr>
+          <th>Номер отчета</th>
+          <th>Дата отчета</th>
+          <th>Агент</th>
+          <th>Респондент</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports">
+          <td>{{ report.id }}</td>
+          <td>{{ report.reportDate | date }}</td>
+          <td>{{ report.agentName }}</td>
+          <td>{{ report.respondentName }}</td>
+          <td>
+            <button class="btn btn-primary" (click)="editReport(report)">Редактировать</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
-
-    <!-- Modal для отображения записей отчета -->
-    <div class="modal" tabindex="-1" [ngClass]="{'show': selectedReport}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Записи отчета #{{ selectedReport?.id }}</h5>
-                    <button type="button" class="btn-close" aria-label="Close" (click)="selectedReport = null"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Номер записи</th>
-                                <th>Процедура</th>
-                                <th>Начало</th>
-                                <th>Конец</th>
-                                <th>Комментарий</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let entry of selectedReport?.reportEntries">
-                                <td>{{ entry.id }}</td>
-                                <td>{{ entry.procedureName }}</td>
-                                <td>{{ entry.startTime | date:'short' }}</td>
-                                <td>{{ entry.endTime | date:'short' }}</td>
-                                <td>{{ entry.comment }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" (click)="selectedReport = null">Закрыть</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+  </div>
+  

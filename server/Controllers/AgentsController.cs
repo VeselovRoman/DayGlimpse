@@ -75,8 +75,8 @@ public class AgentsController : BaseApiController
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]
-    public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
+        [HttpPost("login")]
+        public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
     {
         // Логируем полученные данные
         _logger.LogInformation($"Attempting login with username: {loginDto.AgentName}");

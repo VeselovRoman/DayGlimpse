@@ -7,16 +7,17 @@ import { AddReportComponent } from './add-report/add-report.component';
 import { ReportListComponent } from './report-list/report-list.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { HomeComponent } from './home/home.component';
+import { ViewReportComponent } from './view-report/view-report.component';
 
 const routes: Routes = [
   { path: 'agents', component: AgentListComponent },
   //{ path: 'respondents', component: RespondentsComponent, canActivate: [AuthGuard] },
   { path: 'agents/:id', component: AgentDetailComponent },
+  { path: 'add-report', component: AddReportComponent },
+  { path: 'view-report/:reportId', component: ViewReportComponent },
   { path: 'branches', component: BranchListComponent },
-  { path: 'add-report', component: AddReportComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard] },
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  //{ path: 'login', component: LoginComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
 ];
 

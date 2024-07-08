@@ -87,7 +87,9 @@ namespace server.Controllers
                 {
                     ReportDate = DateTime.UtcNow,
                     AgentId = createReportDto.AgentId,
-                    RespondentId = createReportDto.RespondentId
+                    RespondentId = createReportDto.RespondentId,
+                    IsConfirmed = false
+
                 };
 
                 _context.Reports.Add(report);
@@ -254,5 +256,40 @@ namespace server.Controllers
             }
         }
 
+        [HttpPut("{reportId}/confirm")]
+        public async Task<IActionResult> ConfirmReport(int reportId)
+        {
+            var report = await _context.Reports.FindAsync(reportId);
+
+            if (report == null)
+            {
+                return NotFound($"Report with id {reportId} not found.");
+            }
+
+            report.IsConfirmed = true;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("entry/{entryId}/confirm")]
+        public async Task<IActionResult> ConfirmReportEntry(int entryId)
+        {
+            var entry = await _context.ReportEntries.FindAsync(entryId);
+
+            if (entry == null)
+            {
+                return NotFound($"Report entry with id {entryId} not found.");
+            }
+
+            entry.IsConfirmed = true;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
+
 }

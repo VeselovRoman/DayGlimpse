@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ReportService } from '../_services/report.service';
+import { Router } from '@angular/router';
 import { Report } from '../_models/report';
+import { ReportService } from '../_services/report.service';
 
 @Component({
   selector: 'app-report-list',
@@ -8,14 +9,13 @@ import { Report } from '../_models/report';
   styleUrls: ['./report-list.component.css']
 })
 export class ReportListComponent implements OnInit {
-  [x: string]: any;
   reports: Report[] = [];
   selectedReport: Report | null = null;
 
-  constructor(private reportService: ReportService) { }
+  constructor(private reportService: ReportService, private router: Router) {}
 
   ngOnInit(): void {
-    this.loadReports()
+    this.loadReports();
   }
 
   loadReports() {
@@ -30,8 +30,20 @@ export class ReportListComponent implements OnInit {
   }
 
   viewEntries(report: Report) {
-    console.log('Viewing entries for report:', report); // Добавьте эту строку для отладки
+    console.log('Просмотр записей для отчета:', report); // Добавить для отладки
     this.selectedReport = report;
   }
 
+  editReport(report: Report) {
+    this.selectedReport = report;
+    console.log('Navigate to report: ' + this.selectedReport.id);
+    console.log(report);
+    //this.router.navigate(['/view-report', report.id]);
+  }
+
+  closeViewReport() {
+    this.selectedReport = null;
+  }
+
+ 
 }

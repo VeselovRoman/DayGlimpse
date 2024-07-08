@@ -1,4 +1,4 @@
-export interface ReportEntry {
+export interface Entry {
   id: number;
   procedureId: number;
   procedureName: string;
@@ -9,6 +9,7 @@ export interface ReportEntry {
   agentName: string;
   respondentId: number;
   respondentName: string;
+  reportId: number;
 }
 
 export interface Report {
@@ -18,5 +19,5 @@ export interface Report {
   agentName: string;
   respondentId: number;
   respondentName: string;
-  reportEntries: ReportEntry[];  // Добавляем свойство для записей отчета
+  reportEntries: Entry[];  // Добавляем свойство для записей отчета
 }

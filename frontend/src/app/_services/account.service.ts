@@ -30,6 +30,7 @@ export class AccountService {
   }
 
   login(model: any) {
+    console.log(model);
     return this.http.post<Agent>(this.baseUrl + 'agents/login', model).pipe(
       map(agent => {
         if (agent) {

@@ -33,12 +33,12 @@
         <form *ngIf="!accountService.currentAgent()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
             <input 
                 name="username" 
-                [(ngModel)]="model.username" 
+                [(ngModel)]="model.AgentName" 
                 class="form-control me-2" 
                 placeholder="Username">
             <input 
                 name="password"
-                [(ngModel)]="model.password"
+                [(ngModel)]="model.Password"
                 class="form-control me-2" 
                 placeholder="Password" 
                 type="password">

@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProcedureDto } from '../_dto/procedure.dto';
+import { Procedure } from '../_models/procedures';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,9 @@ export class ProcedureService {
 
   constructor(private http: HttpClient) { }
 
-  getProcedures(): Observable<ProcedureDto[]> {
+  //Получает список всех процедур.
+  getProcedures(): Observable<Procedure[]> {
     
-    return this.http.get<ProcedureDto[]>(this.baseUrl + 'procedures');
+    return this.http.get<Procedure[]>(this.baseUrl + 'procedures');
   }
 }

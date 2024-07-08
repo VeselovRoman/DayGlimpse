@@ -21,6 +21,7 @@ import { AddReportComponent } from './add-report/add-report.component';
 import { ReportService } from './_services/report.service';
 import { RespondentService } from './_services/respondent.service';
 import { ReportListComponent } from './report-list/report-list.component';
+import { ViewReportComponent } from './view-report/view-report.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ReportListComponent } from './report-list/report-list.component';
     AgentListComponent,
     AgentDetailComponent,
     AddReportComponent,
-    ReportListComponent
+    ReportListComponent,
+    ViewReportComponent
   ],
   imports: [
     BrowserAnimationsModule,

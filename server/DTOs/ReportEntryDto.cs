@@ -15,6 +15,7 @@ namespace server.DTOs
             public int RespondentId { get; set; }
             public string RespondentName { get; set; } // Добавляем имя респондента
             public int ReportId { get; set; }
+            public bool isConfirmed { get; set; }
         }
     }
 }
