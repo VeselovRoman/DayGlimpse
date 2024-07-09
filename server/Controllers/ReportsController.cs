@@ -42,6 +42,7 @@ namespace server.Controllers
                     AgentName = report.Agent.AgentName, // Включаем имя агента
                     RespondentId = report.RespondentId,
                     RespondentName = report.Respondent.Name, // Включаем имя респондента
+                    isConfirmed = report.IsConfirmed,
                     ReportEntries = report.ReportEntries.Select(entry => new ReportEntryDto
                     {
                         Id = entry.Id,
@@ -53,7 +54,8 @@ namespace server.Controllers
                         AgentId = entry.AgentId,
                         AgentName = entry.Agent.AgentName,
                         RespondentId = entry.RespondentId,
-                        RespondentName = entry.Respondent.Name
+                        RespondentName = entry.Respondent.Name,
+                        isConfirmed = entry.IsConfirmed
                     }).ToList()
                 })
                 .ToListAsync();
@@ -101,6 +103,7 @@ namespace server.Controllers
                     ReportDate = report.ReportDate,
                     AgentId = report.AgentId,
                     RespondentId = report.RespondentId,
+                    isConfirmed = report.IsConfirmed
                 };
 
             }
@@ -150,7 +153,8 @@ namespace server.Controllers
                     StartTime = DateTime.SpecifyKind(createReportEntryDto.StartTime, DateTimeKind.Utc),
                     EndTime = DateTime.SpecifyKind(createReportEntryDto.EndTime, DateTimeKind.Utc),
                     Comment = createReportEntryDto.Comment,
-                    ReportId = createReportEntryDto.ReportId
+                    ReportId = createReportEntryDto.ReportId,
+                    IsConfirmed = false
                 };
 
                 _context.ReportEntries.Add(reportEntry);
@@ -165,7 +169,8 @@ namespace server.Controllers
                     StartTime = reportEntry.StartTime,
                     EndTime = reportEntry.EndTime,
                     Comment = reportEntry.Comment,
-                    ReportId = reportEntry.ReportId
+                    ReportId = reportEntry.ReportId,
+                    isConfirmed = reportEntry.IsConfirmed
                 };
             }
             catch (Exception ex)
@@ -200,6 +205,7 @@ namespace server.Controllers
                     AgentName = agentName, // Возвращаем имя агента
                     RespondentId = report.RespondentId,
                     RespondentName = respondentName, // Возвращаем имя респондента
+                    isConfirmed = report.IsConfirmed,
                     ReportEntries = report.ReportEntries.Select(re => new ReportEntryDto
 
                     {
@@ -247,7 +253,8 @@ namespace server.Controllers
                     AgentId = reportEntry.AgentId,
                     AgentName = reportEntry.Agent?.AgentName, // Возвращаем имя агента
                     RespondentId = reportEntry.RespondentId,
-                    RespondentName = reportEntry.Respondent?.Name // Возвращаем имя респондента
+                    RespondentName = reportEntry.Respondent?.Name, // Возвращаем имя респондента
+                    isConfirmed = reportEntry.IsConfirmed
                 };
             }
             catch (Exception ex)

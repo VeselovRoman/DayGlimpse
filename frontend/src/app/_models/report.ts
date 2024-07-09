@@ -10,6 +10,7 @@ export interface Entry {
   respondentId: number;
   respondentName: string;
   reportId: number;
+  isConfirmed: boolean;
 }
 
 export interface Report {
@@ -20,4 +21,5 @@ export interface Report {
   respondentId: number;
   respondentName: string;
   reportEntries: Entry[];  // Добавляем свойство для записей отчета
+  isConfirmed: boolean;
 }

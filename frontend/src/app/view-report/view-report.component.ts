@@ -30,9 +30,7 @@ export class ViewReportComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.initializeForm();
     this.loadRespondents();
-    this.loadProcedures();
-    console.log('ngOnInit: @Input report: '+ this.report);
-
+    this.loadProcedures()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -41,35 +39,26 @@ export class ViewReportComponent implements OnInit, OnChanges {
       this.loadRespondents();
       this.loadProcedures();
     }
-    console.log('ngOnChanges: @Input report: '+ this.report);
 
   }
 
   initializeForm(): void {
     this.reportForm = this.formBuilder.group({
-      reportDate: [{ value: '', disabled: true }, Validators.required],
-      respondentId: [{ value: '', disabled: true }, Validators.required],
+      reportDate: [{ value: '', disabled: false }],
+      respondentName: [{ value: '', disabled: false }],
       entries: this.formBuilder.array([])
     });
-    console.log('initializeForm: @Input report: '+ this.report);
 
     if (this.report) {
       this.loadReport();
     }
   }
 
-  loadReport(): void {
-    console.log('loadReport: @Input report: '+ this.report);
-    
+  loadReport(): void {    
     this.reportForm.patchValue({
-      reportDate: this.report?.reportDate,
+      reportDate: this.report?.reportDate.toISOString,
       respondentId: this.report?.respondentId
     });
-
-    // Проверка значений reportDate и respondentId после их загрузки
-    console.log('Loaded reportDate:', this.reportForm.get('reportDate')?.value);
-    console.log('Loaded respondentId:', this.reportForm.get('respondentId')?.value);
-
     this.loadReportEntries();
   }
 
