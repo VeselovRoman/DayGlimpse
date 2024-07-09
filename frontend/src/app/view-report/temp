@@ -6,7 +6,6 @@ import { ProcedureService } from '../_services/procedure.service';
 import { Respondent } from '../_models/respondent';
 import { Entry, Report } from '../_models/report';
 import { Procedure } from '../_models/procedures';
-import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-view-report',
@@ -28,7 +27,7 @@ export class ViewReportComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log("ngOnInit:", this.report);
+    console.log(this.report);
     this.initializeForm();
     this.loadRespondents();
     this.loadProcedures()
@@ -36,28 +35,32 @@ export class ViewReportComponent implements OnInit {
 
   initializeForm(): void {
     this.reportForm = this.formBuilder.group({
-      id: [{ value: '', disabled: false }],
       reportDate: [{ value: '', disabled: false }],
-      agentName: [{ value: '', disabled: false }],
       respondentName: [{ value: '', disabled: false }],
-      isConfirmed: [{ value: '', disabled: false }],
       entries: this.formBuilder.array([])
     });
     console.log('Текущие entries_1:', this.reportForm.get('entries'));
+
 
     if (this.report) {
       this.loadReport();
     }
   }
 
-  loadReport(): void {
-    console.log("loadReport:", this.report);
+  /*ngOnChanges(changes: SimpleChanges): void {
+    console.log('Changes detected in report:', changes['report']);
+    if (changes['report'] && !changes['report'].firstChange) {
+      console.log('Report has changed, reloading...');
+      this.initializeForm();
+      this.loadRespondents();
+      this.loadProcedures();
+    }
+  }*/
+
+  loadReport(): void {    
     this.reportForm.patchValue({
-      id: this.report?.id,
-      reportDate: this.report?.reportDate,
-      agentName: this.report?.agentName,
-      respondentName: this.report?.respondentName,
-      isConfirmed: this.report?.isConfirmed
+      reportDate: this.report?.reportDate.toISOString,
+      respondentId: this.report?.respondentId
     });
     this.loadReportEntries();
   }
@@ -107,30 +110,45 @@ export class ViewReportComponent implements OnInit {
 
   createProcedureEntry(entry?: Entry): FormGroup {
     console.log('Creating procedure entry with:', entry); // Логирование для отладки
-
     return this.formBuilder.group({
-      id: [{ value: entry?.id, disabled: false }],
-      procedureId: [{ value: entry?.procedureId, disabled: false }],
-      startTime: [this.formatDate(entry?.startTime)], // Преобразование строки в Date и затем в строку
-      endTime: [this.formatDate(entry?.endTime)],     // Преобразование строки в Date и затем в строку
-      comment: [{ value: entry?.comment, disabled: false }],
-      isConfirmed: [{ value: entry?.isConfirmed, disabled: false }],
+      procedureId: [{ value: entry?.procedureId || '', disabled: false }, Validators.required],
+      startTime: [{ value: entry?.startTime || '', disabled: false }, Validators.required],
+      endTime: [{ value: entry?.endTime || '', disabled: false }, Validators.required],
+      comment: [{ value: entry?.comment || '', disabled: false }]
     });
   }
 
-  // Метод для преобразования строки в Date и затем в строку
-  formatDate(date: Date | undefined): string {
-    if (!date) {
-      return ''; // или возврат по умолчанию, если необходимо
-    }
-    // Пример форматирования в формат yyyy-MM-ddTHH:mm
-    return formatDate(date, 'yyyy-MM-ddTHH:mm', 'en-US');
+  addProcedureEntry(): void {
+    const entriesFormArray = this.reportForm.get('entries') as FormArray;
+    entriesFormArray.push(this.createProcedureEntry());
   }
-  
+
   get entries(): FormArray {
     return this.reportForm.get('entries') as FormArray;
   }
-  showEntries() {
-    console.log('Текущие entries_1:', this.reportForm.get('entries'));
+
+  submitReport(): void {
+    if (this.reportForm.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    const updateReport = {
+      id: this.report?.id,
+      reportDate: this.reportForm.value.reportDate,
+      respondentId: this.reportForm.value.respondentId,
+      reportEntries: this.reportForm.value.entries
+    };
+
+    this.reportService.confirmReport(updateReport.id!).subscribe({
+      next: () => {
+        console.log('Report updated successfully');
+        // Optionally, navigate back to report list or perform other actions
+      },
+      error: error => {
+        console.error('Error updating report:', error);
+      }
+    });
   }
+
 }

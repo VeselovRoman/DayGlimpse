@@ -10,22 +10,23 @@ import { Branch } from '../_models/branch';
   styleUrls: ['./agent-detail.component.css']
 })
 export class AgentDetailComponent implements OnInit {
-
-  agent: Agent = {
-    id: 0,
-    agentName: '',
-    city: '',
-    token: '',
-    branchId: 0
-  };
-
+  agent: Agent;
   branches: Branch[] = []; // Массив для хранения списка филиалов
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private agentService: AgentService
-  ) { }
+  ) {
+    this.agent = {
+      id: 0,
+      agentName: '',
+      token: '',
+      branchId: 0,
+      city: '',
+      registrationDate: new Date()
+    };
+  }
 
   ngOnInit(): void {
     this.loadAgent();
@@ -70,7 +71,7 @@ export class AgentDetailComponent implements OnInit {
       }
     });
   }
-  
+
 
   cancel() {
     this.router.navigate(['/agents']);

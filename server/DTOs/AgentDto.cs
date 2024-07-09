@@ -7,4 +7,5 @@ public class AgentDto
     public string Token { get; set; }
     public int BranchId { get; set; }
     public string City { get; set; }
+    public DateTime RegistrationDate { get; set; }
 }

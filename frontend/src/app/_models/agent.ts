@@ -4,4 +4,5 @@ export interface Agent {
     token: string;
     branchId: number;
     city: string;
+    registrationDate: Date;
 }

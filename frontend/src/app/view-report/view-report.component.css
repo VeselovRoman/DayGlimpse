@@ -1,0 +1,38 @@
+.modal.show {
+    display: block;
+    background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+  }
+  
+  .modal-dialog {
+    max-width: 600px;
+    margin: 1.75rem auto;
+  }
+  
+  .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+  }
+  
+  .status-circle {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+  
+  .confirmed {
+    background-color: #4CAF50; /* зеленый */
+  }
+  
+  .not-confirmed {
+    background-color: #FFD700; /* желтый */
+  }
+  

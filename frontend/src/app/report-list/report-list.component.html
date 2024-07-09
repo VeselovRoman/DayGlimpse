@@ -16,8 +16,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let report of reports"
-        [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}">
+      <tr *ngFor="let report of reports">
         <td>{{ report.id }}</td>
         <td>{{ report.reportDate | date }}</td>
         <td>{{ report.agentName }}</td>
