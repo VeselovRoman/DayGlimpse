@@ -11,35 +11,38 @@
       <label class="ms-3"><strong>Респондент:</strong> {{ report?.respondentName }}</label>
     </div>
 
-      <div formArrayName="entries">
-        <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="card my-3">
-          <div class="card-body">
-            <h5 class="card-title">Процедура {{ i + 1 }}</h5>
-  
-            <div class="form-group">
-              <label for="procedureId{{ i }}">Наименование</label>
-              <select id="procedureId{{ i }}" [formControlName]="'procedureId'" class="form-control">
-                <option *ngFor="let procedure of procedures" [value]="procedure.id">{{ procedure.id }} - {{ procedure.name }}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <div class="col">
-                  <label for="startTime{{ i }}">Начало выполнения</label>
-                  <input type="datetime-local" id="startTime{{ i }}" [formControlName]="'startTime'" class="form-control">
-                </div>
-                <div class="col">
-                  <label for="endTime{{ i }}">Окончание выполнения</label>
-                  <input type="datetime-local" id="endTime{{ i }}" [formControlName]="'endTime'" class="form-control">
-                </div>
-                <div class="col">
-                  <label for="comment{{ i }}">Комментарий</label>
-                  <input type="text" id="comment{{ i }}" [formControlName]="'comment'" class="form-control">
-                </div>
+    <div formArrayName="entries">
+      <div *ngFor="let entry of entries.controls; let i = index"
+           [formGroupName]="i"
+           class="card my-3"
+           [ngClass]="{'grey-background': i % 2 == 0}"> <!-- Применение класса для нечётных элементов -->
+        <div class="card-body">
+          <h5 class="card-title">Процедура {{ i + 1 }}</h5>
+
+          <div class="form-group">
+            <label [ngClass]="{'grey-background': i % 2 == 0}" for="procedureId{{ i }}">Наименование</label>
+            <select [ngClass]="{'grey-background': i % 2 == 0}" id="procedureId{{ i }}" [formControlName]="'procedureId'" class="form-control">
+              <option *ngFor="let procedure of procedures" [value]="procedure.id">{{ procedure.id }} - {{ procedure.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col">
+                <label [ngClass]="{'grey-background': i % 2 == 0}" for="startTime{{ i }}">Начало выполнения</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="startTime{{ i }}" [formControlName]="'startTime'" class="form-control">
+              </div>
+              <div class="col">
+                <label [ngClass]="{'grey-background': i % 2 == 0}" for="endTime{{ i }}">Окончание выполнения</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="endTime{{ i }}" [formControlName]="'endTime'" class="form-control">
+              </div>
+              <div class="col">
+                <label [ngClass]="{'grey-background': i % 2 == 0}" for="comment{{ i }}">Комментарий</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="text" id="comment{{ i }}" [formControlName]="'comment'" class="form-control">
               </div>
             </div>
           </div>
         </div>
+      </div>
     </div>
     
     <button type="button" class="btn btn-secondary">Добавить запись</button>
