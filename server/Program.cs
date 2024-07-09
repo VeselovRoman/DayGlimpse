@@ -1,9 +1,44 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using server.Extensions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Получаем конфигурацию
+var config = builder.Configuration;
+
+// Переменные из конфигурации
+var host = config["DatabaseSettings:Host"] ?? "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
+var port = config["DatabaseSettings:Port"] ?? "6432";
+var db = config["DatabaseSettings:Database"] ?? "dayglimpse_db";
+var username = config["DatabaseSettings:Username"] ?? "Admin";
+var password = config["DatabaseSettings:Password"] ?? "iTSiz9bEMYxSwj7";
+
+// Собираем строку подключения из переменных
+var connString = $"Host={host};Port={port};Database={db};Username={username};Password={password};Ssl Mode=VerifyFull;";
+
+// Добавляем различия для разных ОС
+if (IsWindows())
+{
+    connString += @"Root Certificate=C:\Users\Roman\.postgresql\root.crt;";
+}
+else if (IsMac())
+{
+    connString += @"Root Certificate=/Users/romanveselov/.postgresql/root.crt;";
+}
+
+// Добавление строки подключения в конфигурацию
+var memoryConfig = new Dictionary<string, string>
+{
+    { "ConnectionStrings:DefaultConnection", connString }
+};
+
+builder.Configuration.AddInMemoryCollection(memoryConfig);
 
 // Add services to the container.
 
@@ -38,3 +73,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static bool IsWindows()
+{
+    return Environment.OSVersion.Platform == PlatformID.Win32NT;
+}
+
+static bool IsMac()
+{
+    return Environment.OSVersion.Platform == PlatformID.MacOSX || (Environment.OSVersion.Platform == PlatformID.Unix && Directory.Exists("/Applications"));
+}
