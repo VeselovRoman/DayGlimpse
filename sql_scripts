@@ -1,0 +1,73 @@
+
+
+DELETE FROM public."Agents"
+
+INSERT INTO public."Respondents"
+("Name", "RegistrationDate", "City", "BranchId", "Role")
+values('Ольга', Now(), 'Москва', 1, '');
+
+INSERT INTO public."Procedures"
+("Name", "StandardTime")
+VALUES('Создание накладной', 10);
+
+
+
+INSERT INTO public."Branches" VALUES (1, 'Октябрьский');
+INSERT INTO public."Branches" VALUES (2, 'Московский');
+INSERT INTO public."Branches" VALUES (3, 'Северный');
+INSERT INTO public."Branches" VALUES (4, 'Горьковский');
+INSERT INTO public."Branches" VALUES (5, 'Западно-Сибирский');
+INSERT INTO public."Branches" VALUES (6, 'Дальневосточный');
+
+INSERT INTO public."Agents" VALUES (8, 'bob', '\xc3312199c3429d1d55f506d25ee7ee181a32c623ee74e225222ed1043454422c0247dda0d4fe7dcba7d0a2a6b379792f7aa87b9ee23088861c38a4ea38cabd95', '\x0858283a7367ab3e6fd6680885d886d085b3df78b4c5fb26867f08cde284a65ec3182646239cdc3bca4fb82d9ac80c6d7b0679505a3f1f963f40c2e40bff5eabd2149b9b74338289347adc2309fa705334678594965bb32e4e99e19b335e12d4026e176972726edd928bcb4861aad8bdc1717a71fd83a9ce40e39f4f4a31da48', '2024-07-03 14:25:33.428114+00', 'Москва', 1, NULL);
+INSERT INTO public."Agents" VALUES (9, 'roman', '\xe6d1f33ebacf51b5afe31dfa82fd5d3b917893e373bf1f5aa42bbf4cef2d46312df4418fe6a6170550ec6c6657e27df3ca436cabadba05c445f8ad157e49a113', '\x229d25eb5d682d4df934f45f39cdeb760fcc29fa0c03296bda6643265f47ff92eb2b14a474d3050b5c782fc18c4ae0dfd6b18129296ce7378d852378d48d4b4424db4ed1a9ba0fbc4ac3bc4943486bd959f8521b1a3e69f0f2c92934423253b52e2a701e3dfb8de74bce476e2d25ed09b67d0c67f2225502f7eb26e59cc00644', '2024-07-03 14:25:50.367197+00', 'Санкт-Петербург', 1, NULL);
+INSERT INTO public."Agents" VALUES (10, 'alex', '\xfb42057d3b96fc890e91453d3a2719023c07f4a5baa5a301c8934d0b347675556cb76263640de92905f35f5071c96d8776b2d14c88c3339a104081783cf8bd6b', '\x6ed217e5e2bb4de065d7b7812b9ab9ea93dc3cd3b764baa45c6ec41ebc64edb05970d0bef7d2cb6a8a627d4b62d5fb741341740d075172a4f36e8044b227f69881bd005741f0ab9f6a34052c574a616b842f3b9f9d0dcf23ffe27609b77576fa03cea76b769025971ff97038988d10265fc4d100f83bfd4009918594bd75d637', '2024-07-03 14:30:07.002489+00', 'Ярославль', 3, NULL);
+INSERT INTO public."Agents" VALUES (11, 'alex', '\x6f634d0b62cbfad34539a40201f35c82acc3d6b0a934cc4a4762b1d0f4f1079cc431a86f821ad8622549460a399b130d693b964bd8dd952979b3d9a8aa035654', '\x2ad991fbb32ce1af58793f4c393b63336199da4e9d1b047e0a2aa793a9154e6051ffb3c85253dff05452fe85771dd991f78290b5e735d1fa73fdde60aa1621291b2c5b2d316a307b7b420c254d281f276776a124f7d02f4697f2d986c0e2adffc9c5db48b165674a7bbbc6c4e1f4e72b8e39dc3439295a1eb34312cb55e1612c', '2024-07-03 14:30:07.002483+00', 'Ярославль', 3, NULL);
+
+INSERT INTO public."Procedures" VALUES (0, 'Создание заказа', 10);
+INSERT INTO public."Procedures" VALUES (1, 'Создание накладной', 10);
+
+INSERT INTO public."ReportEntries" VALUES (2, '2023-07-01 10:00:00+00', '2023-07-01 11:00:00+00', 'Some comment', 1, 9, 1, 0, false);
+INSERT INTO public."ReportEntries" VALUES (3, '2023-07-01 13:00:00+00', '2023-07-01 14:00:00+00', 'Some comment', 1, 9, 1, 1, false);
+INSERT INTO public."ReportEntries" VALUES (4, '2023-07-07 13:00:00+00', '2023-07-07 14:00:00+00', 'Some comment', 1, 9, 1, 1, false);
+INSERT INTO public."ReportEntries" VALUES (5, '2023-07-07 17:00:00+00', '2023-07-07 18:00:00+00', 'Some comment', 1, 9, 1, 1, false);
+INSERT INTO public."ReportEntries" VALUES (6, '2024-07-07 17:18:00+00', '2024-07-07 17:20:00+00', 'test 9', 25, 9, 2, 1, false);
+INSERT INTO public."ReportEntries" VALUES (7, '2024-07-07 17:31:00+00', '2024-07-07 18:40:00+00', 'test 11', 26, 9, 2, 1, false);
+INSERT INTO public."ReportEntries" VALUES (8, '2024-07-07 17:20:00+00', '2024-07-07 17:30:00+00', 'test 10', 26, 9, 2, 0, false);
+INSERT INTO public."ReportEntries" VALUES (9, '2024-07-07 17:52:00+00', '2024-07-07 17:53:00+00', 'test 10', 28, 9, 1, 0, false);
+INSERT INTO public."ReportEntries" VALUES (10, '2024-07-07 17:53:00+00', '2024-07-07 17:54:00+00', 'test 11', 28, 9, 1, 1, false);
+
+
+INSERT INTO public."Reports" VALUES (2, 9, 1, '2024-07-05 06:02:13.345791+00', false);
+INSERT INTO public."Reports" VALUES (3, 9, 1, '2024-07-07 09:57:52.883909+00', false);
+INSERT INTO public."Reports" VALUES (4, 9, 1, '2024-07-07 10:40:07.139651+00', false);
+INSERT INTO public."Reports" VALUES (5, 9, 1, '2024-07-07 10:55:53.739809+00', false);
+INSERT INTO public."Reports" VALUES (6, 9, 1, '2024-07-07 11:06:54.232661+00', false);
+INSERT INTO public."Reports" VALUES (7, 9, 1, '2024-07-07 11:06:54.232623+00', false);
+INSERT INTO public."Reports" VALUES (8, 9, 2, '2024-07-07 11:09:26.795686+00', false);
+INSERT INTO public."Reports" VALUES (10, 9, 2, '2024-07-07 11:15:55.648442+00', false);
+INSERT INTO public."Reports" VALUES (11, 9, 2, '2024-07-07 11:15:55.648482+00', false);
+INSERT INTO public."Reports" VALUES (12, 9, 2, '2024-07-07 11:23:04.281355+00', false);
+INSERT INTO public."Reports" VALUES (13, 9, 2, '2024-07-07 11:23:04.302236+00', false);
+INSERT INTO public."Reports" VALUES (14, 9, 3, '2024-07-07 11:30:38.556409+00', false);
+INSERT INTO public."Reports" VALUES (15, 9, 3, '2024-07-07 11:30:38.556434+00', false);
+INSERT INTO public."Reports" VALUES (17, 9, 2, '2024-07-07 13:39:50.068481+00', false);
+INSERT INTO public."Reports" VALUES (16, 9, 2, '2024-07-07 13:39:50.068517+00', false);
+INSERT INTO public."Reports" VALUES (18, 9, 2, '2024-07-07 14:00:31.136963+00', false);
+INSERT INTO public."Reports" VALUES (19, 9, 2, '2024-07-07 14:00:31.136914+00', false);
+INSERT INTO public."Reports" VALUES (20, 9, 3, '2024-07-07 14:03:37.972007+00', false);
+INSERT INTO public."Reports" VALUES (21, 9, 3, '2024-07-07 14:03:37.972023+00', false);
+INSERT INTO public."Reports" VALUES (22, 9, 3, '2024-07-07 14:15:14.273379+00', false);
+INSERT INTO public."Reports" VALUES (23, 9, 3, '2024-07-07 14:15:14.273284+00', false);
+INSERT INTO public."Reports" VALUES (24, 9, 2, '2024-07-07 14:18:02.530341+00', false);
+INSERT INTO public."Reports" VALUES (25, 9, 2, '2024-07-07 14:18:02.530302+00', false);
+INSERT INTO public."Reports" VALUES (26, 9, 2, '2024-07-07 14:20:21.81868+00', false);
+INSERT INTO public."Reports" VALUES (27, 9, 2, '2024-07-07 14:20:21.818394+00', false);
+INSERT INTO public."Reports" VALUES (28, 9, 1, '2024-07-07 14:53:33.615144+00', false);
+INSERT INTO public."Reports" VALUES (29, 9, 3, '2024-07-07 17:04:29.917618+00', false);
+INSERT INTO public."Reports" VALUES (1, 9, 1, '2024-07-04 11:22:14.327693+00', true);
+INSERT INTO public."Reports" VALUES (9, 9, 2, '2024-07-07 11:09:26.79567+00', true);
+
+INSERT INTO public."Respondents" VALUES (1, 'Петров Иван Иванович', '2024-07-04 09:03:59.718671+00', 'Москва', 1, NULL);
+INSERT INTO public."Respondents" VALUES (2, 'Новикова Татьяна Анатольевна', '2024-07-04 09:16:28.513095+00', 'Москва', 1, NULL);
+INSERT INTO public."Respondents" VALUES (3, 'Ольга', '2024-07-05 07:18:05.780334+00', 'Москва', 1, '');

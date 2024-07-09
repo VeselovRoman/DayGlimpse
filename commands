@@ -142,3 +142,17 @@ docker pull cr.yandex/crpgooad6obt6pekb52h/postgres:latest
 yc iam service-account --folder-id b1gf4cgg0f3nu1vjpau0 list
 yc iam key create --service-account-name veselov --output key.json --folder-id b1gf4cgg0f3nu1vjpau0
 
+---------------------------------
+Яндекс настройка кластера PostgreSQL
+
+Имя БД dayglimpse_db
+Имя пользователя Admin
+Пароль iTSiz9bEMYxSwj7
+
+var host       = "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
+            var port       = "6432";
+            var db         = "dayglimpse_db";
+            var username   = "Admin";
+            var password   = "iTSiz9bEMYxSwj7";
+            var connString = $"Host={host};Port={port};Database={db};Username={username};Password={password};Ssl Mode=VerifyFull;";
+
