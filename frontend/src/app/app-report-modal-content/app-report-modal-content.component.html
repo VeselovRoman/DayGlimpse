@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h4 class="modal-title">Информация о записях отчета</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Номер отчета:</strong> {{ report.id }}</p>
+    <p><strong>Дата отчета:</strong> {{ report.reportDate | date }}</p>
+    <p><strong>Агент:</strong> {{ report.agentName }}</p>
+    <p><strong>Респондент:</strong> {{ report.respondentName }}</p>
+    <p><strong>Записи:</strong></p>
+    <ul>
+      <li *ngFor="let entry of report.reportEntries">
+        {{ entry.procedureId }} - {{ entry.startTime | date:'short' }} - {{ entry.endTime | date:'short' }} - {{ entry.comment }}
+      </li>
+    </ul>
+  </div>
+  <div class="modalfooter">
+    <button type="button" class="btn btn-secondary ms-3" (click)="activeModal.dismiss('Close click')">Закрыть</button>
+  </div>
