@@ -124,7 +124,7 @@ export class ViewReportComponent implements OnInit {
       return ''; // или возврат по умолчанию, если необходимо
     }
     // Пример форматирования в формат yyyy-MM-ddTHH:mm
-    return formatDate(date, 'yyyy-MM-ddTHH:mm', 'en-US');
+    return formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru');
   }
   
   get entries(): FormArray {
