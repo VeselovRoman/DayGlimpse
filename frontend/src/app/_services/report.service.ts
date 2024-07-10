@@ -62,12 +62,13 @@ export class ReportService {
 
   // Подтверждает отчет по его идентификатору.
   confirmReport(reportId: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/${reportId}/confirm`, {});
+    return this.http.put<any>(`${this.baseUrl}/${reportId}/confirm`, {});
   }
 
   //Подтверждает запись отчета по ее идентификаторам.
   confirmReportEntry(reportId: number, entryId: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/${reportId}/entries/${entryId}/confirm`, {});
+    console.log(`${this.baseUrl}/${reportId}/entries/${entryId}/confirm`);
+    return this.http.put<any>(`${this.baseUrl}/${reportId}/entries/${entryId}/confirm`, {});
   }
 
   //Получает список всех отчетов.

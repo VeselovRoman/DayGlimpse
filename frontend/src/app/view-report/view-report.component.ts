@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ReportService } from '../_services/report.service';
 import { RespondentService } from '../_services/respondent.service';
@@ -15,6 +15,7 @@ import { formatDate } from '@angular/common';
 })
 export class ViewReportComponent implements OnInit {
   @Input() report: Report | null = null;
+  @Output() reportConfirmed = new EventEmitter<void>();
 
   reportForm!: FormGroup;
   respondents: Respondent[] = [];
@@ -31,7 +32,7 @@ export class ViewReportComponent implements OnInit {
     console.log("ngOnInit:", this.report);
     this.initializeForm();
     this.loadRespondents();
-    this.loadProcedures()
+    this.loadProcedures();
   }
 
   initializeForm(): void {
@@ -64,6 +65,7 @@ export class ViewReportComponent implements OnInit {
 
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
+
     // Вывод текущего состояния entriesFormArray
     console.log('Текущий entriesFormArray до очистки:', entriesFormArray);
 
@@ -105,6 +107,11 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
+  addProcedureEntry(): void {
+    const entriesFormArray = this.reportForm.get('entries') as FormArray;
+    entriesFormArray.push(this.createProcedureEntry());
+  }
+
   createProcedureEntry(entry?: Entry): FormGroup {
     console.log('Creating procedure entry with:', entry); // Логирование для отладки
 
@@ -114,7 +121,7 @@ export class ViewReportComponent implements OnInit {
       startTime: [this.formatDate(entry?.startTime)], // Преобразование строки в Date и затем в строку
       endTime: [this.formatDate(entry?.endTime)],     // Преобразование строки в Date и затем в строку
       comment: [{ value: entry?.comment, disabled: false }],
-      isConfirmed: [{ value: entry?.isConfirmed, disabled: false }],
+      isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
     });
   }
 
@@ -126,11 +133,72 @@ export class ViewReportComponent implements OnInit {
     // Пример форматирования в формат yyyy-MM-ddTHH:mm
     return formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru');
   }
-  
+
   get entries(): FormArray {
     return this.reportForm.get('entries') as FormArray;
   }
-  showEntries() {
-    console.log('Текущие entries_1:', this.reportForm.get('entries'));
+
+  submitReport(): void {
+    console.log('Submitting report started');
+
+    if (this.reportForm.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
+      procedureId: entry.procedureId,
+      startTime: new Date(entry.startTime),
+      endTime: new Date(entry.endTime),
+      comment: entry.comment,
+      isConfirmed: true
+    }));
+
+    this.reportForm.value.entries.forEach((entry: any, index: number) => {
+      // добавляем данные отчета
+      const entryData = {
+        ...updatedReportEntries[index],
+        reportId: this.report?.id,
+        agentID: this.report?.agentId,
+        respondentId: this.report?.respondentId,
+      };
+
+      console.log("It is about to confirm entry:", this.report!.id!, '-', entry.id, entryData)
+      if (entry.id) {
+        // Если у записи есть ID, подтверждаем ее
+        this.reportService.confirmReportEntry(this.report!.id!, entry.id).subscribe({
+          next: () => {
+            console.log('Entry confirmed successfully');
+          },
+          error: error => {
+            console.error('Error confirming entry:', error);
+          }
+        });
+      } else {
+        // Если у записи нет ID, создаем новую запись
+        this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
+          next: (newEntry: Entry) => {
+            console.log('Entry added successfully:', newEntry);
+          },
+          error: error => {
+            console.error('Error adding entry:', error);
+          }
+        });
+      }
+    });
+
+    // Подтверждаем отчет
+    if (this.report?.id) {
+      this.reportService.confirmReport(this.report.id).subscribe({
+        next: () => {
+          console.log('Report confirmed successfully');
+          this.reportConfirmed.emit(); // Уведомляем родительский компонент
+        },
+        error: error => {
+          console.error('Error confirming report:', error);
+        }
+      });
+    }
   }
+
 }
