@@ -35,4 +35,20 @@
   .not-confirmed {
     background-color: #FFD700; /* желтый */
   }
+
+  .table td, .table th {
+    vertical-align: middle; /* Выравнивание по вертикали */
+    height: 30px; /* Фиксированная высота ячеек */
+  }
+
+  .btn-edit {
+    padding: 0.15rem 0.25rem; /* Отступы для минимизации размера */
+    font-size: 0.75rem; /* Уменьшенный размер шрифта */
+  }
+  
+  .btn-view {
+    padding: 0.15rem 0.25rem; /* Отступы для минимизации размера */
+    font-size: 0.75rem; /* Уменьшенный размер шрифта */
+  }
+  
   

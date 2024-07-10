@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Report } from '../_models/report';
 import { ReportService } from '../_services/report.service';
+import { Report } from '../_models/report';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-report-list',
@@ -12,7 +12,7 @@ export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
 
-  constructor(private reportService: ReportService, private router: Router) {}
+  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
     this.loadReports();
@@ -21,9 +21,8 @@ export class ReportListComponent implements OnInit {
   loadReports() {
     this.reportService.getReports().subscribe({
       next: (reports) => {
-        this.reports = reports,
-        console.log('Загруженные отчеты:', this.reports); // console.log внутрь функции next
-
+        this.reports = reports;
+        console.log('Загруженные отчеты:', this.reports);
       },
       error: (error) => console.error('Error fetching reports:', error)
     });
@@ -38,9 +37,10 @@ export class ReportListComponent implements OnInit {
     console.log('Редактирование отчета:', report);  // Добавлено для отладки
     this.selectedReport = report;
   }
-
+  
   closeViewReport() {
     this.selectedReport = null;
+    this.loadReports(); // Перезагрузка списка отчетов
   }
 
  

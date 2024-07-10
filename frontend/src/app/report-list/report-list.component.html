@@ -1,8 +1,9 @@
 <div class="container mt-4">
-  <a class="btn btn-light mb-3" (click)="closeViewReport()" *ngIf="selectedReport">
-    <i class="bi bi-arrow-left" *ngIf="selectedReport"></i> Вернуться к списку отчетов
+  <a class="btn btn-light mb-3" (click)="closeViewReport()" *ngIf="selectedReport && !selectedReport.isConfirmed">
+    <i class="bi bi-arrow-left" *ngIf="selectedReport && !selectedReport.isConfirmed"></i> Вернуться к списку отчетов
   </a>
-  <app-view-report [report]="selectedReport" *ngIf="selectedReport"></app-view-report>
+  <app-view-report [report]="selectedReport" (reportConfirmed)="closeViewReport()"
+    *ngIf="selectedReport && !selectedReport.isConfirmed"></app-view-report>
 
   <table class="table table-bordered" *ngIf="!selectedReport">
     <thead>
@@ -26,9 +27,52 @@
             [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
         </td>
         <td>
-          <button class="btn btn-secondary" (click)="editReport(report)">Изменить...</button>
+          <button *ngIf="!report.isConfirmed" class="btn btn-secondary btn-sm btn-edit"
+            (click)="editReport(report)">
+            <i class="bi bi-pencil"></i> <!-- Иконка редактирования -->
+          </button>
+          <button *ngIf="report.isConfirmed" class="btn btn-secondary btn-sm btn-view" (click)="viewEntries(report)">
+            <i class="bi bi-eye"></i> <!-- Иконка просмотра -->
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <!-- Modal для отображения записей отчета -->
+  <div class="modal" tabindex="-1" [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Записи отчета #{{ selectedReport?.id }}</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="selectedReport = null"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Номер записи</th>
+                            <th>Процедура</th>
+                            <th>Начало</th>
+                            <th>Конец</th>
+                            <th>Комментарий</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let entry of selectedReport?.reportEntries">
+                            <td>{{ entry.id }}</td>
+                            <td>{{ entry.procedureName }}</td>
+                            <td>{{ entry.startTime | date:'short' }}</td>
+                            <td>{{ entry.endTime | date:'short' }}</td>
+                            <td>{{ entry.comment }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="selectedReport = null">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

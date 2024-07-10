@@ -153,7 +153,7 @@ namespace server.Controllers
                     StartTime = DateTime.SpecifyKind(createReportEntryDto.StartTime, DateTimeKind.Utc),
                     EndTime = DateTime.SpecifyKind(createReportEntryDto.EndTime, DateTimeKind.Utc),
                     Comment = createReportEntryDto.Comment,
-                    ReportId = createReportEntryDto.ReportId,
+                    ReportId = reportId,
                     IsConfirmed = false
                 };
 
@@ -263,6 +263,8 @@ namespace server.Controllers
             }
         }
 
+        // Подтверждение отчета
+        [AllowAnonymous]
         [HttpPut("{reportId}/confirm")]
         public async Task<IActionResult> ConfirmReport(int reportId)
         {
@@ -280,7 +282,9 @@ namespace server.Controllers
             return NoContent();
         }
 
-        [HttpPut("entry/{entryId}/confirm")]
+        // Подтверждение записи
+        [AllowAnonymous]
+        [HttpPut("{reportId}/entries/{entryId}/confirm")]
         public async Task<IActionResult> ConfirmReportEntry(int entryId)
         {
             var entry = await _context.ReportEntries.FindAsync(entryId);

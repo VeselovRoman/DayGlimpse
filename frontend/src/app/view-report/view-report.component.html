@@ -1,5 +1,5 @@
 <div class="container">
-  <form *ngIf="reportForm" [formGroup]="reportForm">
+  <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
     <div class="form-group">
       <span class="status-circle me-3" 
             [ngClass]="{'confirmed': report?.isConfirmed, 'not-confirmed': !report?.isConfirmed}"></span>
@@ -45,9 +45,7 @@
       </div>
     </div>
     
-    <button type="button" class="btn btn-secondary">Добавить запись</button>
-    <button type="submit" class="btn btn-primary ms-2">Сохранить</button>
-    <button type="button" class="btn btn-primary ms-2" (click)="loadReportEntries()">Загрузить entries</button>
-    <button type="button" class="btn btn-primary ms-2" (click)="showEntries()">Показать entries</button>
+    <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
+    <button type="submit" class="btn btn-primary ms-2">Подтвердить отчет...</button>
   </form>
 </div>

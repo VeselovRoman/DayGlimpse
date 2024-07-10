@@ -24,36 +24,31 @@ export class AccountService {
   }
 
   setCurrentUser(agent: Agent) {
-    console.log(agent);
     localStorage.setItem('agent', JSON.stringify(agent));
-    this.currentAgent.set(agent)
   }
 
   login(model: any) {
-    console.log(model);
-    return this.http.post<Agent>(this.baseUrl + 'agents/login', model).pipe(
+    return this.http.post<Agent>(`${this.baseUrl}agents/login`, model).pipe(
       map(agent => {
         if (agent) {
-          this.setCurrentUser(agent)
+          this.setCurrentUser(agent);
         }
+        return agent;
       })
     );
   }
 
   isLoggedIn(): boolean {
-    // Проверяем, есть ли информация о текущем пользователе или токен аутентификации
-    // Верните true, если пользователь аутентифицирован, иначе false
-    // Пример проверки на основе наличия информации о пользователе в localStorage:
     return localStorage.getItem('agent') !== null;
   }
 
   logout() {
     localStorage.removeItem('agent');
-    this.currentAgent.set(null);
   }
 
   currentAgentValue(): Agent | null {
-    return this.currentAgent();
+    const storedAgent = localStorage.getItem('agent');
+    return storedAgent ? JSON.parse(storedAgent) : null;
   }
   
   getDecodedToken(token: string) {
@@ -62,7 +57,10 @@ export class AccountService {
 
   getToken(): string | null {
     const agent = this.currentAgentValue();
-    return agent ? agent.token : null; // Assuming the Agent model has a token field
-  }
+    const token = agent?.token ?? null;
 
+    console.log('Agent token:', token);
+
+    return token;
+  }
 }
