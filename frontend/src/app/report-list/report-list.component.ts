@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ReportService } from '../_services/report.service';
 import { Report } from '../_models/report';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ReportModalContentComponent } from '../app-report-modal-content/app-report-modal-content.component'
 
 @Component({
   selector: 'app-report-list',
@@ -13,7 +12,7 @@ export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
 
-  constructor(private reportService: ReportService, private modalService: NgbModal) {}
+  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
     this.loadReports();
@@ -37,12 +36,6 @@ export class ReportListComponent implements OnInit {
   editReport(report: Report) {
     console.log('Редактирование отчета:', report);  // Добавлено для отладки
     this.selectedReport = report;
-  }
-
-  viewReport(report: Report) {
-    this.selectedReport = report;
-    // Открытие модального окна с информацией о записях отчета
-    this.modalService.open(ReportModalContentComponent, { size: 'lg' }).componentInstance.report = report;
   }
   
   closeViewReport() {

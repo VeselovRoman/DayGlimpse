@@ -22,7 +22,6 @@ import { ReportService } from './_services/report.service';
 import { RespondentService } from './_services/respondent.service';
 import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
-import { ReportModalContentComponent } from './app-report-modal-content/app-report-modal-content.component';
 
 @NgModule({
   declarations: [
@@ -35,8 +34,7 @@ import { ReportModalContentComponent } from './app-report-modal-content/app-repo
     AgentDetailComponent,
     AddReportComponent,
     ReportListComponent,
-    ViewReportComponent,
-    ReportModalContentComponent
+    ViewReportComponent
   ],
   imports: [
     BrowserAnimationsModule,
