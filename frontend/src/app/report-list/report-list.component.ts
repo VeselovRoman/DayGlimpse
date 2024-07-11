@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportService } from '../_services/report.service';
 import { Report } from '../_models/report';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
 

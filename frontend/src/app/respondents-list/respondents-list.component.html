@@ -1,0 +1,53 @@
+<div class="container">
+    <h2>Список респондентов</h2>
+    <button class="btn btn-primary" (click)="openModal(template)">Добавить респондента</button>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Имя</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let respondent of respondents">
+          <td>{{ respondent.id }}</td>
+          <td>{{ respondent.name }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" (click)="openModal(template, respondent)">Изменить...</button>
+            <button class="btn btn-sm btn-danger ms-2" (click)="deleteRespondent(respondent.id)">Удалить</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <ng-template #template>
+      <div class="modal-header">
+        <h5 class="modal-title">{{ selectedRespondent.id ? 'Редактировать респондента' : 'Добавить респондента' }}</h5>
+        <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="name" class="form-label">Имя</label>
+            <input type="text" class="form-control" id="name" [(ngModel)]="selectedRespondent.name" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="city" class="form-label">Город</label>
+            <input type="text" class="form-control" id="city" [(ngModel)]="selectedRespondent.city" name="city">
+          </div>
+          <div class="mb-3">
+            <label for="branchId" class="form-label">Филиал</label>
+          <select class="form-control" id="branchId" [(ngModel)]="selectedRespondent.branchId" name="branchId"> 
+            <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
+          </select>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">Закрыть</button>
+        <button type="button" class="btn btn-primary" (click)="saveRespondent()">Сохранить</button>
+      </div>
+    </ng-template>
+  </div>
+  

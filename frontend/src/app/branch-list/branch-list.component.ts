@@ -25,7 +25,7 @@ export class BranchListComponent implements OnInit {
   }
 
   openModal(template: TemplateRef<any>, branch?: any) {
-    this.selectedBranch = branch ? { ...branch } : {Name: '' };
+    this.selectedBranch = branch ? { ...branch } : { name: '' };
     this.modalRef = this.modalService.show(template);
   }
 

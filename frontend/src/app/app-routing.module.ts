@@ -8,10 +8,12 @@ import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { HomeComponent } from './home/home.component';
+import { RespondentListComponent } from './respondents-list/respondents-list.component';
 
 const routes: Routes = [
   
   { path: 'agents', component: AgentListComponent },
+  { path: 'respondents', component: RespondentListComponent },
   { path: 'reports', component: ReportListComponent },
   { path: 'branches', component: BranchListComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent },

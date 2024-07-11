@@ -13,7 +13,7 @@ public class BranchesController(DataContext context) : BaseApiController
         var branches = await context.Branches.ToListAsync();
 
         return Ok(branches);
-        
+
     }
 
     [HttpGet("{id:int}")]
@@ -26,8 +26,8 @@ public class BranchesController(DataContext context) : BaseApiController
         return branch;
     }
 
-    [HttpPost("register")] //POST: api/account/registerBranch?name=okt
-    public async Task<ActionResult<BranchDto>> Register(BranchDto branchDto)
+    [HttpPost("register")]
+    public async Task<ActionResult<CreateBranchDto>> Register(CreateBranchDto branchDto)
     {
         if (await BranchExists(branchDto.Name)) return BadRequest("Филиал уже добавлен в справочник");
 
@@ -39,7 +39,7 @@ public class BranchesController(DataContext context) : BaseApiController
         context.Branches.Add(branch);
         await context.SaveChangesAsync();
 
-        return new BranchDto
+        return new CreateBranchDto
         {
             Name = branch.Name
         };
@@ -71,6 +71,22 @@ public class BranchesController(DataContext context) : BaseApiController
 
         return NoContent();
     }
+
+    [HttpDelete("{id:int}")] // Новый метод для удаления филиала
+    public async Task<IActionResult> DeleteBranch(int id)
+    {
+        var branch = await context.Branches.FindAsync(id);
+        if (branch == null)
+        {
+            return NotFound("Филиал не найден");
+        }
+
+        context.Branches.Remove(branch);
+        await context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private async Task<bool> BranchExists(string branchname)
     {
         return await context.Branches.AnyAsync(x => x.Name.ToLower() == branchname.ToLower());

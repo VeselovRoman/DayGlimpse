@@ -12,28 +12,28 @@ export class RespondentService {
 
   constructor(private http: HttpClient) { }
 
-  //Получает список всех респондентов
+  // Получает список всех респондентов
   getRespondents(): Observable<Respondent[]> {
     return this.http.get<Respondent[]>(this.apiUrl);
   }
 
-  //Получает респондента по его идентификатор
+  // Получает респондента по его идентификатору
   getRespondent(id: number): Observable<Respondent> {
-    return this.http.get<Respondent>(`${this.apiUrl}${id}`);
+    return this.http.get<Respondent>(`${this.apiUrl}/${id}`);
   }
 
-  //Создает нового респондента.
+  // Создает нового респондента.
   createRespondent(respondent: Respondent): Observable<Respondent> {
-    return this.http.post<Respondent>(this.apiUrl, respondent);
+    return this.http.post<Respondent>(this.apiUrl + '/createRespondent', respondent);
   }
 
-  //Обновляет данные существующего респондента.
+  // Обновляет данные существующего респондента.
   updateRespondent(id: number, respondent: Respondent): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}${id}`, respondent);
+    return this.http.put<void>(`${this.apiUrl}/${id}`, respondent);
   }
 
-  //Удаляет респондента.
+  // Удаляет респондента.
   deleteRespondent(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

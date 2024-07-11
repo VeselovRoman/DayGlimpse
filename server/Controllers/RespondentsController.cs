@@ -33,21 +33,35 @@ namespace server.Controllers
         }
 
         [HttpPost("createRespondent")]
-        public async Task<ActionResult<Respondent>> CreateRespondent(CreateRespondentDto createDto)
+        public async Task<ActionResult<RespondentDto>> CreateRespondent(CreateRespondentDto createDto)
         {
+            if (await RespondentExists(createDto.Name))
+                return BadRequest("Респондент уже существует");
+
             var respondent = new Respondent
             {
                 Name = createDto.Name,
                 RegistrationDate = DateTime.UtcNow,
                 City = createDto.City,
                 BranchId = createDto.BranchId,
-                // Здесь можете установить другие свойства Respondent по необходимости
             };
 
             _context.Respondents.Add(respondent);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetRespondent), new { id = respondent.Id }, respondent);
+            return new RespondentDto
+            {
+                Id = respondent.Id,
+                Name = respondent.Name,
+                RegistrationDate = respondent.RegistrationDate,
+                City = respondent.City,
+                BranchId = respondent.BranchId
+            };
+        }
+
+        private async Task<bool> RespondentExists(string name)
+        {
+            return await _context.Respondents.AnyAsync(x => x.Name.ToLower() == name.ToLower());
         }
 
         [HttpPut("{id:int}")]

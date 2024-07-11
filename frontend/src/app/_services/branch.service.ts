@@ -30,6 +30,6 @@ export class BranchService {
   }
 
   deleteBranch(id: number): Observable<Branch> {
-    return this.http.delete<Branch>(`${this.apiUrl}/${id}`);
+    return this.http.delete<Branch>(`${this.apiUrl}branches/${id}`);
   }
 }
