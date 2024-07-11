@@ -1,11 +1,6 @@
 <div class="container mt-4">
-  <a class="btn btn-light mb-3" (click)="closeViewReport()" *ngIf="selectedReport && !selectedReport.isConfirmed">
-    <i class="bi bi-arrow-left" *ngIf="selectedReport && !selectedReport.isConfirmed"></i> Вернуться к списку отчетов
-  </a>
-  <app-view-report [report]="selectedReport" (reportConfirmed)="closeViewReport()"
-    *ngIf="selectedReport && !selectedReport.isConfirmed"></app-view-report>
 
-  <table class="table table-bordered" *ngIf="!selectedReport">
+  <table class="table table-bordered">
     <thead>
       <tr>
         <th>Номер отчета</th>
