@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ReportService } from '../_services/report.service';
 import { Report } from '../_models/report';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { ReportStateService } from '../_services/report-state.service';
 
 @Component({
   selector: 'app-report-list',
@@ -12,11 +14,19 @@ export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
 
-  constructor(private reportService: ReportService) {}
+  constructor(private reportService: ReportService, 
+              private router: Router,
+              private reportStateService: ReportStateService
+  ) {}
 
   ngOnInit(): void {
-    this.loadReports();
+    this.reportStateService.getReports().subscribe(reports => {
+      this.reports = reports;
+    });
+    this.reportStateService.loadReports(); // Загружаем отчеты при инициализации компонента
+    //this.loadReports();
   }
+    
 
   loadReports() {
     this.reportService.getReports().subscribe({
@@ -35,11 +45,12 @@ export class ReportListComponent implements OnInit {
 
   editReport(report: Report) {
     console.log('Редактирование отчета:', report);  // Добавлено для отладки
-    this.selectedReport = report;
+    //this.selectedReport = report;
+    this.router.navigate(['/reports', report.id, 'edit']);
   }
   
   closeViewReport() {
-    this.selectedReport = null;
+    //this.selectedReport = null;
     this.loadReports(); // Перезагрузка списка отчетов
   }
 

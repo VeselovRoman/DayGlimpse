@@ -179,7 +179,8 @@ namespace server.Controllers
                 return BadRequest("Failed to create report entry: " + ex.Message);
             }
         }
-
+        
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<ReportDto>> GetReport(int id)
         {

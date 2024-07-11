@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ReportService } from '../_services/report.service';
 import { RespondentService } from '../_services/respondent.service';
@@ -7,6 +7,8 @@ import { Respondent } from '../_models/respondent';
 import { Entry, Report } from '../_models/report';
 import { Procedure } from '../_models/procedures';
 import { formatDate } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReportStateService } from '../_services/report-state.service';
 
 @Component({
   selector: 'app-view-report',
@@ -14,22 +16,27 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./view-report.component.css']
 })
 export class ViewReportComponent implements OnInit {
-  @Input() report: Report | null = null;
-  @Output() reportConfirmed = new EventEmitter<void>();
-
   reportForm!: FormGroup;
   respondents: Respondent[] = [];
   procedures: Procedure[] = [];
+  reportId!: number;
+  report!: Report;
 
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
     private respondentService: RespondentService,
-    private procedureService: ProcedureService
+    private procedureService: ProcedureService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private reportStateService: ReportStateService // Добавлен сервис состояния
   ) { }
 
   ngOnInit(): void {
-    console.log("ngOnInit:", this.report);
+    this.route.params.subscribe(params => {
+      this.reportId = +params['id'];
+      this.loadReport();
+    });
     this.initializeForm();
     this.loadRespondents();
     this.loadProcedures();
@@ -44,15 +51,22 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: [{ value: '', disabled: false }],
       entries: this.formBuilder.array([])
     });
-    console.log('Текущие entries_1:', this.reportForm.get('entries'));
-
-    if (this.report) {
-      this.loadReport();
-    }
   }
 
-  loadReport(): void {
-    console.log("loadReport:", this.report);
+  loadReport() {
+    this.reportService.getReport(this.reportId).subscribe(report => {
+      this.report = report;
+      this.fillReportForm()
+    });
+  }
+
+  fillReportForm(): void {
+    if (!this.report) {
+      console.log('Report is not loaded yet');
+      return;
+    }
+
+    console.log("fillReport:", this.report);
     this.reportForm.patchValue({
       id: this.report?.id,
       reportDate: this.report?.reportDate,
@@ -65,12 +79,8 @@ export class ViewReportComponent implements OnInit {
 
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
-
-    // Вывод текущего состояния entriesFormArray
-    console.log('Текущий entriesFormArray до очистки:', entriesFormArray);
-
     entriesFormArray.clear();
-    console.log('Текущий entriesFormArray после очистки:', entriesFormArray);
+    console.log('this.report:', this.report);
 
     if (this.report && this.report.reportEntries) {
       console.log('Report entries found:', this.report.reportEntries);
@@ -113,8 +123,6 @@ export class ViewReportComponent implements OnInit {
   }
 
   createProcedureEntry(entry?: Entry): FormGroup {
-    console.log('Creating procedure entry with:', entry); // Логирование для отладки
-
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
@@ -163,7 +171,6 @@ export class ViewReportComponent implements OnInit {
         respondentId: this.report?.respondentId,
       };
 
-      console.log("It is about to confirm entry:", this.report!.id!, '-', entry.id, entryData)
       if (entry.id) {
         // Если у записи есть ID, подтверждаем ее
         this.reportService.confirmReportEntry(this.report!.id!, entry.id).subscribe({
@@ -192,13 +199,21 @@ export class ViewReportComponent implements OnInit {
       this.reportService.confirmReport(this.report.id).subscribe({
         next: () => {
           console.log('Report confirmed successfully');
-          this.reportConfirmed.emit(); // Уведомляем родительский компонент
+          // Загружаем обновленные отчеты перед навигацией
+          this.reportStateService.loadReports();
+          this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
         },
         error: error => {
           console.error('Error confirming report:', error);
         }
       });
+      this.router.navigate(['/reports']); // Возвращаемся к списку отчето
     }
   }
 
+  closeViewReport() {
+    // Загружаем обновленные отчеты перед навигацией
+    this.reportStateService.loadReports();
+    this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
+  }
 }
