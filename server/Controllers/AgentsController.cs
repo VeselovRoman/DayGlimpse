@@ -19,9 +19,9 @@ public class AgentsController : BaseApiController
 
     public AgentsController(DataContext context, ITokenService tokenService, ILogger<AgentsController> logger)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _context = context;
+        _tokenService = tokenService ;
+        _logger = logger;
     }
 
     [AllowAnonymous]
@@ -75,8 +75,8 @@ public class AgentsController : BaseApiController
     }
 
     [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
+    [HttpPost("login")]
+    public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
     {
         // Логируем полученные данные
         _logger.LogInformation($"Attempting login with username: {loginDto.AgentName}");
@@ -143,7 +143,8 @@ public class AgentsController : BaseApiController
             Id = agent.Id,
             AgentName = agent.AgentName,
             Token = _tokenService.CreateToken(agent),
-            BranchId = agent.BranchId
+            BranchId = agent.BranchId,
+            RegistrationDate = agent.RegistrationDate
         };
     }
 

@@ -15,9 +15,9 @@ export class NavComponent {
   constructor () {}
 
   login() {
-    console.log(this.model);
     this.accountService.login(this.model).subscribe({
       next: response => {
+        this.model = response;
       },
       error: error => console.log(error)
     })

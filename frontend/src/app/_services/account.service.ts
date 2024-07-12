@@ -31,6 +31,7 @@ export class AccountService {
     return this.http.post<Agent>(`${this.baseUrl}agents/login`, model).pipe(
       map(agent => {
         if (agent) {
+          console.log(agent);
           this.setCurrentUser(agent);
         }
         return agent;

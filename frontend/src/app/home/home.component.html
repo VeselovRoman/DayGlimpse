@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5" *ngIf="!accountService.isLoggedIn()">
     <div style="text-align: center;">
         <div *ngIf="!registerMode">
             <h1>DayGlimpse</h1>
