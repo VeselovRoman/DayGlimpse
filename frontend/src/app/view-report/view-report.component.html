@@ -23,7 +23,7 @@
             <h5 class="card-title">Процедура {{ i + 1 }}</h5>
 
             <div class="form-group">
-              <label [ngClass]="{'grey-background': i % 2 == 0}" for="procedureId{{ i }}">Наименование</label>
+              <label for="procedureId{{ i }}">Наименование</label>
               <select [ngClass]="{'grey-background': i % 2 == 0}" id="procedureId{{ i }}"
                 [formControlName]="'procedureId'" class="form-control">
                 <option *ngFor="let procedure of procedures" [value]="procedure.id">{{ procedure.id }} - {{
@@ -33,17 +33,17 @@
             <div class="form-group">
               <div class="row">
                 <div class="col">
-                  <label [ngClass]="{'grey-background': i % 2 == 0}" for="startTime{{ i }}">Начало выполнения</label>
+                  <label for="startTime{{ i }}">Начало выполнения</label>
                   <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="startTime{{ i }}"
                     [formControlName]="'startTime'" class="form-control">
                 </div>
                 <div class="col">
-                  <label [ngClass]="{'grey-background': i % 2 == 0}" for="endTime{{ i }}">Окончание выполнения</label>
+                  <label for="endTime{{ i }}">Окончание выполнения</label>
                   <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="endTime{{ i }}"
                     [formControlName]="'endTime'" class="form-control">
                 </div>
                 <div class="col">
-                  <label [ngClass]="{'grey-background': i % 2 == 0}" for="comment{{ i }}">Комментарий</label>
+                  <label for="comment{{ i }}">Комментарий</label>
                   <input [ngClass]="{'grey-background': i % 2 == 0}" type="text" id="comment{{ i }}"
                     [formControlName]="'comment'" class="form-control">
                 </div>
