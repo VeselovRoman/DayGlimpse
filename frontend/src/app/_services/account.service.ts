@@ -1,61 +1,79 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Agent } from '../_models/agent';
-import { map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
   baseUrl = 'https://localhost:5001/api/';
-  currentAgent = signal<Agent | null>(null);
 
-  constructor(private http: HttpClient) { }
+  // Используем BehaviorSubject для хранения текущего агента
+  private currentAgentSource = new BehaviorSubject<Agent | null>(null);
+  currentAgent$ = this.currentAgentSource.asObservable();
 
-  register(model: any) {
-    return this.http.post<Agent>(this.baseUrl + 'agents/register', model).pipe(
-      map(agent => {
-        if (agent) {
-          this.setCurrentUser(agent);
-        }
-        return agent;
-      })
-    )
+  constructor(private http: HttpClient) {
+    // Проверяем, есть ли агент в localStorage и устанавливаем его в текущего агента
+    const agent = localStorage.getItem('agent');
+    if (agent) {
+      this.currentAgentSource.next(JSON.parse(agent));
+    }
   }
 
-  setCurrentUser(agent: Agent) {
-    localStorage.setItem('agent', JSON.stringify(agent));
-  }
-
-  login(model: any) {
-    return this.http.post<Agent>(`${this.baseUrl}agents/login`, model).pipe(
+  // Метод регистрации, отправляет запрос и обновляет состояние при успешной регистрации
+  register(model: any): Observable<Agent> {
+    return this.http.post<Agent>(`${this.baseUrl}agents/register`, model).pipe(
       map(agent => {
         if (agent) {
-          console.log(agent);
-          this.setCurrentUser(agent);
+          this.setCurrentAgent(agent);
         }
         return agent;
       })
     );
   }
 
+  // Метод установки текущего агента в localStorage и обновление текущего агента в BehaviorSubject
+  setCurrentAgent(agent: Agent) {
+    localStorage.setItem('agent', JSON.stringify(agent));
+    this.currentAgentSource.next(agent);
+  }
+
+  // Метод логина, отправляет запрос и обновляет состояние при успешном входе
+  login(model: any): Observable<Agent> {
+    return this.http.post<Agent>(`${this.baseUrl}agents/login`, model).pipe(
+      map(agent => {
+        if (agent) {
+          console.log(agent);
+          this.setCurrentAgent(agent);
+        }
+        return agent;
+      })
+    );
+  }
+
+  // Метод проверки, залогинен ли пользователь
   isLoggedIn(): boolean {
     return localStorage.getItem('agent') !== null;
   }
 
+  // Метод логаута, очищает localStorage и сбрасывает состояние текущего агента
   logout() {
     localStorage.removeItem('agent');
+    this.currentAgentSource.next(null);
   }
 
+  // Метод получения текущего агента как объект
   currentAgentValue(): Agent | null {
-    const storedAgent = localStorage.getItem('agent');
-    return storedAgent ? JSON.parse(storedAgent) : null;
-  }
-  
-  getDecodedToken(token: string) {
-    return JSON.parse(atob(token.split('.')[1]))
+    return this.currentAgentSource.value;
   }
 
+  // Метод декодирования JWT токена
+  getDecodedToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
+  }
+
+  // Метод получения токена текущего агента
   getToken(): string | null {
     const agent = this.currentAgentValue();
     const token = agent?.token ?? null;
