@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import { importProvidersFrom, NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
-import { JwtInterceptor } from './auth.interceptor';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { JwtInterceptor } from './_interceptors/auth.interceptor';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NavComponent } from './nav/nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +23,8 @@ import { RespondentService } from './_services/respondent.service';
 import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
+import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner';
+import { loadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -45,15 +47,16 @@ import { RespondentListComponent } from './respondents-list/respondents-list.com
     AppRoutingModule,
     CommonModule,
     FormsModule,
+    NgxSpinnerComponent,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot()
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([loadingInterceptor])),
     provideAnimations(),
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    [ReportService, RespondentService, DatePipe]
+    importProvidersFrom(NgxSpinnerModule)
+    //{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
