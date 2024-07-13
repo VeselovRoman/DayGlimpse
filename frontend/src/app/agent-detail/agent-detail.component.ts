@@ -49,6 +49,12 @@ export class AgentDetailComponent implements OnInit {
       this.agentService.getAgentById(parseInt(agentId, 10)).subscribe({
         next: (agent: Agent) => {
           this.agent = agent;
+          this.updatedAgent = {
+            id: agent.id,
+            agentName: agent.agentName,
+            city: agent.city,
+            branchId: agent.branchId
+          };
           console.log('Загруженный агент:', agent);
         },
         error: (error: any) => {
@@ -71,11 +77,6 @@ export class AgentDetailComponent implements OnInit {
   }
 
   saveAgent() {
-    this.updatedAgent.id = this.agent.id;
-    this.updatedAgent.agentName = this.agent.agentName;
-    this.updatedAgent.branchId = this.agent.branchId;
-    this.updatedAgent.city = this.agent.city;
-
     this.agentService.updateAgent(this.updatedAgent).subscribe({
       next: () => {
         console.log('Agent updated successfully');
