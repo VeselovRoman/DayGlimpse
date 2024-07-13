@@ -1,4 +1,4 @@
-<div class="container mt-5" *ngIf="agents">
+<div class="container mt-5">
     <h2>Список агентов</h2>
     <table class="table table-striped">
         <thead>
@@ -15,7 +15,7 @@
                 <td>{{ agent.id }}</td>
                 <td>{{ agent.agentName }}</td>
                 <td>{{ agent.city }}</td>
-                <td>{{ getBranchName(agent.branchId) }}</td>
+                <td>{{ agent.branchName }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" (click)="editAgent(agent.id!)">Изменить...</button>
                 </td>

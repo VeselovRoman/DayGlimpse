@@ -3,6 +3,7 @@ export interface Agent {
     agentName: string;
     token: string;
     branchId: number;
+    branchName: string;
     city: string;
-    registrationDate: Date;
+    registrationDate: string;
 }

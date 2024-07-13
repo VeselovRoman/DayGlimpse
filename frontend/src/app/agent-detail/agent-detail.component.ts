@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AgentService } from '../_services/agent.service';
 import { Agent } from '../_models/agent';
 import { Branch } from '../_models/branch';
+import { updateAgent } from '../_models/updateAgent';
 
 @Component({
   selector: 'app-agent-detail',
@@ -11,6 +12,7 @@ import { Branch } from '../_models/branch';
 })
 export class AgentDetailComponent implements OnInit {
   agent: Agent;
+  updatedAgent: updateAgent;
   branches: Branch[] = []; // Массив для хранения списка филиалов
 
   constructor(
@@ -23,8 +25,15 @@ export class AgentDetailComponent implements OnInit {
       agentName: '',
       token: '',
       branchId: 0,
+      branchName: '',
       city: '',
-      registrationDate: new Date()
+      registrationDate: ''
+    };
+    this.updatedAgent = {
+      id: 0,
+      agentName: '',
+      branchId: 0,
+      city: '',
     };
   }
 
@@ -40,6 +49,7 @@ export class AgentDetailComponent implements OnInit {
       this.agentService.getAgentById(parseInt(agentId, 10)).subscribe({
         next: (agent: Agent) => {
           this.agent = agent;
+          console.log('Загруженный агент:', agent);
         },
         error: (error: any) => {
           console.error('Error loading agent:', error);
@@ -61,7 +71,12 @@ export class AgentDetailComponent implements OnInit {
   }
 
   saveAgent() {
-    this.agentService.updateAgent(this.agent).subscribe({
+    this.updatedAgent.id = this.agent.id;
+    this.updatedAgent.agentName = this.agent.agentName;
+    this.updatedAgent.branchId = this.agent.branchId;
+    this.updatedAgent.city = this.agent.city;
+
+    this.agentService.updateAgent(this.updatedAgent).subscribe({
       next: () => {
         console.log('Agent updated successfully');
         this.router.navigate(['/agents']);

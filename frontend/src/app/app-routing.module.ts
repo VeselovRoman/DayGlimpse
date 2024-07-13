@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'reports', component: ReportListComponent },
   { path: 'branches', component: BranchListComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent },
+  { path: 'agents/:id', component: AgentDetailComponent },
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
   
@@ -24,7 +25,6 @@ const routes: Routes = [
   
   /*
   //{ path: 'respondents', component: RespondentsComponent, canActivate: [AuthGuard] },
-  { path: 'agents/:id', component: AgentDetailComponent },
   { path: 'add-report', component: AddReportComponent },
   { path: 'view-report/:reportId', component: ViewReportComponent },
   

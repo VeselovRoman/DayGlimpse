@@ -26,14 +26,26 @@ public class AgentsController : BaseApiController
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Agent>>> GetAgents()
+    public async Task<ActionResult<IEnumerable<AgentDto>>> GetAgents()
     {
-        var agents = await _context.Agents.ToListAsync();
+        var agents = await _context.Agents
+            .Include(r => r.Branch) // Включаем данные о филиале
+            .ToListAsync();
 
-        return agents;
+            var agentDtos = agents.Select(a => new AgentDto
+            {
+                Id = a.Id,
+                AgentName = a.AgentName,
+                City = a.City,
+                BranchId = a.BranchId,
+                BranchName = a.Branch.Name,
+                RegistrationDate = a.RegistrationDate
+            }).ToList();
+            
+        return agentDtos;
     }
 
-
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Agent>> GetAgent(int id)
     {
@@ -148,8 +160,9 @@ public class AgentsController : BaseApiController
         };
     }
 
+    [AllowAnonymous]
     [HttpPut("{id:int}")] // PUT: api/agents/{id}
-    public async Task<IActionResult> UpdateAgent(int id, AgentDto agentDto)
+    public async Task<IActionResult> UpdateAgent(int id, UpdateAgentDto agentDto)
     {
         if (id != agentDto.Id)
             return BadRequest("Id does not match");

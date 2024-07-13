@@ -11,13 +11,11 @@ import { Branch } from '../_models/branch';
 })
 export class AgentListComponent implements OnInit {
   agents: Agent[] = [];
-  branches: Branch[] = [];
 
   constructor(private agentService: AgentService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadAgents();
-    this.loadBranches();
   }
 
   loadAgents() {
@@ -30,23 +28,6 @@ export class AgentListComponent implements OnInit {
         console.error('Error loading agents:', error);
       }
     });
-  }
-
-  loadBranches() {
-    this.agentService.getAllBranches().subscribe({
-      next: (branches: Branch[]) => {
-        this.branches = branches;
-        console.log('Загруженные филиалы:', this.branches); // Лог филиалы в консоль
-      },
-      error: (error: any) => {
-        console.error('Error loading branches:', error);
-      }
-    });
-  }
-
-  getBranchName(branchId: number | null): string {
-    const branch = this.branches.find(b => b.id === branchId);
-    return branch ? branch.name : 'Unknown';
   }
 
   editAgent(agentId: number) {

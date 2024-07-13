@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Agent } from '../_models/agent';
 import { Branch } from '../_models/branch';
+import { updateAgent } from '../_models/updateAgent';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class AgentService {
     return this.http.get<Agent>(`${this.baseUrl}agents/${id}`);
   }
 
-  updateAgent(agent: Agent): Observable<void> {
+  updateAgent(agent: updateAgent): Observable<void> {
     // Получение токена из localStorage
     /*if (this.agent) {
       // Преобразуем строку обратно в объект JavaScript
