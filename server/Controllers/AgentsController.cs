@@ -24,7 +24,6 @@ public class AgentsController : BaseApiController
         _logger = logger;
     }
 
-    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AgentDto>>> GetAgents()
     {
@@ -45,7 +44,6 @@ public class AgentsController : BaseApiController
         return agentDtos;
     }
 
-    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Agent>> GetAgent(int id)
     {
@@ -160,7 +158,6 @@ public class AgentsController : BaseApiController
         };
     }
 
-    [AllowAnonymous]
     [HttpPut("{id:int}")] // PUT: api/agents/{id}
     public async Task<IActionResult> UpdateAgent(int id, UpdateAgentDto agentDto)
     {

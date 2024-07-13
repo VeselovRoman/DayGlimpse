@@ -1,5 +1,5 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +22,7 @@ import { ViewReportComponent } from './view-report/view-report.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
 import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
+import { jwtInterceptor } from './_interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -49,11 +50,10 @@ import { loadingInterceptor } from './_interceptors/loading.interceptor';
     BsDropdownModule.forRoot()
   ],
   providers: [
-    provideClientHydration(),
-    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideHttpClient(
+      withInterceptors([jwtInterceptor, loadingInterceptor])),
     provideAnimations(),
     importProvidersFrom(NgxSpinnerModule)
-    //{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
