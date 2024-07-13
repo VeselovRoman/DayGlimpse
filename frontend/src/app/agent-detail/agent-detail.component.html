@@ -3,15 +3,15 @@
   <form #agentForm="ngForm" (ngSubmit)="saveAgent()">
     <div class="form-group">
       <label>Имя агента:</label>
-      <input type="text" class="form-control" name="agentname" [(ngModel)]="agent.agentName" required>
+      <input type="text" class="form-control" name="agentname" [(ngModel)]="updatedAgent.agentName" required>
     </div>
     <div class="form-group">
       <label>Город:</label>
-      <input type="text" class="form-control" name="city" [(ngModel)]="agent.city">
+      <input type="text" class="form-control" name="city" [(ngModel)]="updatedAgent.city">
     </div>
     <div class="form-group">
       <label>Выберите филиал:</label>
-      <select class="form-control" name="branchId" [(ngModel)]="agent.branchId">
+      <select class="form-control" name="branchId" [(ngModel)]="updatedAgent.branchId">
         <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
       </select>
     </div>
