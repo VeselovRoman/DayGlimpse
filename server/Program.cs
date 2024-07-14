@@ -31,6 +31,10 @@ else if (IsMac())
 {
     connString += @"Root Certificate=/Users/romanveselov/.postgresql/root.crt;";
 }
+else if (IsLinux())
+{
+    connString += @"Root Certificate=/etc/ssl/certs/root.crt;";
+}
 
 // Добавление строки подключения в конфигурацию
 var memoryConfig = new Dictionary<string, string>
@@ -58,7 +62,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .WithOrigins("http://localhost:4200", "https://localhost:4200");
+              .WithOrigins("http://localhost:4200", "https://localhost:4200", "http://158.160.134.124");
     });
 });
 
@@ -82,4 +86,9 @@ static bool IsWindows()
 static bool IsMac()
 {
     return Environment.OSVersion.Platform == PlatformID.MacOSX || (Environment.OSVersion.Platform == PlatformID.Unix && Directory.Exists("/Applications"));
+}
+
+static bool IsLinux()
+{
+    return Environment.OSVersion.Platform == PlatformID.Unix && !IsMac();
 }

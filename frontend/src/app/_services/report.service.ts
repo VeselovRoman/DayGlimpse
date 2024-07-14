@@ -10,7 +10,7 @@ import { Entry } from '../_models/report';
   providedIn: 'root'
 })
 export class ReportService {
-  baseUrl = 'https://localhost:5001/api/reports';
+  baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

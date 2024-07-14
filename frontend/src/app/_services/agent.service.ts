@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { Agent } from '../_models/agent';
 import { Branch } from '../_models/branch';
 import { updateAgent } from '../_models/updateAgent';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgentService {
 
-  private baseUrl = 'https://localhost:5001/api/'; // Замените на ваш базовый URL API
+  private baseUrl = environment.apiUrl; // Замените на ваш базовый URL API
   //token = '';
   //agent = localStorage.getItem('agent');
 

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Branch } from '../_models/branch';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchService {
-  private apiUrl = 'https://localhost:5001/api/';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

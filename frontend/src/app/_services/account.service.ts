@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Agent } from '../_models/agent';
 import { BehaviorSubject, map, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
 
   // Используем BehaviorSubject для хранения текущего агента
   private currentAgentSource = new BehaviorSubject<Agent | null>(null);
