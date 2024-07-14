@@ -25,7 +25,6 @@ namespace server.Controllers
             _tokenService = tokenService;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReportDto>>> GetReports()
         {
@@ -62,7 +61,7 @@ namespace server.Controllers
 
             return reports;
         }
-        [AllowAnonymous]
+
         [HttpPost]
         public async Task<ActionResult<ReportDto>> CreateReport(CreateReportDto createReportDto)
         {
@@ -114,7 +113,7 @@ namespace server.Controllers
             }
         }
 
-        [AllowAnonymous]
+
         [HttpPost("{reportId}/entries")]
         public async Task<ActionResult<ReportEntryDto>> CreateReportEntry(int reportId, CreateReportEntryDto createReportEntryDto)
         {
@@ -180,7 +179,7 @@ namespace server.Controllers
             }
         }
         
-        [AllowAnonymous]
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ReportDto>> GetReport(int id)
         {
@@ -265,7 +264,7 @@ namespace server.Controllers
         }
 
         // Подтверждение отчета
-        [AllowAnonymous]
+
         [HttpPut("{reportId}/confirm")]
         public async Task<IActionResult> ConfirmReport(int reportId)
         {
@@ -284,7 +283,7 @@ namespace server.Controllers
         }
 
         // Подтверждение записи
-        [AllowAnonymous]
+
         [HttpPut("{reportId}/entries/{entryId}/confirm")]
         public async Task<IActionResult> ConfirmReportEntry(int entryId)
         {

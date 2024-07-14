@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
@@ -6,6 +7,7 @@ using server.Entities;
 
 namespace server.Controllers
 {
+    [Authorize]
     public class RespondentsController : BaseApiController
     {
         private readonly DataContext _context;
@@ -59,11 +61,6 @@ namespace server.Controllers
             };
         }
 
-        private async Task<bool> RespondentExists(string name)
-        {
-            return await _context.Respondents.AnyAsync(x => x.Name.ToLower() == name.ToLower());
-        }
-
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateRespondent(int id, [FromBody] RespondentUpdateDto updateDto)
         {
@@ -103,6 +100,11 @@ namespace server.Controllers
         private bool RespondentExists(int id)
         {
             return _context.Respondents.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> RespondentExists(string name)
+        {
+            return await _context.Respondents.AnyAsync(x => x.Name.ToLower() == name.ToLower());
         }
     }
 }

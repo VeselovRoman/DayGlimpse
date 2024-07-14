@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
@@ -5,6 +6,7 @@ using server.DTOs;
 
 namespace server.Controllers;
 
+[Authorize]
 public class BranchesController(DataContext context) : BaseApiController
 {
     [HttpGet]

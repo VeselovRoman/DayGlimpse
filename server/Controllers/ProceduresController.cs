@@ -1,5 +1,6 @@
 // ProceduresController.cs
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.DTOs;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace server.Controllers
 {
+    [Authorize]
     public class ProceduresController : BaseApiController
     {
         private readonly IProcedureService _procedureService;
