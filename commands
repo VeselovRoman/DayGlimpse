@@ -157,3 +157,104 @@ var host       = "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
             var connString = $"Host={host};Port={port};Database={db};Username={username};Password={password};Ssl Mode=VerifyFull;";
 
   ;Root Certificate=C:\\Users\\Roman\\.postgresql\\root.crt
+
+
+
+;конфигурация Linux сервера
+
+;перезапустить сервер nginx
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+
+;запуск dotnet
+dotnet /var/www/myapp/server.dll
+dotnet /var/www/myapp/server.dll --urls "http://localhost:5001;https://localhost:5002"
+
+
+;файл конфигурации сервера
+sudo nano /etc/nginx/sites-available/dayglimpse
+
+;Файлы в sites-available обычно не применяются автоматически. Вместо этого они активируются с помощью символических ссылок в sites-enabled. Чтобы активировать новую конфигурацию, вам нужно создать символическую ссылку на ваш файл dayglimpse в sites-enabled:
+sudo ln -s /etc/nginx/sites-available/dayglimpse /etc/nginx/sites-enabled/
+
+;файл службы
+sudo nano /etc/systemd/system/myapp.service
+;Обновите список служб системных демонов, чтобы система узнала о вашей новой службе:
+sudo systemctl daemon-reload
+;Запуск службы:
+sudo systemctl start myapp
+;остановка
+sudo systemctl stop myapp
+;перезапуск
+sudo systemctl restart myapp
+
+;Перезапустите службу:
+После внесения изменений в файл службы перезапустите службу, чтобы изменения вступили в силу:
+sudo systemctl daemon-reload  # Перезагрузка конфигурации systemd
+sudo systemctl restart myapp   # Перезапуск службы вашего приложения
+
+;Автозапуск службы при загрузке системы:
+sudo systemctl enable myapp
+;Отключение автозапуска службы при загрузке системы:
+sudo systemctl disable myapp
+;Просмотр статуса службы:
+sudo systemctl status myapp
+;логи службы
+sudo journalctl -u myapp
+
+
+  server {
+    listen 80;
+    server_name 158.160.134.124;
+
+    location / {
+        proxy_pass https://localhost:5001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Добавьте следующие строки для работы с самоподписанными сертификатами
+        proxy_ssl_verify off;
+        proxy_ssl_trusted_certificate /etc/nginx/ssl/ca_certificate.pem; # Путь к вашему CA сертификату
+    }
+}
+
+
+
+scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@158.160.134.124:/etc/nginx/ssl/ca_certificate.pem
+
+
+[Unit]
+Description=Dayglimpse
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www
+ExecStart=/usr/bin/dotnet /var/www/server.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dayglimpse
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target
+
+
+server {
+    listen 80;
+    server_name 158.160.134.124;
+
+    root /var/www/html; # Путь к папке с Angular приложением
+
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
