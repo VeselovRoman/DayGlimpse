@@ -12,13 +12,13 @@ import { RespondentListComponent } from './respondents-list/respondents-list.com
 
 const routes: Routes = [
   
-  { path: 'agents', component: AgentListComponent },
-  { path: 'respondents', component: RespondentListComponent },
-  { path: 'reports', component: ReportListComponent },
-  { path: 'branches', component: BranchListComponent },
-  { path: 'reports/:id/edit', component: ViewReportComponent },
-  { path: 'agents/:id', component: AgentDetailComponent },
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'agents', component: AgentListComponent, canActivate: [AuthGuard] },
+  { path: 'respondents', component: RespondentListComponent, canActivate: [AuthGuard] },
+  { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard] },
+  { path: 'branches', component: BranchListComponent, canActivate: [AuthGuard] },
+  { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
+  { path: 'agents/:id', component: AgentDetailComponent, canActivate: [AuthGuard] },
+  { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
   
   //{ path: '', redirectTo: '/reports', pathMatch: 'full' }
@@ -26,9 +26,8 @@ const routes: Routes = [
   /*
   //{ path: 'respondents', component: RespondentsComponent, canActivate: [AuthGuard] },
   { path: 'add-report', component: AddReportComponent },
-  { path: 'view-report/:reportId', component: ViewReportComponent },
+  { path: 'view-report/:reportId', component: ViewReportComponent },*/
   
-  { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard] },*/
  
 
 ];
