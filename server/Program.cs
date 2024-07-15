@@ -62,7 +62,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .WithOrigins("http://localhost:4200", "https://localhost:4200", "http://158.160.134.124");
+              .AllowAnyOrigin(); // Разрешить любые источники 
+              //.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://158.160.134.124");
     });
 });
 
