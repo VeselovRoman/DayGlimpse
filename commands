@@ -185,6 +185,10 @@ ssh myserver
 ;подключение
  ssh -i "/Users/romanveselov/Documents/GitHub/DayGlimpse/.ssh/id_ed25519" admin@158.160.164.33
  
+ ;build
+ ng build --configuration production
+ dotnet publish --configuration Release --output /var/www/server
+
 ;копируем web-сервер
 scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html
 ;копируем dotnet
