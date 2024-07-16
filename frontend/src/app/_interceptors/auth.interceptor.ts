@@ -13,9 +13,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("Request with token: ", req);  // Логируем запрос с токеном
+      // console.log("Request with token: ", req);  // Логируем запрос с токеном
     } else {
-      console.log("Request without token: ", req);  // Логируем запрос без токена
+      // console.log("Request without token: ", req);  // Логируем запрос без токена
     }
 
     return next(req);

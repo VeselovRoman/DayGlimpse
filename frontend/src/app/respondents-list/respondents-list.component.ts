@@ -59,7 +59,7 @@ export class RespondentListComponent implements OnInit {
   saveRespondent() {
     if (this.selectedRespondent.id) {
       this.respondentService.updateRespondent(this.selectedRespondent.id, this.selectedRespondent).subscribe(() => {
-        this.loadRespondents();`  `
+        this.loadRespondents();
       });
     } else {
       console.log(this.selectedRespondent);

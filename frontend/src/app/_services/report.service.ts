@@ -10,7 +10,7 @@ import { Entry } from '../_models/report';
   providedIn: 'root'
 })
 export class ReportService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'reports/';
 
   constructor(private http: HttpClient) { }
 
@@ -26,13 +26,13 @@ export class ReportService {
 
   //Получает отчет по его идентификатору.
   getReportById(id: number): Observable<Report> {
-    return this.http.get<Report>(`${this.baseUrl}/${id}`);
+    return this.http.get<Report>(`${this.baseUrl}${id}`);
   }
 
   //Создает запись в отчете по указанному reportId.
   createReportEntry(reportId: number, createReportEntryDto: CreateReportEntryDto): Observable<Entry> {
-    console.log(`${this.baseUrl}/${reportId}/entries`);
-    return this.http.post<Entry>(`${this.baseUrl}/${reportId}/entries`, createReportEntryDto).pipe(
+    console.log(`${this.baseUrl}${reportId}/entries`);
+    return this.http.post<Entry>(`${this.baseUrl}${reportId}/entries`, createReportEntryDto).pipe(
       catchError((error: any) => {
         console.error('Error creating report entry:', error);
         return throwError(() => new Error('Error creating report entry'));
@@ -42,9 +42,8 @@ export class ReportService {
 
   //Получает отчет по его идентификатору.
   getReport(id: number): Observable<Report> {
-    return this.http.get<Report>(`${this.baseUrl}/${id}`).pipe(
+    return this.http.get<Report>(`${this.baseUrl}${id}`).pipe(
       catchError((error: any) => {
-        console.error('Error fetching report:', error);
         return throwError(() => new Error('Error fetching report'));
       })
     );
@@ -52,7 +51,7 @@ export class ReportService {
 
   //Получает запись отчета по ее идентификатору.
   getReportEntry(entryId: number): Observable<Entry> {
-    return this.http.get<Entry>(`${this.baseUrl}/entries/${entryId}`).pipe(
+    return this.http.get<Entry>(`${this.baseUrl}entries/${entryId}`).pipe(
       catchError((error: any) => {
         console.error('Error fetching report entry:', error);
         return throwError(() => new Error('Error fetching report entry'));
@@ -62,18 +61,18 @@ export class ReportService {
 
   // Подтверждает отчет по его идентификатору.
   confirmReport(reportId: number): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${reportId}/confirm`, {});
+    return this.http.put<any>(`${this.baseUrl}${reportId}/confirm`, {});
   }
 
   //Подтверждает запись отчета по ее идентификаторам.
   confirmReportEntry(reportId: number, entryId: number): Observable<any> {
-    console.log(`${this.baseUrl}/${reportId}/entries/${entryId}/confirm`);
-    return this.http.put<any>(`${this.baseUrl}/${reportId}/entries/${entryId}/confirm`, {});
+    console.log(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`);
+    return this.http.put<any>(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`, {});
   }
 
   //Получает список всех отчетов.
   getReports(): Observable<Report[]> {
-    return this.http.get<Report[]>(this.baseUrl).pipe(
+    return this.http.get<Report[]>(`${this.baseUrl}`).pipe(
       catchError((error: any) => {
         console.error('Error fetching reports:', error);
         return throwError(() => new Error('Error fetching reports'));

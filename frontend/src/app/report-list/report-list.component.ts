@@ -43,7 +43,7 @@ export class ReportListComponent implements OnInit {
   }
 
   editReport(report: Report) {
-    console.log('Редактирование отчета:', report);  // Добавлено для отладки
+    console.log('Редактирование отчета:', report, 'Навигация: ', '/reports', report.id, 'edit');  // Добавлено для отладки
     //this.selectedReport = report;
     this.router.navigate(['/reports', report.id, 'edit']);
   }

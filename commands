@@ -158,9 +158,32 @@ var host       = "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
 
   ;Root Certificate=C:\\Users\\Roman\\.postgresql\\root.crt
 
+;Шаги для подключения с другого компьютера
+;Копирование SSH ключей: Убедитесь, что файлы id_ed25519 и id_ed25519.pub находятся в директории ~/.ssh/ на новом компьютере. Если они находятся в другой директории, переместите их туда.
+
+mv /path/to/id_ed25519 ~/.ssh/id_ed25519
+mv /path/to/id_ed25519.pub ~/.ssh/id_ed25519.pub
+;Настройка прав доступа: Убедитесь, что права доступа к приватному ключу id_ed25519 настроены правильно.
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub
+
+;Настройка файла конфигурации SSH: Вы можете настроить файл ~/.ssh/config для упрощения команд подключения.
+
+;Откройте или создайте файл ~/.ssh/config:
+nano ~/.ssh/config
+
+;Добавьте следующую конфигурацию:
+Host myserver
+    HostName 158.160.164.33
+    User admin
+    IdentityFile ~/.ssh/id_ed25519
+
+;Теперь вы можете подключаться к серверу с помощью простой команды:
+ssh myserver
+
 ;конфигурация Linux сервера
 ;подключение
- ssh -i "C:\Users\Roman\.ssh\id_ed25519"
+ ssh -i "/Users/romanveselov/Documents/GitHub/DayGlimpse/.ssh/id_ed25519" admin@158.160.164.33
  
 ;копируем web-сервер
 scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html

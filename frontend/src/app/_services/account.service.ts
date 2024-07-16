@@ -45,7 +45,7 @@ export class AccountService {
     return this.http.post<Agent>(`${this.baseUrl}agents/login`, model).pipe(
       map(agent => {
         if (agent) {
-          console.log(agent);
+          //console.log(agent);
           this.setCurrentAgent(agent);
         }
         return agent;
@@ -79,7 +79,7 @@ export class AccountService {
     const agent = this.currentAgentValue();
     const token = agent?.token ?? null;
 
-    console.log('Agent token:', token);
+    //console.log('Agent token:', token);
 
     return token;
   }
