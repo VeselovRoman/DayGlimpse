@@ -207,7 +207,7 @@ export class ViewReportComponent implements OnInit {
           console.error('Error confirming report:', error);
         }
       });
-      this.router.navigate(['/reports']); // Возвращаемся к списку отчето
+      this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
     }
   }
 

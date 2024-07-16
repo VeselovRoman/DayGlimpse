@@ -12,25 +12,31 @@ import { ReportStateService } from '../_services/report-state.service';
 export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
+  isLoading: boolean = true;
 
-  constructor(private reportService: ReportService, 
-              private router: Router,
-              private reportStateService: ReportStateService
-  ) {}
+  constructor(private reportService: ReportService,
+    private router: Router,
+    private reportStateService: ReportStateService
+  ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
+    
     this.reportStateService.getReports().subscribe(reports => {
       this.reports = reports;
+      
     });
     this.reportStateService.loadReports(); // Загружаем отчеты при инициализации компонента
+    this.isLoading = false;
     //this.loadReports();
   }
-    
+
 
   loadReports() {
     this.reportService.getReports().subscribe({
       next: (reports) => {
         this.reports = reports;
+
         console.log('Загруженные отчеты:', this.reports);
       },
       error: (error) => console.error('Error fetching reports:', error)
@@ -47,11 +53,11 @@ export class ReportListComponent implements OnInit {
     //this.selectedReport = report;
     this.router.navigate(['/reports', report.id, 'edit']);
   }
-  
+
   closeViewReport() {
     //this.selectedReport = null;
     this.loadReports(); // Перезагрузка списка отчетов
   }
 
- 
+
 }
