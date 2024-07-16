@@ -158,9 +158,42 @@ var host       = "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
 
   ;Root Certificate=C:\\Users\\Roman\\.postgresql\\root.crt
 
-
-
 ;конфигурация Linux сервера
+;подключение
+ ssh -i "C:\Users\Roman\.ssh\id_ed25519"
+ 
+;копируем web-сервер
+scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html
+;копируем dotnet
+scp -r D:/var/www/myapp admin@158.160.164.33:/var/www/server
+;сконфигурировать службу
+sudo nano /etc/systemd/system/server.service
+[Unit]
+Description=Dayglimpse
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/server
+ExecStart=/usr/bin/dotnet /var/www/server/server.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-myapp
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+
+[Install]
+WantedBy=multi-user.target
+
+;потом
+sudo systemctl daemon-reload
+sudo systemctl start server.service
+sudo systemctl enable server.service
+sudo systemctl status server.service
+
+;скопируем сертификат и ключ на сервер
+scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@158.160.164.33:/etc/nginx/ssl/
 
 ;перезапустить сервер nginx
 sudo systemctl restart nginx
@@ -169,7 +202,6 @@ sudo systemctl reload nginx
 ;запуск dotnet
 dotnet /var/www/myapp/server.dll
 dotnet /var/www/myapp/server.dll --urls "http://localhost:5001;https://localhost:5002"
-
 
 ;файл конфигурации сервера
 sudo nano /etc/nginx/sites-available/dayglimpse
@@ -228,22 +260,8 @@ sudo journalctl -u myapp
 scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@158.160.134.124:/etc/nginx/ssl/ca_certificate.pem
 
 
-[Unit]
-Description=Dayglimpse
-After=network.target
 
-[Service]
-WorkingDirectory=/var/www
-ExecStart=/usr/bin/dotnet /var/www/server.dll
-Restart=always
-RestartSec=10
-KillSignal=SIGINT
-SyslogIdentifier=dayglimpse
-User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Production
 
-[Install]
-WantedBy=multi-user.target
 
 
 server {
