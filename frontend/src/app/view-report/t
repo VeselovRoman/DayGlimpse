@@ -18,7 +18,7 @@
 
       <div formArrayName="entries">
         <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="card my-3"
-          [ngClass]="{'grey-background': i % 2 == 0}"> 
+          [ngClass]="{'grey-background': i % 2 == 0}">
           <!-- Применение класса для нечётных элементов -->
 
           <div class="card-body">
@@ -55,10 +55,12 @@
               </div>
             </div>
           </div>
-            <!-- Иконка восклицательного знака для ошибочного интервала -->
-            <div *ngIf="!checkTimeGaps(entry.value)" class="alert alert-warning" role="alert">
-              <i class="bi bi-exclamation-triangle"></i> Временной интервал не заполнен или некорректен
-            </div>
+
+          <!-- Добавление иконки восклицательного знака -->
+          <div *ngIf="!checkTimeGaps(entry)" class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> Временной интервал не заполнен или некорректен
+          </div>
+
         </div>
       </div>
 

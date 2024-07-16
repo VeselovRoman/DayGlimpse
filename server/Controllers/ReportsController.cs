@@ -178,7 +178,7 @@ namespace server.Controllers
                 return BadRequest("Failed to create report entry: " + ex.Message);
             }
         }
-        
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ReportDto>> GetReport(int id)
@@ -299,6 +299,90 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // Обновляет запись отчета
+        [HttpPut("{reportId}/entries/{entryId}")]
+        public async Task<ActionResult<ReportEntryDto>> UpdateReportEntry(int reportId, int entryId, UpdateReportEntryDto updateReportEntryDto)
+        {
+            try
+            {
+                var report = await _context.Reports
+                    .Include(r => r.ReportEntries)
+                    .FirstOrDefaultAsync(r => r.Id == reportId);
+
+                if (report == null)
+                {
+                    return NotFound($"Report with id {reportId} not found.");
+                }
+
+                var entry = report.ReportEntries.FirstOrDefault(re => re.Id == entryId);
+
+                if (entry == null)
+                {
+                    return NotFound($"Report entry with id {entryId} not found in report.");
+                }
+
+                // Update the entry with new data
+                entry.ProcedureId = updateReportEntryDto.ProcedureId;
+                entry.StartTime = DateTime.SpecifyKind(updateReportEntryDto.StartTime, DateTimeKind.Utc);
+                entry.EndTime = DateTime.SpecifyKind(updateReportEntryDto.EndTime, DateTimeKind.Utc);
+                entry.Comment = updateReportEntryDto.Comment;
+
+                await _context.SaveChangesAsync();
+
+                return new ReportEntryDto
+                {
+                    Id = entry.Id,
+                    ProcedureId = entry.ProcedureId,
+                    StartTime = entry.StartTime,
+                    EndTime = entry.EndTime,
+                    Comment = entry.Comment,
+                    AgentId = entry.AgentId,
+                    RespondentId = entry.RespondentId,
+                    isConfirmed = entry.IsConfirmed
+                };
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to update report entry: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{reportId}/entries/{entryId}")]
+        public async Task<IActionResult> DeleteReportEntry(int reportId, int entryId)
+        {
+            try
+            {
+                // Находим отчет по reportId и включаем в него записи
+                var report = await _context.Reports
+                    .Include(r => r.ReportEntries)
+                    .FirstOrDefaultAsync(r => r.Id == reportId);
+
+                if (report == null)
+                {
+                    return NotFound($"Report with id {reportId} not found.");
+                }
+
+                // Находим запись отчета по entryId
+                var entry = report.ReportEntries.FirstOrDefault(re => re.Id == entryId);
+
+                if (entry == null)
+                {
+                    return NotFound($"Report entry with id {entryId} not found in report.");
+                }
+
+                // Удаляем запись из базы данных и сохраняем изменения
+                _context.ReportEntries.Remove(entry);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                return BadRequest($"Failed to delete report entry: {ex.Message}");
+            }
         }
 
     }

@@ -5,6 +5,7 @@
     <thead>
       <tr>
         <th>Номер отчета</th>
+        <th>Количество записей</th>
         <th>Дата отчета</th>
         <th>Агент</th>
         <th>Респондент</th>
@@ -15,6 +16,7 @@
     <tbody>
       <tr *ngFor="let report of reports">
         <td>{{ report.id }}</td>
+        <td>{{ report.reportEntries.length }}</td>
         <td>{{ report.reportDate | date }}</td>
         <td>{{ report.agentName }}</td>
         <td>{{ report.respondentName }}</td>

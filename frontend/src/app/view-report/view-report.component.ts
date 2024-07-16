@@ -122,6 +122,23 @@ export class ViewReportComponent implements OnInit {
     entriesFormArray.push(this.createProcedureEntry());
   }
 
+  removeProcedureEntry(index: number): void {
+    const entryId = this.entries.at(index).get('id')?.value;
+    if (entryId) {
+      this.reportService.deleteReportEntry(this.report.id, entryId).subscribe({
+        next: () => {
+          console.log('Entry deleted successfully');
+          this.entries.removeAt(index);
+        },
+        error: error => {
+          console.error('Error deleting entry:', error);
+        }
+      });
+    } else {
+      this.entries.removeAt(index);
+    }
+  }
+
   createProcedureEntry(entry?: Entry): FormGroup {
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
@@ -154,6 +171,13 @@ export class ViewReportComponent implements OnInit {
       return;
     }
 
+    if (!this.checkTimeGaps()) {
+      console.log('Time gaps detected');
+      // Можно здесь добавить логику для обработки ошибок или маркировки записей с ошибками временных интервалов
+      alert('Обнаружены разрывы между временными интервалами!');
+      return;
+    }
+    
     const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
       procedureId: entry.procedureId,
       startTime: new Date(entry.startTime),
@@ -209,6 +233,70 @@ export class ViewReportComponent implements OnInit {
       });
       this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
     }
+  }
+
+  saveReport() {
+    console.log('Saving report started');
+
+    if (this.reportForm.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
+      procedureId: entry.procedureId,
+      startTime: new Date(entry.startTime),
+      endTime: new Date(entry.endTime),
+      comment: entry.comment,
+      isConfirmed: true
+    }));
+
+    this.reportForm.value.entries.forEach((entry: any, index: number) => {
+      // добавляем данные отчета
+      const entryData = {
+        ...updatedReportEntries[index],
+        reportId: this.report?.id,
+        agentID: this.report?.agentId,
+        respondentId: this.report?.respondentId,
+      };
+
+      if (entry.id) {
+        // Если у записи есть ID, подтверждаем ее
+        this.reportService.updateReportEntry(this.report!.id!, entry.id, entryData).subscribe({
+          next: () => {
+            console.log('Entry updated successfully');
+          },
+          error: error => {
+            console.error('Error updating entry:', error);
+          }
+        });
+      } else {
+        // Если у записи нет ID, создаем новую запись
+        this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
+          next: (newEntry: Entry) => {
+            console.log('Entry added successfully:', newEntry);
+          },
+          error: error => {
+            console.error('Error adding entry:', error);
+          }
+        });
+      }
+    });
+
+  }
+
+  checkTimeGaps(): boolean {
+    const entries = this.reportForm.value.entries;
+    for (let i = 1; i < entries.length; i++) {
+      const endTimePrev = new Date(entries[i - 1].endTime);
+      const startTimeCurr = new Date(entries[i].startTime);
+
+      // Проверяем разрыв больше чем на 5 минут (300000 миллисекунд)
+      if (startTimeCurr.getTime() - endTimePrev.getTime() > 5 * 60 * 1000) {
+        return false;
+      }
+    }
+    return true;
   }
 
   closeViewReport() {

@@ -79,4 +79,21 @@ export class ReportService {
       })
     );
   }
+
+  // Обновляет запись отчета
+  updateReportEntry(reportId: number, entryId: number, updateData: Partial<CreateReportEntryDto>): Observable<Entry> {
+    const url = `${this.baseUrl}${reportId}/entries/${entryId}`;
+    return this.http.put<Entry>(url, updateData).pipe(
+      catchError((error: any) => {
+        console.error('Error updating report entry:', error);
+        return throwError(() => new Error('Error updating report entry'));
+      })
+    );
+  }
+
+  // Метод для удаления записи отчета
+  deleteReportEntry(reportId: number, entryId: number): Observable<void> {
+    const url = `${this.baseUrl}${reportId}/entries/${entryId}`;
+    return this.http.delete<void>(url);
+  }
 }
