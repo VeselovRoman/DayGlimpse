@@ -9,6 +9,7 @@ import { Procedure } from '../_models/procedures';
 import { formatDate } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-view-report',
@@ -29,7 +30,8 @@ export class ViewReportComponent implements OnInit {
     private procedureService: ProcedureService,
     private route: ActivatedRoute,
     private router: Router,
-    private reportStateService: ReportStateService // Добавлен сервис состояния
+    private toastr: ToastrService,
+    private reportStateService: ReportStateService //сервис состояния
   ) { }
 
   ngOnInit(): void {
@@ -127,11 +129,13 @@ export class ViewReportComponent implements OnInit {
     if (entryId) {
       this.reportService.deleteReportEntry(this.report.id, entryId).subscribe({
         next: () => {
-          console.log('Entry deleted successfully');
+          //console.log('Entry deleted successfully');
+          this.toastr.info('Запись успешно удалена')
           this.entries.removeAt(index);
         },
         error: error => {
-          console.error('Error deleting entry:', error);
+          this.toastr.error(error.error);
+          //console.error('Error deleting entry:', error);
         }
       });
     } else {
@@ -170,13 +174,6 @@ export class ViewReportComponent implements OnInit {
       console.log('Form is invalid');
       return;
     }
-
-    if (!this.checkTimeGaps()) {
-      console.log('Time gaps detected');
-      // Можно здесь добавить логику для обработки ошибок или маркировки записей с ошибками временных интервалов
-      alert('Обнаружены разрывы между временными интервалами!');
-      return;
-    }
     
     const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
       procedureId: entry.procedureId,
@@ -185,6 +182,21 @@ export class ViewReportComponent implements OnInit {
       comment: entry.comment,
       isConfirmed: true
     }));
+
+    for (let entry of updatedReportEntries) {
+      if (!this.checkTimeGapWithinEntry(entry)) {
+        console.log('Time gap within entry validation failed');
+        this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие')
+        // Логика отображения предупреждения пользователю
+        return;
+      }
+    }
+
+    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
+      console.log('Time gaps between entries validation failed');
+      // Логика отображения предупреждения пользователю
+      return;
+    }
 
     this.reportForm.value.entries.forEach((entry: any, index: number) => {
       // добавляем данные отчета
@@ -251,6 +263,22 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: true
     }));
 
+    for (let entry of updatedReportEntries) {
+      if (!this.checkTimeGapWithinEntry(entry)) {
+        this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие')
+        //console.log('Time gap within entry validation failed');
+        // Логика отображения предупреждения пользователю
+        return;
+      }
+    }
+
+    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
+      this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие')
+      //console.log('Time gaps between entries validation failed');
+      // Логика отображения предупреждения пользователю
+      return;
+    }
+
     this.reportForm.value.entries.forEach((entry: any, index: number) => {
       // добавляем данные отчета
       const entryData = {
@@ -285,18 +313,42 @@ export class ViewReportComponent implements OnInit {
 
   }
 
-  checkTimeGaps(): boolean {
-    const entries = this.reportForm.value.entries;
-    for (let i = 1; i < entries.length; i++) {
-      const endTimePrev = new Date(entries[i - 1].endTime);
-      const startTimeCurr = new Date(entries[i].startTime);
+  checkTimeGapWithinEntry(entry: any): boolean {
+    const startTime = new Date(entry.startTime);
+    const endTime = new Date(entry.endTime);
+    return !!startTime && !!endTime && startTime < endTime;
+  }
 
-      // Проверяем разрыв больше чем на 5 минут (300000 миллисекунд)
-      if (startTimeCurr.getTime() - endTimePrev.getTime() > 5 * 60 * 1000) {
+  checkTimeGapsBetweenEntries(entries: any[]): boolean {
+    for (let i = 1; i < entries.length; i++) {
+      const previousEndTime = new Date(entries[i - 1].endTime);
+      const currentStartTime = new Date(entries[i].startTime);
+      const timeDifference = (currentStartTime.getTime() - previousEndTime.getTime()) / (1000 * 60);
+      if (timeDifference > 5) {
         return false;
       }
     }
     return true;
+  }
+
+  hasTimeGapWarning(index: number): boolean {
+    const entries = this.entries;
+    if (index === 0) {
+      return false; // Первая запись не имеет предыдущей для проверки
+    }
+    const currentEntry = entries.at(index).value;
+    const previousEntry = entries.at(index - 1).value;
+
+    if (!currentEntry.startTime || !previousEntry.endTime) {
+      return false;
+    }
+
+    const currentStartTime = new Date(currentEntry.startTime);
+    const previousEndTime = new Date(previousEntry.endTime);
+
+    const timeDifference = (currentStartTime.getTime() - previousEndTime.getTime()) / 60000; // Разница в минутах
+
+    return timeDifference > 5;
   }
 
   closeViewReport() {
@@ -304,4 +356,6 @@ export class ViewReportComponent implements OnInit {
     this.reportStateService.loadReports();
     this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
   }
+
+  
 }

@@ -24,6 +24,7 @@ import { NgxSpinnerComponent, NgxSpinnerModule } from 'ngx-spinner';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { jwtInterceptor } from './_interceptors/auth.interceptor';
 import { NewReportComponent } from './new-report/new-report.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,11 @@ import { NewReportComponent } from './new-report/new-report.component';
     FormsModule,
     NgxSpinnerComponent,
     ModalModule.forRoot(),
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    ToastrModule.forRoot({
+      timeOut: 5000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true})
   ],
   providers: [
     provideHttpClient(

@@ -5,7 +5,7 @@
     </a>
 
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
-      <div class="form-group">
+      <div class="form-group mb-3">
         <span class="status-circle me-3"
           [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
         <label><strong>Отчет #:</strong> {{ report.id }}</label>
@@ -54,11 +54,15 @@
                 </div>
               </div>
             </div>
-          </div>
-            <!-- Иконка восклицательного знака для ошибочного интервала -->
-            <div *ngIf="!checkTimeGaps(entry.value)" class="alert alert-warning" role="alert">
-              <i class="bi bi-exclamation-triangle"></i> Временной интервал не заполнен или некорректен
+            <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-2 d-flex align-items-center">
+              <i class="bi bi-exclamation-triangle text-warning"></i>
+              <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
             </div>
+            <div *ngIf="hasTimeGapWarning(i)" class="mt-2 d-flex align-items-center">
+              <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+              <span class="text-warning">Время начала больше чем на 5 минут от окончания предыдущей процедуры</span>
+            </div>
+          </div>
         </div>
       </div>
 

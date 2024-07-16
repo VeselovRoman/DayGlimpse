@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AccountService } from '../_services/account.service';
 import { Router } from '@angular/router';
 import { Agent } from '../_models/agent';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -10,6 +11,7 @@ import { Agent } from '../_models/agent';
 })
 export class NavComponent implements OnInit {
   accountService = inject(AccountService);
+  toasterService = inject(ToastrService);
   router = inject(Router);
   model: any = {};
   currentAgent: Agent | null = null;
@@ -31,7 +33,7 @@ export class NavComponent implements OnInit {
         // Обновляем model с данными ответа
         this.model = response;
       },
-      error: error => console.log(error)
+      error: error => this.toasterService.error(error.error)
     });
   }
 

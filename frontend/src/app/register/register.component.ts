@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AccountService } from '../_services/account.service';
 import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +25,8 @@ export class RegisterComponent {
 
   constructor(
     private accountService: AccountService,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private toaster: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -65,8 +67,7 @@ export class RegisterComponent {
         console.log('Registration successful');
         this.cancel();
       },
-      error: error => {
-          console.log('Registration error', error);}
+      error: error => this.toaster.error(error.error)
     })
   }
 
