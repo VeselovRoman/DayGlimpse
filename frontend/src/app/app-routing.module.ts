@@ -9,6 +9,7 @@ import { ViewReportComponent } from './view-report/view-report.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
+import { NewReportComponent } from './new-report/new-report.component';
 
 const routes: Routes = [
   
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'respondents', component: RespondentListComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard] },
   { path: 'branches', component: BranchListComponent, canActivate: [AuthGuard] },
+  { path: 'reports/new', component: NewReportComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
   { path: 'agents/:id', component: AgentDetailComponent, canActivate: [AuthGuard] },
   { path: '', component: HomeComponent },

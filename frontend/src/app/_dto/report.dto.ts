@@ -1,6 +1,6 @@
 // create-report.dto.ts
 export interface CreateReportDto {
-  reportDate: Date;
+  reportDate: string;
   agentId: number;  
   respondentId: number;
   isConfirmed?: boolean; // Добавлен флаг isConfirmed
@@ -11,8 +11,8 @@ export interface CreateReportDto {
     agentId: number;
     respondentId: number;
     procedureId: number;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     comment: string;
     reportId: number;
     isConfirmed?: boolean; // Добавлен флаг isConfirmed
@@ -21,7 +21,7 @@ export interface CreateReportDto {
   // report.dto.ts
   export interface ReportDto {
     id: number;
-    reportDate: Date;
+    reportDate: string;
     agentId: number;
     agentName: string;
     respondentId: number;
@@ -34,8 +34,8 @@ export interface CreateReportDto {
     id: number;
     procedureId: number;
     procedureName: string;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     comment: string;
     agentId: number;
     agentName: string;

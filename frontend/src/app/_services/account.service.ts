@@ -65,8 +65,8 @@ export class AccountService {
   }
 
   // Метод получения текущего агента как объект
-  currentAgentValue(): Agent | null {
-    return this.currentAgentSource.value;
+  currentAgentValue(): Agent {
+    return this.currentAgentSource.value!;
   }
 
   // Метод декодирования JWT токена
