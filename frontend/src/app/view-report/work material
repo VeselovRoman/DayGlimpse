@@ -1,0 +1,21 @@
+<div class="form-group" style="line-height: 1;">
+              <label for="procedure{{ i }}">Наименование процедуры</label>
+              <input type="text" id="procedure{{ i }}"
+                     class="form-control" [matAutocomplete]="auto" placeholder="Выберите процедуру">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedureName">
+                <mat-option *ngFor="let procedure of filteredProcedures | async" [value]="procedure">
+                  {{ procedure.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+
+            <form>
+              <mat-form-field>
+                <input type="text" matInput [matAutocomplete]="auto" [formControl]="formControl" placeholder="Выберите процедуру">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedureName">
+                  <mat-option *ngFor="let procedure of filteredProcedures | async" [value]="procedure">
+                    {{ procedure }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </form>

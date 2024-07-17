@@ -6,8 +6,8 @@
 
     <!-- Полоска временных интервалов -->
     <div class="time-gap-indicator">
-  <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
-</div>
+      <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
+    </div>
 
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
       <div class="form-group mb-3">
@@ -23,7 +23,7 @@
 
       <div formArrayName="entries">
         <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="card my-3"
-          [ngClass]="{'grey-background': i % 2 == 0}"> 
+          [ngClass]="{'grey-background': i % 2 == 0}">
           <!-- Применение класса для нечётных элементов -->
 
           <div class="card-body">
@@ -33,37 +33,42 @@
             <h5 class="card-title">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})</h5>
 
             <div class="form-group">
-              <label for="procedureId{{ i }}">Наименование</label>
-              <select [ngClass]="{'grey-background': i % 2 == 0}" id="procedureId{{ i }}"
-                [formControlName]="'procedureId'" class="form-control">
-                <option *ngFor="let procedure of procedures" [value]="procedure.id">{{ procedure.id }} - {{
-                  procedure.name }}</option>
-              </select>
+              <div>
+                <label for="procedureId{{ i }}">Наименование</label>
+              </div>
+              <mat-form-field>
+                <input type="text" id="procedure{{ i }}" matInput [matAutocomplete]="auto"
+                  [formControl]="formControl" placeholder="Выберите процедуру">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedureName">
+                  <mat-option *ngFor="let procedure of filteredProcedures | async" [value]="procedure">
+                    {{ procedure.name }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
             </div>
-            <div class="form-group">
-              <div class="row">
-                <div class="col">
-                  <label for="startTime{{ i }}">Начало выполнения</label>
-                  <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="startTime{{ i }}"
-                    [formControlName]="'startTime'" class="form-control">
-                </div>
-                <div class="col">
-                  <label for="endTime{{ i }}">Окончание выполнения</label>
-                  <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="endTime{{ i }}"
-                    [formControlName]="'endTime'" class="form-control">
-                </div>
-                <div class="col">
-                  <label for="comment{{ i }}">Комментарий</label>
-                  <input [ngClass]="{'grey-background': i % 2 == 0}" type="text" id="comment{{ i }}"
-                    [formControlName]="'comment'" class="form-control">
-                </div>
+
+            <div class="form-group row g-1">
+              <div class="col">
+                <label for="startTime{{ i }}">Начало выполнения</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="startTime{{ i }}"
+                  [formControlName]="'startTime'" class="form-control">
+              </div>
+              <div class="col">
+                <label for="endTime{{ i }}">Окончание выполнения</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="endTime{{ i }}"
+                  [formControlName]="'endTime'" class="form-control">
+              </div>
+              <div class="col">
+                <label for="comment{{ i }}">Комментарий</label>
+                <input [ngClass]="{'grey-background': i % 2 == 0}" type="text" id="comment{{ i }}"
+                  [formControlName]="'comment'" class="form-control">
               </div>
             </div>
-            <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-2 d-flex align-items-center">
+            <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
               <i class="bi bi-exclamation-triangle text-warning"></i>
               <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
             </div>
-            <div *ngIf="hasTimeGapWarning(i)" class="mt-2 d-flex align-items-center">
+            <div *ngIf="hasTimeGapWarning(i)" class="mt-1 d-flex align-items-center">
               <i class="bi bi-exclamation-triangle text-warning me-1"></i>
               <span class="text-warning">Время начала больше чем на 5 минут от окончания предыдущей процедуры</span>
             </div>
@@ -71,9 +76,17 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
-      <button type="button" class="btn btn-secondary ms-2" (click)="saveReport()">Сохранить черновик</button>
-      <button type="submit" class="btn btn-primary ms-2">Подтвердить отчет...</button>
+      <div class="row justify-content-between mt-3">
+        <div class="col-auto">
+          <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-secondary" (click)="saveReport()">Сохранить черновик</button>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Подтвердить отчет...</button>
+        </div>
+      </div>
     </form>
   </div>
 </div>

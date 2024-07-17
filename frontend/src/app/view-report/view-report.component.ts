@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { ReportService } from '../_services/report.service';
 import { RespondentService } from '../_services/respondent.service';
 import { ProcedureService } from '../_services/procedure.service';
@@ -10,6 +10,8 @@ import { formatDate } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
 import { ToastrService } from 'ngx-toastr';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, Observable, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-view-report',
@@ -23,6 +25,8 @@ export class ViewReportComponent implements OnInit {
   reportId!: number;
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
+  filteredProcedures!: Observable<Procedure[]>;
+  formControl = new FormControl();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,7 +37,10 @@ export class ViewReportComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private reportStateService: ReportStateService //сервис состояния
-  ) { }
+  ) {
+    this.loadProcedures();
+    this.loadRespondents();
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -41,8 +48,7 @@ export class ViewReportComponent implements OnInit {
       this.loadReport();
     });
     this.initializeForm();
-    this.loadRespondents();
-    this.loadProcedures();
+    this.setupProcedureFilter();
   }
 
   initializeForm(): void {
@@ -61,6 +67,40 @@ export class ViewReportComponent implements OnInit {
       this.report = report;
       this.fillReportForm()
     });
+  }
+
+  private setupProcedureFilter(): void {
+    /*this.filteredProcedures = this.reportForm.get('entries')!.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.procedureName),
+        map(procedureName => procedureName ? this.filterProcedures(procedureName) : this.procedures.slice())
+      );
+      console.log("this.filteredProcedures ", this.filteredProcedures)
+  }*/
+    this.filteredProcedures = this.formControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterProcedures(value))
+    );
+  }
+
+    private filterProcedures(name: string | number): Procedure[] {
+      const filterValue = name.toString().toLowerCase();
+      return this.procedures.filter(procedure =>
+        procedure.name.toLowerCase().includes(filterValue)
+      );
+    }
+
+  displayProcedureName(procedure: Procedure): string {
+    if (procedure) {
+      return `${procedure.id} - ${procedure.name}`;
+    } else {
+      return '';
+    }
+  }
+
+  displayProcedure(procedure: Procedure) {
+    return procedure ? procedure.name : undefined;
   }
 
   fillReportForm(): void {
@@ -114,6 +154,7 @@ export class ViewReportComponent implements OnInit {
     this.procedureService.getProcedures().subscribe({
       next: procedures => {
         this.procedures = procedures;
+        console.log("Загруженные процедуры ", this.procedures)
       },
       error: error => {
         console.error('Error loading procedures:', error);
@@ -365,52 +406,52 @@ export class ViewReportComponent implements OnInit {
 
   calculateTimeGaps(): void {
     const entries = this.reportForm.value.entries;
-  
+
     if (entries.length === 0) {
       this.timeGaps = [];
       return;
     }
-  
+
     const sortedEntries = entries
       .map((entry: any) => ({
         startTime: new Date(entry.startTime),
         endTime: new Date(entry.endTime)
       }))
       .sort((a: any, b: any) => a.startTime.getTime() - b.startTime.getTime());
-  
+
     const timeGaps = [];
-  
+
     for (let i = 0; i < sortedEntries.length - 1; i++) {
       const currentEntry = sortedEntries[i];
       const nextEntry = sortedEntries[i + 1];
-  
+
       const gapStart = new Date(currentEntry.endTime);
       const gapEnd = new Date(nextEntry.startTime);
-  
+
       const timeDifference = (gapEnd.getTime() - gapStart.getTime()) / (1000 * 60); // Разница в минутах
-  
+
       if (timeDifference > 5) {
         timeGaps.push({ start: gapStart, end: gapEnd, gap: true }); // Разрыв более 5 минут
       } else {
         timeGaps.push({ start: gapStart, end: gapEnd, gap: false }); // Разрыв до 5 минут
       }
     }
-  
+
     this.timeGaps = timeGaps;
   }
 
-  
+
 
   getTimeGapStyles(gap: { start: Date, end: Date, gap: boolean }): { [klass: string]: any } {
     const totalDuration = this.timeGaps[this.timeGaps.length - 1].end.getTime() - this.timeGaps[0].start.getTime();
     const startPercent = ((gap.start.getTime() - this.timeGaps[0].start.getTime()) / totalDuration) * 100;
     const widthPercent = ((gap.end.getTime() - gap.start.getTime()) / totalDuration) * 100;
     let backgroundColor = 'lightgray'; // По умолчанию светло-серый цвет для разрывов до 5 минут
-  
+
     if (gap.gap) {
       backgroundColor = 'lightcoral'; // Светло-красный цвет для разрывов более 5 минут
     }
-  
+
     return {
       'position': 'absolute',
       'height': '100%',
@@ -419,8 +460,8 @@ export class ViewReportComponent implements OnInit {
       'background-color': backgroundColor
     };
   }
-  
-  
+
+
 
   checkTimeGapsBetweenEntries(entries: any[]): boolean {
     const sortedEntries = entries

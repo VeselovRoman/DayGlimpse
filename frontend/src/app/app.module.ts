@@ -25,6 +25,11 @@ import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { jwtInterceptor } from './_interceptors/auth.interceptor';
 import { NewReportComponent } from './new-report/new-report.component';
 import { ToastrModule } from 'ngx-toastr';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -49,6 +54,11 @@ import { ToastrModule } from 'ngx-toastr';
     CommonModule,
     FormsModule,
     NgxSpinnerComponent,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({
