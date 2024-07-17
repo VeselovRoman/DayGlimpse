@@ -25,8 +25,7 @@ export class ViewReportComponent implements OnInit {
   reportId!: number;
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
-  filteredProcedures!: Observable<Procedure[]>;
-  formControl = new FormControl();
+  filteredProcedures: Observable<Procedure[]>[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,7 +47,6 @@ export class ViewReportComponent implements OnInit {
       this.loadReport();
     });
     this.initializeForm();
-    this.setupProcedureFilter();
   }
 
   initializeForm(): void {
@@ -69,27 +67,28 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  private setupProcedureFilter(): void {
-    /*this.filteredProcedures = this.reportForm.get('entries')!.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value.procedureName),
-        map(procedureName => procedureName ? this.filterProcedures(procedureName) : this.procedures.slice())
-      );
-      console.log("this.filteredProcedures ", this.filteredProcedures)
-  }*/
-    this.filteredProcedures = this.formControl.valueChanges.pipe(
+  setupProcedureFilter(index: number) {
+    const control = this.entries.at(index).get('procedureName') as FormControl;
+    this.filteredProcedures[index] = control.valueChanges.pipe(
       startWith(''),
-      map(value => this.filterProcedures(value))
+      map(value => this._filterProcedures(value))
     );
   }
 
-    private filterProcedures(name: string | number): Procedure[] {
-      const filterValue = name.toString().toLowerCase();
-      return this.procedures.filter(procedure =>
-        procedure.name.toLowerCase().includes(filterValue)
+  onProcedureInput(index: number) {
+    const control = this.entries.at(index).get('procedureName');
+    if (control) {
+      this.filteredProcedures[index] = control.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterProcedures(value))
       );
     }
+  }
+  
+  private _filterProcedures(value: string): any[] {
+    const filterValue = value.toLowerCase();
+    return this.procedures.filter(procedure  => procedure.name.toLowerCase().includes(filterValue));
+  }
 
   displayProcedureName(procedure: Procedure): string {
     if (procedure) {
@@ -118,13 +117,14 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: this.report?.isConfirmed
     });
     this.loadReportEntries();
+    this.setupProcedureFilter(this.entries.length - 1);
     this.calculateTimeGaps();
   }
 
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
     entriesFormArray.clear();
-    console.log('this.report:', this.report);
+    console.log('Грузим записи этого отчета:', this.report);
 
     if (this.report && this.report.reportEntries) {
       console.log('Report entries found:', this.report.reportEntries);
@@ -191,6 +191,7 @@ export class ViewReportComponent implements OnInit {
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
+      procedureName: [this.procedures.find(p => p.id === entry?.procedureId)?.name || '', Validators.required],
       startTime: [this.formatDate(entry?.startTime)], // Преобразование строки в Date и затем в строку
       endTime: [this.formatDate(entry?.endTime)],     // Преобразование строки в Date и затем в строку
       comment: [{ value: entry?.comment, disabled: false }],

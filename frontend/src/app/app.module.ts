@@ -26,10 +26,16 @@ import { jwtInterceptor } from './_interceptors/auth.interceptor';
 import { NewReportComponent } from './new-report/new-report.component';
 import { ToastrModule } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -54,11 +60,17 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     FormsModule,
     NgxSpinnerComponent,
-    MatAutocompleteModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatAutocompleteModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

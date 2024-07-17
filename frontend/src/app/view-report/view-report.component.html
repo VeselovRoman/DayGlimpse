@@ -9,84 +9,84 @@
       <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
     </div>
 
+    <!-- Заполнение шапки отчета -->
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
-      <div class="form-group mb-3">
-        <span class="status-circle me-3"
-          [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
-        <label><strong>Отчет #:</strong> {{ report.id }}</label>
-        <label class="ms-3"><strong>Дата отчета:</strong> {{ report.reportDate | date:'dd-MM-yyyy HH:mm' }}</label>
-      </div>
-      <div class="form-group">
-        <label><strong>Агент:</strong> {{ report.agentName }}</label>
-        <label class="ms-3"><strong>Респондент:</strong> {{ report.respondentName }}</label>
-      </div>
+      <mat-card>
+        <h5>Редактирование отчета</h5>
+        <mat-card-content>
+          <div class="form-group mb-2">
+            <span class="status-circle me-3"
+              [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
 
-      <div formArrayName="entries">
-        <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="card my-3"
-          [ngClass]="{'grey-background': i % 2 == 0}">
-          <!-- Применение класса для нечётных элементов -->
+              <mat-label class="me-3">Отчет #: {{ report.id }}</mat-label>
+              <mat-label>Дата отчета: {{ report.reportDate | date:'dd-MM-yyyy HH:mm' }}</mat-label>
+          </div>
+          <div class="form-group">
+              <mat-label class="me-3">Агент: {{ report.agentName }}</mat-label>
+              <mat-label>Респондент: {{ report.respondentName }}</mat-label>
+          </div>
 
-          <div class="card-body">
-            <button type="button" class="btn btn-warning btn-sm mb-3" (click)="removeProcedureEntry(i)">
-              Удалить запись
-            </button>
-            <h5 class="card-title">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})</h5>
+          <div formArrayName="entries">
+            <div *ngFor="let entry of entries.controls; let i=index" [formGroupName]="i">
+              <!-- Применение класса для нечётных элементов -->
+              <mat-divider></mat-divider>
+              <div class="card-body">
+                <button mat-icon-button type="button" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <h6 class="card-title">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})</h6>
 
-            <div class="form-group">
-              <div>
-                <label for="procedureId{{ i }}">Наименование</label>
-              </div>
-              <mat-form-field>
-                <input type="text" id="procedure{{ i }}" matInput [matAutocomplete]="auto"
-                  [formControl]="formControl" placeholder="Выберите процедуру">
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedureName">
-                  <mat-option *ngFor="let procedure of filteredProcedures | async" [value]="procedure">
-                    {{ procedure.name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
+                <mat-form-field appearance="fill">
+                  <mat-label>Наименование</mat-label>
+                  <input matInput formControlName="procedureName" [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let procedure of filteredProcedures[i] | async" [value]="procedure">
+                      {{ procedure.name }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+                
+                <mat-form-field appearance="fill">
+                  <mat-label>Начало выполнения</mat-label>
+                  <input matInput [matDatepicker]="startPicker" formControlName="startTime">
+                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startPicker></mat-datepicker>
+                </mat-form-field>
 
-            <div class="form-group row g-1">
-              <div class="col">
-                <label for="startTime{{ i }}">Начало выполнения</label>
-                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="startTime{{ i }}"
-                  [formControlName]="'startTime'" class="form-control">
+                <mat-form-field appearance="fill">
+                  <mat-label>Окончание выполнения</mat-label>
+                  <input matInput [matDatepicker]="endPicker" formControlName="endTime">
+                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endPicker></mat-datepicker>
+                </mat-form-field>  
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Комментарий</mat-label>
+                  <input matInput formControlName="comment">
+                </mat-form-field>
+
+                <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
+                  <i class="bi bi-exclamation-triangle text-warning"></i>
+                  <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
+                </div>
+                <div *ngIf="hasTimeGapWarning(i)" class="mt-1 d-flex align-items-center">
+                  <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+                  <span class="text-warning">Время начала больше чем на 5 минут от окончания предыдущей процедуры</span>
+                </div>
               </div>
-              <div class="col">
-                <label for="endTime{{ i }}">Окончание выполнения</label>
-                <input [ngClass]="{'grey-background': i % 2 == 0}" type="datetime-local" id="endTime{{ i }}"
-                  [formControlName]="'endTime'" class="form-control">
-              </div>
-              <div class="col">
-                <label for="comment{{ i }}">Комментарий</label>
-                <input [ngClass]="{'grey-background': i % 2 == 0}" type="text" id="comment{{ i }}"
-                  [formControlName]="'comment'" class="form-control">
-              </div>
-            </div>
-            <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
-              <i class="bi bi-exclamation-triangle text-warning"></i>
-              <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
-            </div>
-            <div *ngIf="hasTimeGapWarning(i)" class="mt-1 d-flex align-items-center">
-              <i class="bi bi-exclamation-triangle text-warning me-1"></i>
-              <span class="text-warning">Время начала больше чем на 5 минут от окончания предыдущей процедуры</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="row justify-content-between mt-3">
-        <div class="col-auto">
-          <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
-        </div>
-        <div class="col-auto">
+
+          <div class="col-auto">
+            <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
           <button type="button" class="btn btn-secondary" (click)="saveReport()">Сохранить черновик</button>
-        </div>
-        <div class="col-auto">
           <button type="submit" class="btn btn-primary">Подтвердить отчет...</button>
-        </div>
-      </div>
+        </mat-card-actions>
+      </mat-card>
     </form>
   </div>
 </div>
