@@ -4,6 +4,11 @@
       <i class="bi bi-arrow-left"></i> Вернуться к списку отчетов
     </a>
 
+    <!-- Полоска временных интервалов -->
+    <div class="time-gap-indicator">
+  <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
+</div>
+
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
       <div class="form-group mb-3">
         <span class="status-circle me-3"
