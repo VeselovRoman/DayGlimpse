@@ -7,6 +7,7 @@ using server.DTOs;
 namespace server.Controllers;
 
 [Authorize]
+[AllowAnonymous]
 public class BranchesController(DataContext context) : BaseApiController
 {
     [HttpGet]

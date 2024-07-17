@@ -482,3 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+frontend/ssl/localhost.pem
+frontend/ssl/localhost-key.pem
