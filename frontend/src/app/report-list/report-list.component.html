@@ -1,48 +1,54 @@
+<h2>Отчеты</h2>
 <div class="container mt-4" *ngIf="!isLoading">
-  <h2>Отчеты</h2>
-  <button class="mb-3" mat-fab extended routerLink="/reports/new">
-    <mat-icon>add</mat-icon>
-    Добавить
-  </button>
-  <div>
-    <mat-form-field>
-       <mat-label>Фильтр</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-    </mat-form-field> 
+  <div class="row">
+    <div class="col-2">
+      <button class="mb-3" mat-fab extended routerLink="/reports/new">
+        <mat-icon>add</mat-icon>
+        Добавить
+      </button>
+    </div>
+    <div class="col-10">
+      <mat-form-field class="full-width">
+        <mat-label>Фильтр</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Например, имя респондента" #input>
+      </mat-form-field>
+    </div>
+
   </div>
- 
-  <table mat-table [dataSource]="reports" class="mat-elevation-z8">
+
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <!-- Номер отчета -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef> Номер отчета </mat-header-cell>
       <mat-cell *matCellDef="let report"> {{ report.id }} </mat-cell>
     </ng-container>
-  
+
     <!-- Количество записей -->
     <ng-container matColumnDef="reportEntries">
       <mat-header-cell *matHeaderCellDef> Количество записей </mat-header-cell>
       <mat-cell *matCellDef="let report"> {{ report.reportEntries.length }} </mat-cell>
     </ng-container>
-  
+
     <!-- Дата отчета -->
     <ng-container matColumnDef="reportDate">
       <mat-header-cell *matHeaderCellDef> Дата отчета </mat-header-cell>
       <mat-cell *matCellDef="let report"> {{ report.reportDate | date }} </mat-cell>
     </ng-container>
-  
+
     <!-- Агент -->
     <ng-container matColumnDef="agentName">
       <mat-header-cell *matHeaderCellDef> Агент </mat-header-cell>
       <mat-cell *matCellDef="let report"> {{ report.agentName }} </mat-cell>
     </ng-container>
-  
+
     <!-- Респондент -->
     <ng-container matColumnDef="respondentName">
       <mat-header-cell *matHeaderCellDef> Респондент </mat-header-cell>
       <mat-cell *matCellDef="let report"> {{ report.respondentName }} </mat-cell>
     </ng-container>
-  
+
     <!-- Статус -->
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Статус </mat-header-cell>
@@ -51,7 +57,7 @@
           [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
       </mat-cell>
     </ng-container>
-  
+
     <!-- Действия -->
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
@@ -64,51 +70,51 @@
         </button>
       </mat-cell>
     </ng-container>
-  
+
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
     <!-- Row shown when there is no matching data. -->
-  <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-  </tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
   </table>
-  
+
 
   <!-- Modal для отображения записей отчета -->
   <div class="modal" tabindex="-1" [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Записи отчета #{{ selectedReport?.id }}</h5>
-                <button type="button" class="btn-close" aria-label="Close" (click)="selectedReport = null"></button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Номер записи</th>
-                            <th>Процедура</th>
-                            <th>Начало</th>
-                            <th>Конец</th>
-                            <th>Комментарий</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let entry of selectedReport?.reportEntries">
-                            <td>{{ entry.id }}</td>
-                            <td>{{ entry.procedureName }}</td>
-                            <td>{{ entry.startTime | date:'short' }}</td>
-                            <td>{{ entry.endTime | date:'short' }}</td>
-                            <td>{{ entry.comment }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="selectedReport = null">Закрыть</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Записи отчета #{{ selectedReport?.id }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="selectedReport = null"></button>
         </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Номер записи</th>
+                <th>Процедура</th>
+                <th>Начало</th>
+                <th>Конец</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let entry of selectedReport?.reportEntries">
+                <td>{{ entry.id }}</td>
+                <td>{{ entry.procedureName }}</td>
+                <td>{{ entry.startTime | date:'short' }}</td>
+                <td>{{ entry.endTime | date:'short' }}</td>
+                <td>{{ entry.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="selectedReport = null">Закрыть</button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 </div>
