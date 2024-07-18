@@ -3,6 +3,7 @@ import { ReportService } from '../_services/report.service';
 import { Report } from '../_models/report';
 import { Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-report-list',
@@ -13,6 +14,8 @@ export class ReportListComponent implements OnInit {
   reports: Report[] = [];
   selectedReport: Report | null = null;
   isLoading: boolean = true;
+  displayedColumns: string[] = ['id', 'reportEntries', 'reportDate', 'agentName', 'respondentName', 'status', 'actions'];
+  dataSource = new MatTableDataSource<Report>(this.reports);
 
   constructor(private reportService: ReportService,
     private router: Router,
@@ -28,7 +31,7 @@ export class ReportListComponent implements OnInit {
     });
     this.reportStateService.loadReports(); // Загружаем отчеты при инициализации компонента
     this.isLoading = false;
-    //this.loadReports();
+    this.dataSource.data = this.reports;
   }
 
 
