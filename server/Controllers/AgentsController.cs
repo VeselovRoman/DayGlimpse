@@ -77,6 +77,7 @@ public class AgentsController : BaseApiController
 
         return new AgentDto
         {
+            Id = agent.Id,
             AgentName = agent.AgentName,
             Token = _tokenService.CreateToken(agent),
             BranchId = agent.BranchId

@@ -34,7 +34,11 @@ export class ReportListComponent implements OnInit {
     this.dataSource.data = this.reports;
   }
 
-
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   loadReports() {
     this.reportService.getReports().subscribe({
       next: (reports) => {

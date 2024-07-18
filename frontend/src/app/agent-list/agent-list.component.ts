@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AgentService } from '../_services/agent.service';
 import { Agent } from '../_models/agent';
 import { Branch } from '../_models/branch';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-agent-list',
@@ -11,11 +12,15 @@ import { Branch } from '../_models/branch';
 })
 export class AgentListComponent implements OnInit {
   agents: Agent[] = [];
+  displayedColumns: string[] = ['id', 'agentName', 'city', 'branchName', 'actions'];
+  dataSource = new MatTableDataSource<Agent>(this.agents);
 
   constructor(private agentService: AgentService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadAgents();
+    this.dataSource.data = this.agents;
+
   }
 
   loadAgents() {

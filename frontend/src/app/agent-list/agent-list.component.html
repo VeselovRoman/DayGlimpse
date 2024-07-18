@@ -1,25 +1,42 @@
 <div class="container mt-5">
     <h2>Список агентов</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th># агента</th>
-                <th>Имя агента</th>
-                <th>Город</th>
-                <th>Филиал</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let agent of agents">
-                <td>{{ agent.id }}</td>
-                <td>{{ agent.agentName }}</td>
-                <td>{{ agent.city }}</td>
-                <td>{{ agent.branchName }}</td>
-                <td>
-                    <button mat-flat-button (click)="editAgent(agent.id!)">Изменить...</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <mat-table [dataSource]="agents" class="mat-elevation-z8">
+         <!-- # Агент -->
+    <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> # агента </mat-header-cell>
+        <mat-cell *matCellDef="let agents"> {{ agents.id }} </mat-cell>
+      </ng-container>
+    
+      <!-- Имя агента -->
+      <ng-container matColumnDef="agentName">
+        <mat-header-cell *matHeaderCellDef> Имя агента </mat-header-cell>
+        <mat-cell *matCellDef="let agents"> {{ agents.agentName }} </mat-cell>
+      </ng-container>
+
+      <!-- Город -->
+      <ng-container matColumnDef="city">
+        <mat-header-cell *matHeaderCellDef> Город </mat-header-cell>
+        <mat-cell *matCellDef="let agents"> {{ agents.city }} </mat-cell>
+      </ng-container>
+    
+        <!-- Филиал -->
+      <ng-container matColumnDef="branchName">
+        <mat-header-cell *matHeaderCellDef> Филиал </mat-header-cell>
+        <mat-cell *matCellDef="let agents"> {{ agents.branchName }} </mat-cell>
+      </ng-container>
+    
+      <!-- Действия -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
+        <mat-cell *matCellDef="let agent">
+          <button *ngIf="!agent.isConfirmed" mat-icon-button color="primary" (click)="editAgent(agent.id!)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
 </div>
+
