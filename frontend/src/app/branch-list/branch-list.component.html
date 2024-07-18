@@ -1,7 +1,10 @@
 <div class="container">
-    <h2>Список филиалов</h2>
-    <button class="btn btn-primary" (click)="openModal(template)">Добавить филиал</button>
-    <table class="table table-bordered mt-3">
+    <h2 class="mb-3">Список филиалов</h2>
+    <button class="mb-3" mat-fab extended (click)="openModal(template)">
+      <mat-icon>add</mat-icon>
+      Добавить
+    </button>
+    <table class="table table-striped">
       <thead>
         <tr>
           <th>ID</th>
@@ -14,7 +17,7 @@
           <td>{{ branch.id }}</td>
           <td>{{ branch.name }}</td>
           <td>
-            <button class="btn btn-sm btn-warning" (click)="openModal(template, branch)">Изменить...</button>
+            <button mat-flat-button (click)="openModal(template, branch)">Изменить...</button>
             <!--<button class="btn btn-sm btn-danger ms-2" (click)="deleteBranch(branch.id)">Удалить</button> -->
           </td>
         </tr>
@@ -24,9 +27,6 @@
     <ng-template #template>
       <div class="modal-header">
         <h4 class="modal-title pull-left">{{ selectedBranch.id ? 'Редактировать' : 'Добавить' }}</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef?.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <form>
@@ -37,8 +37,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="modalRef?.hide()">Закрыть</button>
-        <button type="button" class="btn btn-primary" (click)="saveBranch()">Сохранить</button>
+        <button mat-flat-button (click)="saveBranch()">Сохранить</button>
+        <button mat-button (click)="modalRef?.hide()">Закрыть</button>
       </div>
     </ng-template>
   </div>

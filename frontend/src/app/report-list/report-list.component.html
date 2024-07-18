@@ -1,7 +1,10 @@
 <div class="container mt-4" *ngIf="!isLoading">
   <h2>Отчеты</h2>
-  <button class="btn btn-primary mb-2" routerLink="/reports/new">Новый отчет</button>
-  <table class="table table-bordered">
+  <button class="mb-3" mat-fab extended routerLink="/reports/new">
+    <mat-icon>add</mat-icon>
+    Добавить
+  </button>
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>Номер отчета</th>

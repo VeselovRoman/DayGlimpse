@@ -1,6 +1,9 @@
 <div class="container">
-    <h2>Список респондентов</h2>
-    <button class="btn btn-primary" (click)="openModal(template)">Добавить респондента</button>
+    <h2 class="mb-3">Список респондентов</h2>
+    <button class="mb-3" mat-fab extended (click)="openModal(template)">
+      <mat-icon>add</mat-icon>
+      Добавить
+    </button>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -14,7 +17,7 @@
           <td>{{ respondent.id }}</td>
           <td>{{ respondent.name }}</td>
           <td>
-            <button class="btn btn-sm btn-warning" (click)="openModal(template, respondent)">Изменить...</button>
+            <button mat-flat-button (click)="openModal(template, respondent)">Изменить...</button>
             <!--<button class="btn btn-sm btn-danger ms-2" (click)="deleteRespondent(respondent.id)">Удалить</button>-->
           </td>
         </tr>
@@ -24,7 +27,6 @@
     <ng-template #template>
       <div class="modal-header">
         <h5 class="modal-title">{{ selectedRespondent.id ? 'Редактировать респондента' : 'Добавить респондента' }}</h5>
-        <button type="button" class="btn-close" (click)="modalRef?.hide()"></button>
       </div>
       <div class="modal-body">
         <form>
@@ -45,8 +47,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">Закрыть</button>
-        <button type="button" class="btn btn-primary" (click)="saveRespondent()">Сохранить</button>
+        <button mat-flat-button (click)="saveRespondent()">Сохранить</button>
+        <button mat-button (click)="modalRef?.hide()">Закрыть</button>
       </div>
     </ng-template>
   </div>
