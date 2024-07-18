@@ -168,7 +168,6 @@ chmod 600 ~/.ssh/id_ed25519
 chmod 644 ~/.ssh/id_ed25519.pub
 
 ;Настройка файла конфигурации SSH: Вы можете настроить файл ~/.ssh/config для упрощения команд подключения.
-
 ;Откройте или создайте файл ~/.ssh/config:
 nano ~/.ssh/config
 
@@ -192,7 +191,7 @@ ssh myserver
 ;копируем web-сервер
 scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html
 ;копируем dotnet
-scp -r D:/var/www/myapp admin@158.160.164.33:/var/www/server
+scp -r D:/var/www/server admin@158.160.164.33:/var/www/server
 ;сконфигурировать службу
 sudo nano /etc/systemd/system/server.service
 [Unit]
@@ -216,6 +215,7 @@ WantedBy=multi-user.target
 ;потом
 sudo systemctl daemon-reload
 sudo systemctl start server.service
+sudo systemctl stop server.service
 sudo systemctl enable server.service
 sudo systemctl status server.service
 
