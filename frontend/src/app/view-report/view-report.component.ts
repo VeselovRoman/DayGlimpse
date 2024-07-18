@@ -84,22 +84,23 @@ export class ViewReportComponent implements OnInit {
       );
     }
   }
-  
-  private _filterProcedures(value: string): any[] {
-    const filterValue = value.toLowerCase();
-    return this.procedures.filter(procedure  => procedure.name.toLowerCase().includes(filterValue));
+
+  displayProcedure(procedure: Procedure): string {
+    return procedure && procedure.name ? procedure.name : '';
   }
 
-  displayProcedureName(procedure: Procedure): string {
-    if (procedure) {
-      return `${procedure.id} - ${procedure.name}`;
-    } else {
-      return '';
-    }
+  private setupProcedureAutocomplete() {
+    this.filteredProcedures.push(
+      this.entries.at(this.entries.length - 1).get('procedureName')!.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterProcedures(value))
+      )
+    );
   }
 
-  displayProcedure(procedure: Procedure) {
-    return procedure ? procedure.name : undefined;
+  private _filterProcedures(value: string): Procedure[] {
+    const filterValue = typeof value === 'string' ? value.toLowerCase() : '';
+    return this.procedures.filter(procedure => procedure.name.toLowerCase().includes(filterValue));
   }
 
   fillReportForm(): void {
@@ -117,7 +118,6 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: this.report?.isConfirmed
     });
     this.loadReportEntries();
-    this.setupProcedureFilter(this.entries.length - 1);
     this.calculateTimeGaps();
   }
 
@@ -131,6 +131,7 @@ export class ViewReportComponent implements OnInit {
       this.report.reportEntries.forEach(entry => {
         console.log('Adding entry:', entry); // Логирование данных записи
         entriesFormArray.push(this.createProcedureEntry(entry));
+        this.setupProcedureAutocomplete();
       });
     } else {
       console.log('No report entries found.');
@@ -165,6 +166,7 @@ export class ViewReportComponent implements OnInit {
   addProcedureEntry(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
     entriesFormArray.push(this.createProcedureEntry());
+    this.setupProcedureAutocomplete();
   }
 
   removeProcedureEntry(index: number): void {
@@ -188,12 +190,16 @@ export class ViewReportComponent implements OnInit {
   }
 
   createProcedureEntry(entry?: Entry): FormGroup {
+    const now = new Date();
+    const tenMinutesLater = new Date(now.getTime() + 10 * 60000); // добавляем 10 минут
+    
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
-      procedureName: [this.procedures.find(p => p.id === entry?.procedureId)?.name || '', Validators.required],
-      startTime: [this.formatDate(entry?.startTime)], // Преобразование строки в Date и затем в строку
-      endTime: [this.formatDate(entry?.endTime)],     // Преобразование строки в Date и затем в строку
+      //procedureName: [this.procedures.find(p => p.id === entry?.procedureId)?.name || '', Validators.required],
+      procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
+      startTime: [this.formatDate(entry?.startTime || now)], // Преобразование строки в Date и затем в строку
+      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],     // Преобразование строки в Date и затем в строку
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
     });
@@ -221,7 +227,7 @@ export class ViewReportComponent implements OnInit {
     }
 
     const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
-      procedureId: entry.procedureId,
+      procedureId: entry.procedureName.id,
       startTime: new Date(entry.startTime),
       endTime: new Date(entry.endTime),
       comment: entry.comment,
@@ -299,9 +305,9 @@ export class ViewReportComponent implements OnInit {
       console.log('Form is invalid');
       return;
     }
-
+    console.log("this.reportForm.value.entries: ", this.reportForm.value.entries);
     const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
-      procedureId: entry.procedureId,
+      procedureId: entry.procedureName.id,
       startTime: new Date(entry.startTime),
       endTime: new Date(entry.endTime),
       comment: entry.comment,

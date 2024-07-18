@@ -1,18 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using server.Entities;
 
-namespace server.Data;
-
-public class DataContext(DbContextOptions options) : DbContext(options)
+namespace server.Data
 {
-    public DbSet<Agent> Agents { get; set; }
-    public DbSet<Respondent> Respondents { get; set; }
-    public DbSet<Branch> Branches { get; set; }
-    public DbSet<Report> Reports { get; set; }
-    public DbSet<ReportEntry> ReportEntries { get; set; }
-    public DbSet<Procedure> Procedures { get; set; }
+    public class DataContext : DbContext
+    {
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Agent> Agents { get; set; }
+        public DbSet<Respondent> Respondents { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportEntry> ReportEntries { get; set; }
+        public DbSet<Procedure> Procedures { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -46,4 +48,5 @@ public class DataContext(DbContextOptions options) : DbContext(options)
                 .WithMany(b => b.Respondents)
                 .HasForeignKey(r => r.BranchId);
         }
+    }
 }

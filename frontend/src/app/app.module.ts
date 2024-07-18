@@ -36,6 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatTooltipModule,
     MatDividerModule,
     MatAutocompleteModule,
+    MatGridListModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

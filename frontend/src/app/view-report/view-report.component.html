@@ -18,52 +18,58 @@
             <span class="status-circle me-3"
               [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
 
-              <mat-label class="me-3">Отчет #: {{ report.id }}</mat-label>
-              <mat-label>Дата отчета: {{ report.reportDate | date:'dd-MM-yyyy HH:mm' }}</mat-label>
+            <mat-label class="me-3">Отчет #: {{ report.id }}</mat-label>
+            <mat-label>Дата отчета: {{ report.reportDate | date:'dd-MM-yyyy HH:mm' }}</mat-label>
           </div>
           <div class="form-group">
-              <mat-label class="me-3">Агент: {{ report.agentName }}</mat-label>
-              <mat-label>Респондент: {{ report.respondentName }}</mat-label>
+            <mat-label class="me-3">Агент: {{ report.agentName }}</mat-label>
+            <mat-label>Респондент: {{ report.respondentName }}</mat-label>
           </div>
+          <mat-divider class="mb-2"></mat-divider>
 
           <div formArrayName="entries">
             <div *ngFor="let entry of entries.controls; let i=index" [formGroupName]="i">
-              <!-- Применение класса для нечётных элементов -->
-              <mat-divider></mat-divider>
               <div class="card-body">
-                <button mat-icon-button type="button" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <mat-divider class="mb-2"></mat-divider>
                 <h6 class="card-title">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})</h6>
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="col-12">
                   <mat-label>Наименование</mat-label>
-                  <input matInput formControlName="procedureName" [matAutocomplete]="auto">
-                  <mat-autocomplete #auto="matAutocomplete">
+                  <input type="text" matInput formControlName="procedureName" [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedure">
                     <mat-option *ngFor="let procedure of filteredProcedures[i] | async" [value]="procedure">
                       {{ procedure.name }}
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>
-                
-                <mat-form-field appearance="fill">
-                  <mat-label>Начало выполнения</mat-label>
-                  <input matInput [matDatepicker]="startPicker" formControlName="startTime">
-                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #startPicker></mat-datepicker>
-                </mat-form-field>
 
-                <mat-form-field appearance="fill">
-                  <mat-label>Окончание выполнения</mat-label>
-                  <input matInput [matDatepicker]="endPicker" formControlName="endTime">
-                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #endPicker></mat-datepicker>
-                </mat-form-field>  
+                <div class="container">
 
-                <mat-form-field appearance="fill">
-                  <mat-label>Комментарий</mat-label>
-                  <input matInput formControlName="comment">
-                </mat-form-field>
+                  <div class="row">
+                    <div class="col">
+                      <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Начало выполнения</mat-label>
+                        <input matInput type="datetime-local" formControlName="startTime" [id]="'startTime' + i">
+                      </mat-form-field>
+                    </div>
+                    <div class="col">
+                      <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Окончание выполнения</mat-label>
+                        <input matInput type="datetime-local" formControlName="endTime" [id]="'endime' + i">
+                      </mat-form-field>
+                    </div>
+                    <div class="col">
+                      <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Комментарий</mat-label>
+                        <input matInput formControlName="comment">
+                      </mat-form-field>
+                    </div>
+                    <button mat-icon-button type="button" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+
+                </div>
 
                 <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
                   <i class="bi bi-exclamation-triangle text-warning"></i>
@@ -76,7 +82,6 @@
               </div>
             </div>
           </div>
-
 
           <div class="col-auto">
             <button type="button" class="btn btn-secondary" (click)="addProcedureEntry()">Добавить запись</button>
