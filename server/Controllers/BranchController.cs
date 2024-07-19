@@ -7,10 +7,10 @@ using server.DTOs;
 namespace server.Controllers;
 
 [Authorize]
-[AllowAnonymous]
 public class BranchesController(DataContext context) : BaseApiController
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
     {
         var branches = await context.Branches.ToListAsync();
@@ -20,6 +20,7 @@ public class BranchesController(DataContext context) : BaseApiController
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<Branch>> GetBranch(int id)
     {
         var branch = await context.Branches.FindAsync(id);

@@ -54,8 +54,8 @@ public class AgentsController : BaseApiController
         return agent;
     }
 
-    [AllowAnonymous]
     [HttpPost("register")] //POST: api/agent/register?Agentname=dave&password=pwd
+    [AllowAnonymous]
     public async Task<ActionResult<AgentDto>> Register(RegisterDTO registerDTO)
     {
         //if (await AgentExists(registerDTO.AgentName)) return BadRequest("Имя пользователя уже занято");
@@ -85,8 +85,8 @@ public class AgentsController : BaseApiController
 
     }
 
-    [AllowAnonymous]
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<AgentDto>> Login(LoginDto loginDto)
     {
         // Логируем полученные данные

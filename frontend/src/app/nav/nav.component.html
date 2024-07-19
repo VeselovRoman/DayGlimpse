@@ -14,17 +14,12 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" routerLink="/reports">Отчеты</a>
-            </li> 
-            <li class="nav-item">
-                <a class="nav-link" (click)="logout()">Выход</a>
-            </li>          
+            </li>        
         </ul> 
         
         <div *ngIf="accountService.isLoggedIn()" dropdown class="dropdown">
             <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">Welcome {{currentAgent?.agentName | titlecase}}</a>
             <div *dropdownMenu  class="dropdown-menu">
-                <a class="dropdown-item">Изменить...</a>
-                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="logout()">Выход</a>
             </div>
         </div>

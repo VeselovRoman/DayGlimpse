@@ -1,3 +1,21 @@
 .full-width {
     width: 100%; /* Занимает всю доступную ширину родительского элемента */
   }
+
+  /* В styles.css или register.component.css */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрирование по горизонтали */
+  width: 100%;
+  padding: 1rem; /* Добавляем отступы */
+}
+
+.form-floating {
+  width: 100%;
+  max-width: 600px; /* Устанавливаем максимальную ширину для больших экранов */
+}
+
+.mat-form-field {
+  width: 100%;
+}

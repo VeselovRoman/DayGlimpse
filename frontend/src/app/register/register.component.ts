@@ -13,11 +13,12 @@ import { ToastrService } from 'ngx-toastr';
 export class RegisterComponent {
   //private accountService = inject(AccountService);
   //private branchService = inject(BranchService);
-  cancelRegister = output<boolean>();
+  @Output() cancelRegister = new EventEmitter<boolean>();
   model: any = {
     Agentname: '',
     Password: '',
-    City: '', // Новое поле для города
+    City: '',
+    BranchId: null
   };
   branches: Branch[] = []; // массив для хранения списка филиалов
   selectedBranchId: number | null = null; // выбранный филиал
@@ -31,7 +32,6 @@ export class RegisterComponent {
 
   ngOnInit(): void {
     //this.intializeForm();
-    // Инициализация данных, если необходимо
     this.loadBranches(); // загрузка списка филиалов при инициализации компонента
   }
 
@@ -58,8 +58,9 @@ export class RegisterComponent {
 
   register() {
     console.log('Register method called');
+    
     // Добавляем выбранный филиал к модели перед отправкой на сервер
-    this.model.branchId = this.selectedBranchId;
+    this.model.BranchId = this.selectedBranchId;
 
     // Отправка данных на сервер для регистрации
     this.accountService.register(this.model).subscribe({
