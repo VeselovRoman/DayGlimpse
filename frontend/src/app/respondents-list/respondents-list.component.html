@@ -1,55 +1,52 @@
 <div class="container">
-    <h2 class="mb-3">Список респондентов</h2>
-    <button class="mb-3" mat-fab extended (click)="openModal(template)">
-      <mat-icon>add</mat-icon>
-      Добавить
-    </button>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Имя</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let respondent of respondents">
-          <td>{{ respondent.id }}</td>
-          <td>{{ respondent.name }}</td>
-          <td>
-            <button mat-flat-button (click)="openModal(template, respondent)">Изменить...</button>
-            <!--<button class="btn btn-sm btn-danger ms-2" (click)="deleteRespondent(respondent.id)">Удалить</button>-->
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  
-    <ng-template #template>
-      <div class="modal-header">
-        <h5 class="modal-title">{{ selectedRespondent.id ? 'Редактировать респондента' : 'Добавить респондента' }}</h5>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="name" class="form-label">Имя</label>
-            <input type="text" class="form-control" id="name" [(ngModel)]="selectedRespondent.name" name="name">
-          </div>
-          <div class="mb-3">
-            <label for="city" class="form-label">Город</label>
-            <input type="text" class="form-control" id="city" [(ngModel)]="selectedRespondent.city" name="city">
-          </div>
-          <div class="mb-3">
-            <label for="branchId" class="form-label">Филиал</label>
-          <select class="form-control" id="branchId" [(ngModel)]="selectedRespondent.branchId" name="branchId"> 
-            <option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</option>
-          </select>
-        </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button mat-flat-button (click)="saveRespondent()">Сохранить</button>
-        <button mat-button (click)="modalRef?.hide()">Закрыть</button>
-      </div>
-    </ng-template>
-  </div>
-  
+  <h2 class="mb-3">Список респондентов</h2>
+  <button mat-fab extended (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    Добавить
+  </button>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let respondent">{{ respondent.id }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Имя</th>
+      <td mat-cell *matCellDef="let respondent">{{ respondent.name }}</td>
+    </ng-container>
+
+    <!-- Registration Date Column -->
+    <ng-container matColumnDef="registrationDate">
+      <th mat-header-cell *matHeaderCellDef>Дата регистрации</th>
+      <td mat-cell *matCellDef="let respondent">{{ respondent.registrationDate | date:'dd.MM.yyyy' }}</td>
+    </ng-container>
+
+    <!-- City Column -->
+    <ng-container matColumnDef="city">
+      <th mat-header-cell *matHeaderCellDef>Город</th>
+      <td mat-cell *matCellDef="let respondent">{{ respondent.city }}</td>
+    </ng-container>
+
+    <!-- Branch Name Column -->
+    <ng-container matColumnDef="branchName">
+      <th mat-header-cell *matHeaderCellDef>Филиал</th>
+      <td mat-cell *matCellDef="let respondent">{{ respondent.branchName }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Действия</th>
+      <td mat-cell *matCellDef="let respondent">
+        <button mat-flat-button (click)="openDialog(respondent)">Изменить...</button>
+        <button mat-button (click)="deleteRespondent(respondent.id)">Удалить</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

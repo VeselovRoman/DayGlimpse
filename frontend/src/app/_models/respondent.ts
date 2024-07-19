@@ -4,6 +4,7 @@ export interface Respondent {
     registrationDate: Date;
     city: string;
     branchId: number;
+    branchName?: string;
     role: string;
   }
   

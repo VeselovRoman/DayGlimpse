@@ -167,6 +167,10 @@ mv /path/to/id_ed25519.pub ~/.ssh/id_ed25519.pub
 chmod 600 ~/.ssh/id_ed25519
 chmod 644 ~/.ssh/id_ed25519.pub
 
+
+git tag v1.0.2
+git push origin v1.0.2 
+
 ;Настройка файла конфигурации SSH: Вы можете настроить файл ~/.ssh/config для упрощения команд подключения.
 ;Откройте или создайте файл ~/.ssh/config:
 nano ~/.ssh/config
