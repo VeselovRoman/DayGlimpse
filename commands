@@ -189,9 +189,13 @@ ssh myserver
  dotnet publish --configuration Release --output /var/www/server
 
 ;копируем web-сервер
+;Windows
 scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html
+;mac
+scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* admin@158.160.164.33:/var/www/html
+
 ;копируем dotnet
-scp -r D:/var/www/server admin@158.160.164.33:/var/www/server
+scp -r D:/var/www/server/* admin@158.160.164.33:/var/www/server
 ;сконфигурировать службу
 sudo nano /etc/systemd/system/server.service
 [Unit]

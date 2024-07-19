@@ -51,7 +51,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_PRIVATE_KEY }}
-          source: 'publish/*'
+          source: 'server/publish/*'
           target: '/var/www/server'
 
       # Деплой клиентской части
@@ -61,7 +61,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_PRIVATE_KEY }}
-          source: 'frontend/dist/*'
+          source: 'frontend/dist/client/*'
           target: '/var/www/html'
 
       # Выполнение SSH команд на сервере
