@@ -41,6 +41,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { RespondentDialogComponent } from './respondent-dialog/respondent-dialog.component';
+import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     ReportListComponent,
     ViewReportComponent,
     RespondentListComponent,
-    NewReportComponent
+    NewReportComponent,
+    RespondentDialogComponent,
+    BranchDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,

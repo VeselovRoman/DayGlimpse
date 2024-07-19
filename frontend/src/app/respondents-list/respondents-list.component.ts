@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RespondentDialogComponent } from '../respondent-dialog/respondent-dialog.component';
 import { RespondentService } from '../_services/respondent.service';
@@ -6,6 +6,7 @@ import { BranchService } from '../_services/branch.service';
 import { Respondent } from '../_models/respondent';
 import { Branch } from '../_models/branch';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-respondent-list',
@@ -13,10 +14,12 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./respondents-list.component.css']
 })
 export class RespondentListComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'registrationDate', 'city', 'branchName', 'actions'];
-  dataSource: MatTableDataSource<Respondent>;
   respondents: Respondent[] = [];
   branches: Branch[] = [];
+  displayedColumns: string[] = ['id', 'name', 'registrationDate', 'city', 'branchName', 'actions'];
+  dataSource = new MatTableDataSource<Respondent>(this.respondents);
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private respondentService: RespondentService,
@@ -32,7 +35,17 @@ export class RespondentListComponent implements OnInit {
   loadRespondents() {
     this.respondentService.getRespondents().subscribe(data => {
       this.respondents = data.sort((a, b) => a.id - b.id);
+
+      this.respondents.forEach(respondent => {
+        const branch = this.branches.find(b => b.id === respondent.branchId);
+        if (branch) {
+          respondent.branchName = branch.name;
+        }
+      });
+
       this.dataSource = new MatTableDataSource(this.respondents);
+      this.dataSource.paginator = this.paginator;
+
     });
   }
 

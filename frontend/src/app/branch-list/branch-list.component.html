@@ -1,44 +1,36 @@
 <div class="container">
-    <h2 class="mb-3">Список филиалов</h2>
-    <button class="mb-3" mat-fab extended (click)="openModal(template)">
-      <mat-icon>add</mat-icon>
-      Добавить
-    </button>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Наименование</th>
-          <th>Действие</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let branch of branches">
-          <td>{{ branch.id }}</td>
-          <td>{{ branch.name }}</td>
-          <td>
-            <button mat-flat-button (click)="openModal(template, branch)">Изменить...</button>
-            <!--<button class="btn btn-sm btn-danger ms-2" (click)="deleteBranch(branch.id)">Удалить</button> -->
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <h2 class="mb-3">Список филиалов</h2>
+  <button class="mb-3" mat-fab extended (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    Добавить
+  </button>
   
-    <ng-template #template>
-      <div class="modal-header">
-        <h4 class="modal-title pull-left">{{ selectedBranch.id ? 'Редактировать' : 'Добавить' }}</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" [(ngModel)]="selectedBranch.name" name="name">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button mat-flat-button (click)="saveBranch()">Сохранить</button>
-        <button mat-button (click)="modalRef?.hide()">Закрыть</button>
-      </div>
-    </ng-template>
-  </div>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell mat-header-cell *mamat-header-celleaderCellDef>ID</mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let branch">{{ branch.id }}</mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell mat-header-cell *mamat-header-celleaderCellDef>Наименование</mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let branch">{{ branch.name }}</mat-cell>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *mamat-header-celleaderCellDef> Действия </mat-header-cell>
+      <mat-cell *matCellDef="let respondent">
+        <button mat-icon-button color="primary" (click)="openDialog(respondent)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *mamat-header-celleaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

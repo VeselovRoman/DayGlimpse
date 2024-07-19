@@ -1,42 +1,44 @@
-<div class="container mt-5">
-    <h2>Список агентов</h2>
-    <mat-table [dataSource]="agents" class="mat-elevation-z8">
-         <!-- # Агент -->
+<div class="container">
+  <mat-label class="mb-3">Список агентов</mat-label>
+  <mat-divider class="mb-3"></mat-divider>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- # Агент -->
     <ng-container matColumnDef="id">
-        <mat-header-cell *matHeaderCellDef> # агента </mat-header-cell>
-        <mat-cell *matCellDef="let agents"> {{ agents.id }} </mat-cell>
-      </ng-container>
-    
-      <!-- Имя агента -->
-      <ng-container matColumnDef="agentName">
-        <mat-header-cell *matHeaderCellDef> Имя агента </mat-header-cell>
-        <mat-cell *matCellDef="let agents"> {{ agents.agentName }} </mat-cell>
-      </ng-container>
+      <mat-header-cell *matHeaderCellDef> # агента </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.id }} </mat-cell>
+    </ng-container>
 
-      <!-- Город -->
-      <ng-container matColumnDef="city">
-        <mat-header-cell *matHeaderCellDef> Город </mat-header-cell>
-        <mat-cell *matCellDef="let agents"> {{ agents.city }} </mat-cell>
-      </ng-container>
-    
-        <!-- Филиал -->
-      <ng-container matColumnDef="branchName">
-        <mat-header-cell *matHeaderCellDef> Филиал </mat-header-cell>
-        <mat-cell *matCellDef="let agents"> {{ agents.branchName }} </mat-cell>
-      </ng-container>
-    
-      <!-- Действия -->
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
-        <mat-cell *matCellDef="let agent">
-          <button *ngIf="!agent.isConfirmed" mat-icon-button color="primary" (click)="editAgent(agent.id!)">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </mat-cell>
-      </ng-container>
-    
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
+    <!-- Имя агента -->
+    <ng-container matColumnDef="agentName">
+      <mat-header-cell *matHeaderCellDef> Имя агента </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.agentName }} </mat-cell>
+    </ng-container>
+
+    <!-- Город -->
+    <ng-container matColumnDef="city">
+      <mat-header-cell *matHeaderCellDef> Город </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.city }} </mat-cell>
+    </ng-container>
+
+    <!-- Филиал -->
+    <ng-container matColumnDef="branchName">
+      <mat-header-cell *matHeaderCellDef> Филиал </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.branchName }} </mat-cell>
+    </ng-container>
+
+    <!-- Действия -->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
+      <mat-cell *matCellDef="let agent">
+        <button mat-icon-button color="primary" (click)="editAgent(agent.id!)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
 </div>
-

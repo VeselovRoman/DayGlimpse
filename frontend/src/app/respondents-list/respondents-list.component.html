@@ -1,52 +1,55 @@
 <div class="container">
-  <h2 class="mb-3">Список респондентов</h2>
-  <button mat-fab extended (click)="openDialog()">
+  <mat-label class="mb-3">Список респондентов</mat-label>
+  <mat-divider class="mb-3"></mat-divider>
+  <button class="mb-3" mat-fab extended (click)="openDialog()">
     <mat-icon>add</mat-icon>
     Добавить
   </button>
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <mat-divider class="mb-3"></mat-divider>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <!-- ID Column -->
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let respondent">{{ respondent.id }}</td>
+      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-cell *matCellDef="let respondent">{{ respondent.id }}</mat-cell>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Имя</th>
-      <td mat-cell *matCellDef="let respondent">{{ respondent.name }}</td>
+      <mat-header-cell mat-header-cell *matHeaderCellDef>Имя</mat-header-cell>
+      <mat-cell *matCellDef="let respondent">{{ respondent.name }}</mat-cell>
     </ng-container>
 
     <!-- Registration Date Column -->
     <ng-container matColumnDef="registrationDate">
-      <th mat-header-cell *matHeaderCellDef>Дата регистрации</th>
-      <td mat-cell *matCellDef="let respondent">{{ respondent.registrationDate | date:'dd.MM.yyyy' }}</td>
+      <mat-header-cell mat-header-cell *matHeaderCellDef>Дата регистрации</mat-header-cell>
+      <mat-cell *matCellDef="let respondent">{{ respondent.registrationDate | date:'dd.MM.yyyy' }}</mat-cell>
     </ng-container>
 
     <!-- City Column -->
     <ng-container matColumnDef="city">
-      <th mat-header-cell *matHeaderCellDef>Город</th>
-      <td mat-cell *matCellDef="let respondent">{{ respondent.city }}</td>
+      <mat-header-cell mat-header-cell *matHeaderCellDef>Город</mat-header-cell>
+      <mat-cell *matCellDef="let respondent">{{ respondent.city }}</mat-cell>
     </ng-container>
 
     <!-- Branch Name Column -->
     <ng-container matColumnDef="branchName">
-      <th mat-header-cell *matHeaderCellDef>Филиал</th>
-      <td mat-cell *matCellDef="let respondent">{{ respondent.branchName }}</td>
+      <mat-header-cell mat-header-cell *matHeaderCellDef>Филиал</mat-header-cell>
+      <mat-cell *matCellDef="let respondent">{{ respondent.branchName }}</mat-cell>
     </ng-container>
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Действия</th>
-      <td mat-cell *matCellDef="let respondent">
-        <button mat-flat-button (click)="openDialog(respondent)">Изменить...</button>
-        <button mat-button (click)="deleteRespondent(respondent.id)">Удалить</button>
-      </td>
+      <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
+      <mat-cell *matCellDef="let respondent">
+        <button mat-icon-button color="primary" (click)="openDialog(respondent)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>
