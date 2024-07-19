@@ -13,21 +13,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Установка .NET SDK для серверной части
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0.x' # Укажите вашу версию .NET
+          dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
+      # Установка Node.js для клиентской части
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.1'  # Укажите версию Node.js
+
+      # Сборка и публикация серверной части
+      - name: Restore .NET dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Build .NET project
         run: dotnet build --configuration Release --no-restore
 
-      - name: Publish
+      - name: Publish .NET project
         run: dotnet publish --configuration Release
 
-      - name: Deploy to VM
+      # Сборка и публикация клиентской части
+      - name: Install dependencies for Angular
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Build Angular project
+        run: npx ng build --configuration production
+        working-directory: ./frontend  # Укажите путь к вашему клиентскому приложению
+
+      # Деплой серверной части
+      - name: Deploy .NET to VM
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_HOST }}
@@ -36,6 +54,17 @@ jobs:
           source: 'publish/*'
           target: '/var/www/server'
 
+      # Деплой клиентской части
+      - name: Deploy Angular to VM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_PRIVATE_KEY }}
+          source: 'frontend/dist/*'
+          target: '/var/www/html'
+
+      # Выполнение SSH команд на сервере
       - name: Run SSH commands
         uses: appleboy/ssh-action@master
         with:
