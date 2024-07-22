@@ -20,7 +20,9 @@ namespace server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Respondent>>> GetRespondents()
         {
-            return await _context.Respondents.ToListAsync();
+            return await _context.Respondents
+                 .OrderBy(r => r.Id)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]

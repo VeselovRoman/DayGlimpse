@@ -28,7 +28,9 @@ public class AgentsController : BaseApiController
     public async Task<ActionResult<IEnumerable<AgentDto>>> GetAgents()
     {
         var agents = await _context.Agents
+        .OrderBy(b => b.Id)
             .Include(r => r.Branch) // Включаем данные о филиале
+            .OrderBy(a => a.Id)
             .ToListAsync();
 
             var agentDtos = agents.Select(a => new AgentDto

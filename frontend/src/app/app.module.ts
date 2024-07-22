@@ -43,6 +43,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RespondentDialogComponent } from './respondent-dialog/respondent-dialog.component';
 import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
+import { AgentDialogComponent } from './agent-dialog/agent-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
     RespondentListComponent,
     NewReportComponent,
     RespondentDialogComponent,
-    BranchDialogComponent
+    BranchDialogComponent,
+    AgentDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,

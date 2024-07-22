@@ -13,7 +13,9 @@ public class BranchesController(DataContext context) : BaseApiController
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
     {
-        var branches = await context.Branches.ToListAsync();
+        var branches = await context.Branches
+            .OrderBy(b => b.Id)
+            .ToListAsync();
 
         return Ok(branches);
 

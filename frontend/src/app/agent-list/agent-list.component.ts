@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AgentService } from '../_services/agent.service';
 import { Agent } from '../_models/agent';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { AgentDialogComponent } from '../agent-dialog/agent-dialog.component';
 
 @Component({
   selector: 'app-agent-list',
@@ -17,7 +18,7 @@ export class AgentListComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private agentService: AgentService, private router: Router) { }
+  constructor(private agentService: AgentService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadAgents();
@@ -38,9 +39,16 @@ export class AgentListComponent implements OnInit {
     });
   }
 
-  editAgent(agentId: number) {
-    this.router.navigate(['/agents', agentId]);
-    console.log(agentId)
-  }
+  editAgent(agent: Agent) {
+    const dialogRef = this.dialog.open(AgentDialogComponent, {
+      width: '400px',
+      data: { agent }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadAgents();
+      }
+    });
+  }
 }
