@@ -11,7 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { map, Observable, startWith } from 'rxjs';
+import { catchError, map, Observable, of, retry, startWith } from 'rxjs';
+import { CreateReportEntryDto } from '../_dto/report.dto';
 
 @Component({
   selector: 'app-view-report',
@@ -25,7 +26,7 @@ export class ViewReportComponent implements OnInit {
   reportId!: number;
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
-  filteredProcedures: Observable<Procedure[]>[] = [];
+  filteredProcedures: { [key: number]: Observable<Procedure[]> } = {};
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,11 +36,8 @@ export class ViewReportComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    private reportStateService: ReportStateService //сервис состояния
-  ) {
-    this.loadProcedures();
-    this.loadRespondents();
-  }
+    private reportStateService: ReportStateService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -47,6 +45,8 @@ export class ViewReportComponent implements OnInit {
       this.loadReport();
     });
     this.initializeForm();
+    this.loadProcedures();
+    this.loadRespondents();
   }
 
   initializeForm(): void {
@@ -60,14 +60,14 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  loadReport() {
+  loadReport(): void {
     this.reportService.getReport(this.reportId).subscribe(report => {
       this.report = report;
-      this.fillReportForm()
+      this.fillReportForm();
     });
   }
 
-  setupProcedureFilter(index: number) {
+  setupProcedureFilter(index: number): void {
     const control = this.entries.at(index).get('procedureName') as FormControl;
     this.filteredProcedures[index] = control.valueChanges.pipe(
       startWith(''),
@@ -75,32 +75,22 @@ export class ViewReportComponent implements OnInit {
     );
   }
 
-  onProcedureInput(index: number) {
-    const control = this.entries.at(index).get('procedureName');
-    if (control) {
-      this.filteredProcedures[index] = control.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterProcedures(value))
-      );
-    }
+  onProcedureInput(index: number): void {
+    this.setupProcedureFilter(index);
   }
 
   displayProcedure(procedure: Procedure): string {
     return procedure && procedure.name ? procedure.name : '';
   }
 
-  private setupProcedureAutocomplete() {
-    this.filteredProcedures.push(
-      this.entries.at(this.entries.length - 1).get('procedureName')!.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterProcedures(value))
-      )
-    );
-  }
-
   private _filterProcedures(value: string): Procedure[] {
-    const filterValue = typeof value === 'string' ? value.toLowerCase() : '';
-    return this.procedures.filter(procedure => procedure.name.toLowerCase().includes(filterValue));
+    if (typeof value !== 'string') {
+      return [];
+    }
+    const filterValue = value.toLowerCase();
+    return this.procedures.filter(procedure =>
+      typeof procedure.name === 'string' && procedure.name.toLowerCase().includes(filterValue)
+    );
   }
 
   fillReportForm(): void {
@@ -109,7 +99,6 @@ export class ViewReportComponent implements OnInit {
       return;
     }
 
-    console.log("fillReport:", this.report);
     this.reportForm.patchValue({
       id: this.report?.id,
       reportDate: this.report?.reportDate,
@@ -124,14 +113,11 @@ export class ViewReportComponent implements OnInit {
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
     entriesFormArray.clear();
-    console.log('Грузим записи этого отчета:', this.report);
 
     if (this.report && this.report.reportEntries) {
-      console.log('Report entries found:', this.report.reportEntries);
-      this.report.reportEntries.forEach(entry => {
-        console.log('Adding entry:', entry); // Логирование данных записи
+      this.report.reportEntries.forEach((entry, index) => {
         entriesFormArray.push(this.createProcedureEntry(entry));
-        this.setupProcedureAutocomplete();
+        this.setupProcedureFilter(index);
       });
     } else {
       console.log('No report entries found.');
@@ -142,31 +128,40 @@ export class ViewReportComponent implements OnInit {
 
   loadRespondents(): void {
     this.respondentService.getRespondents().subscribe({
-      next: respondents => {
-        this.respondents = respondents;
-      },
-      error: error => {
-        console.error('Error loading respondents:', error);
-      }
+      next: respondents => this.respondents = respondents,
+      error: error => this.toastr.error('Ошибка загрузки респондентов')
     });
   }
 
-  loadProcedures(): void {
+  /*loadProcedures(): void {
     this.procedureService.getProcedures().subscribe({
-      next: procedures => {
-        this.procedures = procedures;
-        console.log("Загруженные процедуры ", this.procedures)
-      },
-      error: error => {
-        console.error('Error loading procedures:', error);
-      }
+      next: procedures => this.procedures = procedures,
+      error: error => this.toastr.error('Ошибка загрузки процедур')
     });
+  }*/
+
+    loadProcedures(): void {
+      this.procedureService.getProcedures().pipe(
+        retry(3), // Попытка повторить запрос до 3 раз в случае ошибки
+        catchError(error => {
+          this.toastr.error('Ошибка загрузки процедур');
+          return of([]); // Возвращает пустой массив в случае окончательной ошибки
+        })
+      ).subscribe({
+        next: procedures => this.procedures = procedures,
+        error: error => console.error('Error loading procedures after retries:', error)
+      });
+    }
+
+  refreshReportAndProcedures(): void {
+    this.loadReport();
+    this.loadProcedures();
   }
 
   addProcedureEntry(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
     entriesFormArray.push(this.createProcedureEntry());
-    this.setupProcedureAutocomplete();
+    this.setupProcedureFilter(entriesFormArray.length - 1);
   }
 
   removeProcedureEntry(index: number): void {
@@ -174,14 +169,10 @@ export class ViewReportComponent implements OnInit {
     if (entryId) {
       this.reportService.deleteReportEntry(this.report.id, entryId).subscribe({
         next: () => {
-          //console.log('Entry deleted successfully');
-          this.toastr.info('Запись успешно удалена')
+          this.toastr.info('Запись успешно удалена');
           this.entries.removeAt(index);
         },
-        error: error => {
-          this.toastr.error(error.error);
-          //console.error('Error deleting entry:', error);
-        }
+        error: error => this.toastr.error(error.error)
       });
     } else {
       this.entries.removeAt(index);
@@ -196,7 +187,6 @@ export class ViewReportComponent implements OnInit {
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
-      //procedureName: [this.procedures.find(p => p.id === entry?.procedureId)?.name || '', Validators.required],
       procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
       startTime: [this.formatDate(entry?.startTime || now)], // Преобразование строки в Date и затем в строку
       endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],     // Преобразование строки в Date и затем в строку
@@ -205,13 +195,8 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  // Метод для преобразования строки в Date и затем в строку
   formatDate(date: Date | undefined): string {
-    if (!date) {
-      return ''; // или возврат по умолчанию, если необходимо
-    }
-    // Пример форматирования в формат yyyy-MM-ddTHH:mm
-    return formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru');
+    return date ? formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru') : '';
   }
 
   get entries(): FormArray {
@@ -219,14 +204,12 @@ export class ViewReportComponent implements OnInit {
   }
 
   submitReport(): void {
-    console.log('Submitting report started');
-
     if (this.reportForm.invalid) {
-      console.log('Form is invalid');
+      console.log('Форма заполнена неверно');
       return;
     }
 
-    const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
+    const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
       procedureId: entry.procedureName.id,
       startTime: new Date(entry.startTime),
       endTime: new Date(entry.endTime),
@@ -234,23 +217,17 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: true
     }));
 
-    for (let entry of updatedReportEntries) {
-      if (!this.checkTimeGapWithinEntry(entry)) {
-        console.log('Time gap within entry validation failed');
-        this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие')
-        // Логика отображения предупреждения пользователю
-        return;
-      }
-    }
-
-    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
-      console.log('Time gaps between entries validation failed');
-      // Логика отображения предупреждения пользователю
+    if (updatedReportEntries.some((entry: CreateReportEntryDto) => !this.checkTimeGapWithinEntry(entry))) {
+      this.toastr.warning('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
       return;
     }
 
-    this.reportForm.value.entries.forEach((entry: any, index: number) => {
-      // добавляем данные отчета
+    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
+      this.toastr.warning('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
+      return;
+    }
+
+    this.reportForm.value.entries.forEach((entry: Entry, index: number) => {
       const entryData = {
         ...updatedReportEntries[index],
         reportId: this.report?.id,
@@ -259,54 +236,39 @@ export class ViewReportComponent implements OnInit {
       };
 
       if (entry.id) {
-        // Если у записи есть ID, подтверждаем ее
         this.reportService.confirmReportEntry(this.report!.id!, entry.id).subscribe({
-          next: () => {
-            console.log('Entry confirmed successfully');
-          },
-          error: error => {
-            console.error('Error confirming entry:', error);
-          }
+          next: () => this.toastr.info('Запись подтверждена успешно'),
+          error: error => this.toastr.error('Ошибка подтверждения записи')
         });
       } else {
         // Если у записи нет ID, создаем новую запись
         this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
-          next: (newEntry: Entry) => {
-            console.log('Entry added successfully:', newEntry);
-          },
-          error: error => {
-            console.error('Error adding entry:', error);
-          }
+          next: (newEntry: CreateReportEntryDto) => this.toastr.info('Запись добавлена успешно'),
+          error: error => this.toastr.error('Ошибка добавления записи')
         });
       }
     });
 
-    // Подтверждаем отчет
     if (this.report?.id) {
       this.reportService.confirmReport(this.report.id).subscribe({
         next: () => {
-          console.log('Report confirmed successfully');
-          // Загружаем обновленные отчеты перед навигацией
+          this.toastr.info('Отчет успешно подтвержден');
           this.reportStateService.loadReports();
-          this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
+          this.router.navigate(['/reports']);
         },
-        error: error => {
-          console.error('Error confirming report:', error);
-        }
+        error: error => this.toastr.error('Ошибка подтверждения отчета')
       });
-      this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
     }
   }
 
   saveReport() {
-    console.log('Saving report started');
 
     if (this.reportForm.invalid) {
-      console.log('Form is invalid');
+      this.toastr.error('Форма заполнена неверно');
       return;
     }
-    console.log("this.reportForm.value.entries: ", this.reportForm.value.entries);
-    const updatedReportEntries = this.reportForm.value.entries.map((entry: any) => ({
+    const updatedReportEntries : CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
+      id: entry.id, 
       procedureId: entry.procedureName.id,
       startTime: new Date(entry.startTime),
       endTime: new Date(entry.endTime),
@@ -314,24 +276,17 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: true
     }));
 
-    for (let entry of updatedReportEntries) {
-      if (!this.checkTimeGapWithinEntry(entry)) {
-        this.toastr.error('Некоторые записи имеют некорректные начало и окончание')
-        //console.log('Time gap within entry validation failed');
-        // Логика отображения предупреждения пользователю
-        //return;
-      }
-    }
-
-    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
-      this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие')
-      //console.log('Time gaps between entries validation failed');
-      // Логика отображения предупреждения пользователю
+    if (updatedReportEntries.some(entry => !this.checkTimeGapWithinEntry(entry))) {
+      this.toastr.error('Некоторые записи имеют некорректные начало и окончание');
       //return;
     }
 
-    this.reportForm.value.entries.forEach((entry: any, index: number) => {
-      // добавляем данные отчета
+    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
+      this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
+      //return;
+    }
+
+    this.reportForm.value.entries.forEach((entry: CreateReportEntryDto, index: number) => {
       const entryData = {
         ...updatedReportEntries[index],
         reportId: this.report?.id,
@@ -340,75 +295,39 @@ export class ViewReportComponent implements OnInit {
       };
 
       if (entry.id) {
-        // Если у записи есть ID, подтверждаем ее
         this.reportService.updateReportEntry(this.report!.id!, entry.id, entryData).subscribe({
-          next: () => {
-            this.toastr.info('Запись успешно обновлена')
-            console.log('Entry updated successfully');
-          },
-          error: error => {
-            console.error('Error updating entry:', error);
-          }
+          next: () => this.toastr.info('Запись успешно обновлена'),
+          error: error => this.toastr.error('Ошибка обновления записи')
         });
       } else {
-        // Если у записи нет ID, создаем новую запись
         this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
-          next: (newEntry: Entry) => {
-            console.log('Entry added successfully:', newEntry);
-          },
-          error: error => {
-            console.error('Error adding entry:', error);
-          }
+          next: (newEntry: CreateReportEntryDto) => this.toastr.info('Запись успешно добавлена'),
+          error: error => this.toastr.error('Ошибка добавления записи')
         });
       }
     });
     this.calculateTimeGaps();
     this.toastr.info('Отчет успешно сохранен')
-
   }
-
-  /*checkTimeGapWithinEntry(entry: any): boolean {
-    const startTime = new Date(entry.startTime);
-    const endTime = new Date(entry.endTime);
-    return !!startTime && !!endTime && startTime < endTime;
-  }
-
-  checkTimeGapsBetweenEntries(entries: any[]): boolean {
-    for (let i = 1; i < entries.length; i++) {
-      const previousEndTime = new Date(entries[i - 1].endTime);
-      const currentStartTime = new Date(entries[i].startTime);
-      const timeDifference = (currentStartTime.getTime() - previousEndTime.getTime()) / (1000 * 60);
-      if (timeDifference > 5) {
-        return false;
-      }
-    }
-    return true;
-  }*/
 
   hasTimeGapWarning(index: number): boolean {
-    const entries = this.entries;
-    if (index === 0) {
-      return false; // Первая запись не имеет предыдущей для проверки
-    }
-    const currentEntry = entries.at(index).value;
-    const previousEntry = entries.at(index - 1).value;
+    if (index === 0) return false;
+    const currentEntry = this.entries.at(index).value;
+    const previousEntry = this.entries.at(index - 1).value;
 
-    if (!currentEntry.startTime || !previousEntry.endTime) {
-      return false;
-    }
+    if (!currentEntry.startTime || !previousEntry.endTime) return false;
 
     const currentStartTime = new Date(currentEntry.startTime);
     const previousEndTime = new Date(previousEntry.endTime);
 
-    const timeDifference = (currentStartTime.getTime() - previousEndTime.getTime()) / 60000; // Разница в минутах
+    const timeDifference = (currentStartTime.getTime() - previousEndTime.getTime()) / 60000;
 
     return timeDifference > 5;
   }
 
-  closeViewReport() {
-    // Загружаем обновленные отчеты перед навигацией
+  closeViewReport(): void {
     this.reportStateService.loadReports();
-    this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
+    this.router.navigate(['/reports']);
   }
 
   calculateTimeGaps(): void {
@@ -435,28 +354,26 @@ export class ViewReportComponent implements OnInit {
       const gapStart = new Date(currentEntry.endTime);
       const gapEnd = new Date(nextEntry.startTime);
 
-      const timeDifference = (gapEnd.getTime() - gapStart.getTime()) / (1000 * 60); // Разница в минутах
+      const timeDifference = (gapEnd.getTime() - gapStart.getTime()) / (1000 * 60);
 
       if (timeDifference > 5) {
-        timeGaps.push({ start: gapStart, end: gapEnd, gap: true }); // Разрыв более 5 минут
+        timeGaps.push({ start: gapStart, end: gapEnd, gap: true });
       } else {
-        timeGaps.push({ start: gapStart, end: gapEnd, gap: false }); // Разрыв до 5 минут
+        timeGaps.push({ start: gapStart, end: gapEnd, gap: false });
       }
     }
 
     this.timeGaps = timeGaps;
   }
 
-
-
   getTimeGapStyles(gap: { start: Date, end: Date, gap: boolean }): { [klass: string]: any } {
     const totalDuration = this.timeGaps[this.timeGaps.length - 1].end.getTime() - this.timeGaps[0].start.getTime();
     const startPercent = ((gap.start.getTime() - this.timeGaps[0].start.getTime()) / totalDuration) * 100;
     const widthPercent = ((gap.end.getTime() - gap.start.getTime()) / totalDuration) * 100;
-    let backgroundColor = 'lightgray'; // По умолчанию светло-серый цвет для разрывов до 5 минут
+    let backgroundColor = 'lightgray';
 
     if (gap.gap) {
-      backgroundColor = 'lightcoral'; // Светло-красный цвет для разрывов более 5 минут
+      backgroundColor = 'lightcoral';
     }
 
     return {
@@ -468,8 +385,6 @@ export class ViewReportComponent implements OnInit {
     };
   }
 
-
-
   checkTimeGapsBetweenEntries(entries: any[]): boolean {
     const sortedEntries = entries
       .map(entry => ({
@@ -480,9 +395,7 @@ export class ViewReportComponent implements OnInit {
 
     for (let i = 0; i < sortedEntries.length - 1; i++) {
       const gap = sortedEntries[i + 1].startTime.getTime() - sortedEntries[i].endTime.getTime();
-      if (gap > 5 * 60 * 1000) {
-        return false;
-      }
+      if (gap > 5 * 60 * 1000) return false;
     }
     return true;
   }
@@ -492,6 +405,4 @@ export class ViewReportComponent implements OnInit {
     const endTime = new Date(entry.endTime).getTime();
     return endTime >= startTime;
   }
-
-
 }

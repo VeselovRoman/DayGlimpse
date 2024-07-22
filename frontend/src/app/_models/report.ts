@@ -1,3 +1,14 @@
+export interface Report {
+  id: number;
+  reportDate: Date;
+  agentId: number;
+  agentName: string;
+  respondentId: number;
+  respondentName: string;
+  reportEntries: Entry[];  // Добавляем свойство для записей отчета
+  isConfirmed: boolean;
+}
+
 export interface Entry {
   id: number;
   procedureId: number;
@@ -10,16 +21,5 @@ export interface Entry {
   respondentId: number;
   respondentName: string;
   reportId: number;
-  isConfirmed: boolean;
-}
-
-export interface Report {
-  id: number;
-  reportDate: Date;
-  agentId: number;
-  agentName: string;
-  respondentId: number;
-  respondentName: string;
-  reportEntries: Entry[];  // Добавляем свойство для записей отчета
   isConfirmed: boolean;
 }

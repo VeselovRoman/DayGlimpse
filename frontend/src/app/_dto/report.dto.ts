@@ -8,6 +8,7 @@ export interface CreateReportDto {
   
   // create-report-entry.dto.ts
   export interface CreateReportEntryDto {
+    id: number,
     agentId: number;
     respondentId: number;
     procedureId: number;
@@ -15,7 +16,6 @@ export interface CreateReportDto {
     endTime: string;
     comment: string;
     reportId: number;
-    isConfirmed?: boolean; // Добавлен флаг isConfirmed
   }
   
   // report.dto.ts

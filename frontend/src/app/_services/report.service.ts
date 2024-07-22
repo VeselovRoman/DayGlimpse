@@ -30,9 +30,9 @@ export class ReportService {
   }
 
   //Создает запись в отчете по указанному reportId.
-  createReportEntry(reportId: number, createReportEntryDto: CreateReportEntryDto): Observable<Entry> {
+  createReportEntry(reportId: number, createReportEntryDto: CreateReportEntryDto): Observable<CreateReportEntryDto> {
     console.log(`${this.baseUrl}${reportId}/entries`);
-    return this.http.post<Entry>(`${this.baseUrl}${reportId}/entries`, createReportEntryDto).pipe(
+    return this.http.post<CreateReportEntryDto>(`${this.baseUrl}${reportId}/entries`, createReportEntryDto).pipe(
       catchError((error: any) => {
         console.error('Error creating report entry:', error);
         return throwError(() => new Error('Error creating report entry'));
@@ -81,9 +81,9 @@ export class ReportService {
   }
 
   // Обновляет запись отчета
-  updateReportEntry(reportId: number, entryId: number, updateData: Partial<CreateReportEntryDto>): Observable<Entry> {
+  updateReportEntry(reportId: number, entryId: number, updateData: Partial<CreateReportEntryDto>): Observable<CreateReportEntryDto> {
     const url = `${this.baseUrl}${reportId}/entries/${entryId}`;
-    return this.http.put<Entry>(url, updateData).pipe(
+    return this.http.put<CreateReportEntryDto>(url, updateData).pipe(
       catchError((error: any) => {
         console.error('Error updating report entry:', error);
         return throwError(() => new Error('Error updating report entry'));
