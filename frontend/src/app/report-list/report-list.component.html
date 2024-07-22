@@ -13,11 +13,9 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Например, имя респондента" #input>
       </mat-form-field>
     </div>
-
   </div>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
     <!-- Номер отчета -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef> Номер отчета </mat-header-cell>
@@ -75,18 +73,20 @@
 
     <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+      <td class="mat-cell" colspan="7">No data matching the filter "{{input.value}}"</td>
     </tr>
   </table>
+  </div>
 
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 
   <!-- Modal для отображения записей отчета -->
-  <div class="modal" tabindex="-1" [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
+  <div *ngIf="selectedReport" class="modal" tabindex="-1" [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Записи отчета #{{ selectedReport?.id }}</h5>
-          <button type="button" class="btn-close" aria-label="Close" (click)="selectedReport = null"></button>
+          <h5 class="modal-title">Записи отчета #{{ selectedReport.id }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeViewReport()"></button>
         </div>
         <div class="modal-body">
           <table class="table table-bordered">
@@ -100,7 +100,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let entry of selectedReport?.reportEntries">
+              <tr *ngFor="let entry of selectedReport.reportEntries">
                 <td>{{ entry.id }}</td>
                 <td>{{ entry.procedureName }}</td>
                 <td>{{ entry.startTime | date:'short' }}</td>
@@ -111,9 +111,8 @@
           </table>
         </div>
         <div class="modal-footer">
-          <button mat-flat-button (click)="selectedReport = null">Закрыть</button>
+          <button mat-flat-button (click)="closeViewReport()">Закрыть</button>
         </div>
       </div>
     </div>
   </div>
-</div>

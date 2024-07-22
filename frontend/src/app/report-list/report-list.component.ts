@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReportService } from '../_services/report.service';
 import { Report } from '../_models/report';
 import { Router } from '@angular/router';
-import { ReportStateService } from '../_services/report-state.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-report-list',
@@ -15,56 +15,59 @@ export class ReportListComponent implements OnInit {
   selectedReport: Report | null = null;
   isLoading: boolean = true;
   displayedColumns: string[] = ['id', 'reportEntries', 'reportDate', 'agentName', 'respondentName', 'status', 'actions'];
-  dataSource = new MatTableDataSource<Report>(this.reports);
+  dataSource = new MatTableDataSource<Report>();
 
-  constructor(private reportService: ReportService,
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  
+  constructor(
+    private reportService: ReportService,
     private router: Router,
-    private reportStateService: ReportStateService
   ) { }
 
   ngOnInit(): void {
+    this.loadReports();
+  }
+
+  loadReports() {
     this.isLoading = true;
-    
-    this.reportStateService.getReports().subscribe(reports => {
-      this.reports = reports;
-      
+    this.reportService.getReports().subscribe({
+      next: (reports: Report[]) => {
+        this.reports = reports;
+        
+        // Создаем новый MatTableDataSource и устанавливаем пагинатор
+      this.dataSource = new MatTableDataSource(this.reports);
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
+        console.log('this.dataSource.data: ', this.dataSource);
+        console.log('Paginator:', this.paginator, this.dataSource.paginator);
+        this.isLoading = false;
+        console.log('Загруженные отчеты:', this.reports);
+      },
+      error: (error: any) => {
+        console.error('Error fetching reports:', error);
+        this.isLoading = false;
+      }
     });
-    this.reportStateService.loadReports(); // Загружаем отчеты при инициализации компонента
-    this.isLoading = false;
-    this.dataSource.data = this.reports;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  
-  loadReports() {
-    this.reportService.getReports().subscribe({
-      next: (reports) => {
-        this.reports = reports;
-
-        console.log('Загруженные отчеты:', this.reports);
-      },
-      error: (error) => console.error('Error fetching reports:', error)
-    });
-  }
 
   viewEntries(report: Report) {
-    console.log('Просмотр записей для отчета:', report); // Добавить для отладки
+    console.log('Просмотр записей для отчета:', report);
     this.selectedReport = report;
   }
 
   editReport(report: Report) {
-    console.log('Редактирование отчета:', report, 'Навигация: ', '/reports', report.id, 'edit');  // Добавлено для отладки
-    //this.selectedReport = report;
+    console.log('Редактирование отчета:', report);
     this.router.navigate(['/reports', report.id, 'edit']);
   }
 
   closeViewReport() {
-    //this.selectedReport = null;
+    this.selectedReport = null;
     this.loadReports(); // Перезагрузка списка отчетов
   }
-
-
 }

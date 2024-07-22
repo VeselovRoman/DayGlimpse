@@ -17,7 +17,7 @@ export class RespondentListComponent implements OnInit {
   respondents: Respondent[] = [];
   branches: Branch[] = [];
   displayedColumns: string[] = ['id', 'name', 'registrationDate', 'city', 'branchName', 'actions'];
-  dataSource = new MatTableDataSource<Respondent>(this.respondents);
+  dataSource = new MatTableDataSource<Respondent>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -43,9 +43,12 @@ export class RespondentListComponent implements OnInit {
         }
       });
 
+      // Создаем новый MatTableDataSource и устанавливаем пагинатор
       this.dataSource = new MatTableDataSource(this.respondents);
-      this.dataSource.paginator = this.paginator;
-
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
+      console.log('Paginator:', this.paginator);
     });
   }
 
