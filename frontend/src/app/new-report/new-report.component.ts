@@ -85,8 +85,7 @@ export class NewReportComponent implements OnInit {
     const newReport: CreateReportDto = {
       reportDate: reportDate,
       agentId: this.agentId,
-      respondentId: respondentId,
-      isConfirmed: false
+      respondentId: respondentId
     };
     console.log('Данные нового отчета', newReport);
     // Отправляем данные на сервер через сервис

@@ -1,6 +1,6 @@
 <div *ngIf="report">
   <div class="container">
-    
+
     <button class="mb-3" mat-fab extended (click)="closeViewReport()">
       <mat-icon>arrow_back_ios</mat-icon>
       Назад
@@ -37,7 +37,9 @@
           <div formArrayName="entries">
             <div *ngFor="let entry of entries.controls; let i=index" [formGroupName]="i">
               <div class="card-body">
-                <h6 class="card-title mb-2">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})</h6>
+                <h6 class="card-title mb-2">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})
+                  <mat-icon *ngIf="entry.dirty" class="text-danger ms-2 small-icon">edit</mat-icon>
+                </h6>
 
                 <mat-form-field appearance="fill" class="col-12">
                   <mat-label>Наименование</mat-label>
@@ -70,13 +72,18 @@
                         <input matInput formControlName="comment">
                       </mat-form-field>
                     </div>
-                    <button mat-fab type="button" aria-label="Example icon button with a delete icon" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                    <div class="col-auto">
+                      <button mat-fab type="button" (click)="confirmDelete(i)" matTooltip="Удалить" [class.disabled]="isDeleting[i]">
+                        <ng-container *ngIf="!isDeleting[i]; else deletingSpinner">
+                          <mat-icon>delete</mat-icon>
+                        </ng-container>
+                        <ng-template #deletingSpinner>
+                          <mat-progress-spinner mode="indeterminate" diameter="30" class="spinner-inside"></mat-progress-spinner>
+                        </ng-template>
+                      </button>
+                    </div>
                   </div>
-
                 </div>
-
                 <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
                   <i class="bi bi-exclamation-triangle text-warning"></i>
                   <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
@@ -87,19 +94,27 @@
                 </div>
               </div>
               <mat-divider class="mb-5"></mat-divider>
-              
+
             </div>
           </div>
 
           <div class="col-auto">
-            <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'">
-              <mat-icon>add</mat-icon>
+            <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'"
+              [class.disabled]="isCreating">
+              <ng-container *ngIf="!isCreating; else loadingSpinner">
+                <mat-icon>add</mat-icon>
+              </ng-container>
+              <ng-template #loadingSpinner>
+                <mat-progress-spinner mode="indeterminate" diameter="30" class="spinner-inside"></mat-progress-spinner>
+              </ng-template>
             </button>
           </div>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-flat-button type="submit" class="btn btn-primary" [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
-          <button class="me-2" mat-button type="button" (click)="saveReport()" [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
+          <button mat-flat-button type="submit" class="btn btn-primary"
+            [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
+          <button class="me-2" mat-button type="button" (click)="saveReport()"
+            [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
         </mat-card-actions>
       </mat-card>
     </form>

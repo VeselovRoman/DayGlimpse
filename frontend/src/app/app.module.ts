@@ -44,6 +44,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RespondentDialogComponent } from './respondent-dialog/respondent-dialog.component';
 import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
 import { AgentDialogComponent } from './agent-dialog/agent-dialog.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import { AgentDialogComponent } from './agent-dialog/agent-dialog.component';
     NewReportComponent,
     RespondentDialogComponent,
     BranchDialogComponent,
-    AgentDialogComponent
+    AgentDialogComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -87,6 +90,7 @@ import { AgentDialogComponent } from './agent-dialog/agent-dialog.component';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

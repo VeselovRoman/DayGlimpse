@@ -1,78 +1,154 @@
 .modal.show {
-    display: block;
-    background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
-  }
-  
-  .modal-dialog {
-    max-width: 600px;
-    margin: 1.75rem auto;
-  }
-  
-  .modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    outline: 0;
-  }
-  
-  .status-circle {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    vertical-align: middle;
-  }
-  
-  .confirmed {
-    background-color: #4CAF50; /* зеленый */
-  }
-  
-  .not-confirmed {
-    background-color: #FFD700; /* желтый */
-  }
-  
-  .grey-background {
-    background-color: #f0f0f0; /* или любой другой желаемый цвет */
-  }
-  
-  .timeline-container {
-    position: relative;
-    width: 100%;
-    height: 40px;
-    background-color: #f0f0f0;
-    margin-bottom: 20px;
-  }
-  
-  .timeline-bar {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    
-  }
-  
-  .timeline-segment {
-    position: absolute;
-    height: 100%;
-  }
-  
-  .time-gap-indicator {
-    position: relative;
-    height: 20px; /* Высота полосы разрыва */
-    background-color: #f0f0f0;
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  /* Полупрозрачный фон */
+}
 
-  }
-  
-  .time-gap {
-    position: absolute;
-    height: 100%;
-    top: 0;
-  }
-  
-  .full-width {
-    width: 100%; /* Занимает всю доступную ширину родительского элемента */
-  }
+.modal-dialog {
+  max-width: 600px;
+  margin: 1.75rem auto;
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+
+.status-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.confirmed {
+  background-color: #4CAF50;
+  /* зеленый */
+}
+
+.not-confirmed {
+  background-color: #FFD700;
+  /* желтый */
+}
+
+.grey-background {
+  background-color: #f0f0f0;
+  /* или любой другой желаемый цвет */
+}
+
+.timeline-container {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.timeline-bar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+}
+
+.timeline-segment {
+  position: absolute;
+  height: 100%;
+}
+
+.time-gap-indicator {
+  position: relative;
+  height: 20px;
+  /* Высота полосы разрыва */
+  background-color: #f0f0f0;
+
+}
+
+.time-gap {
+  position: absolute;
+  height: 100%;
+  top: 0;
+}
+
+.full-width {
+  width: 100%;
+  /* Занимает всю доступную ширину родительского элемента */
+}
+
+/* Пример стилей для иконки "изменено" */
+.text-danger {
+  color: #f44336;
+  /* Цвет для иконки, если используется класс text-danger из Bootstrap */
+}
+
+.mat-icon {
+  vertical-align: middle;
+}
+
+.ms-2 {
+  margin-left: 8px;
+  /* Отступ слева для иконки, чтобы отделить ее от текста */
+}
+
+.small-icon {
+  font-size: 14px;
+  /* Установите нужный размер иконки */
+  vertical-align: middle;
+}
+
+.card-title {
+  line-height: 2;
+  /* Установите значение, чтобы выровнять иконку с текстом */
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+}
+
+.mat-card {
+  position: relative;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Убедитесь, что контейнер имеет высоту, соответствующую его родителю */
+}
+
+.mat-progress-spinner {
+  margin: 0 auto; /* Центрирование спиннера внутри контейнера */
+}
+
+.spinner-inside {
+  position: absolute; /* Позиционирование спиннера относительно кнопки */
+  top: 50%; /* Центрирование по вертикали */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translate(-50%, -50%); /* Центрирование с учетом размеров спиннера */
+}
+
+button[mat-fab] {
+  position: relative; /* Установка позиционирования для кнопки, чтобы спиннер можно было правильно позиционировать внутри */
+  overflow: hidden; /* Скрыть содержимое, выходящее за границы кнопки */
+}
+
+button.disabled {
+  pointer-events: none; /* Отключить взаимодействие с кнопкой, если идет загрузка */
+}

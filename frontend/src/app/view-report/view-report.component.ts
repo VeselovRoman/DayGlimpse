@@ -13,6 +13,9 @@ import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { catchError, forkJoin, map, Observable, of, retry, startWith } from 'rxjs';
 import { CreateReportEntryDto } from '../_dto/report.dto';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-view-report',
@@ -27,7 +30,9 @@ export class ViewReportComponent implements OnInit {
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
   filteredProcedures: { [key: number]: Observable<Procedure[]> } = {};
-
+  isCreating: boolean = false;
+  isDeleting: boolean[] = [];
+  
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -36,7 +41,8 @@ export class ViewReportComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    private reportStateService: ReportStateService
+    private reportStateService: ReportStateService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +66,35 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
+  openConfirmDialog(index: number): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: { message: 'Вы уверены, что хотите удалить эту запись?' }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.removeProcedureEntry(index);
+      } else {
+        this.isDeleting[index] = false;
+      }
+    });
+  }
+
+  confirmDelete(index: number): void {
+    this.isDeleting[index] = true; // Начало загрузки удаления
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.removeProcedureEntry(index);
+      } else {
+        this.isDeleting[index] = false; // Отмена удаления
+      }
+    });
+  }
+  
   loadReport(): void {
     this.reportService.getReport(this.reportId).subscribe(report => {
       this.report = report;
@@ -113,11 +148,13 @@ export class ViewReportComponent implements OnInit {
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
     entriesFormArray.clear();
+    this.isDeleting = [];
 
     if (this.report && this.report.reportEntries) {
       this.report.reportEntries.forEach((entry, index) => {
         entriesFormArray.push(this.createProcedureEntry(entry));
         this.setupProcedureFilter(index);
+        this.isDeleting.push(false);
       });
     } else {
       console.log('No report entries found.');
@@ -159,26 +196,48 @@ export class ViewReportComponent implements OnInit {
   }
 
   addProcedureEntry(): void {
+    this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
-
-    // Получаем время окончания последней записи, если она есть
+  
     let lastEndTime: Date = new Date();
     if (entriesFormArray.length > 0) {
       const lastEntry = entriesFormArray.at(entriesFormArray.length - 1).value;
       lastEndTime = new Date(lastEntry.endTime);
     }
-
-    // Устанавливаем время начала новой записи равным времени окончания последней записи
+  
     const startTime = new Date(lastEndTime);
-    // Устанавливаем время окончания новой записи на 10 минут позже времени начала
     const endTime = new Date(startTime.getTime() + 10 * 60000);
-
-    entriesFormArray.push(this.createProcedureEntry({
+  
+    const newEntry = this.createProcedureEntry({
       startTime: startTime,
       endTime: endTime
-    }));
-
-    this.setupProcedureFilter(entriesFormArray.length - 1);
+    });
+  
+    const entryData: CreateReportEntryDto = {
+      id: 0, // ID будет присвоен сервером
+      agentId: this.report.agentId,
+      respondentId: this.report.respondentId,
+      procedureId: 0,
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      comment: '',
+      reportId: this.report.id
+    };
+  
+    this.reportService.createReportEntry(this.report.id, entryData).subscribe({
+      next: (createdEntry: CreateReportEntryDto) => {
+        newEntry.patchValue({ id: createdEntry.id });
+        entriesFormArray.push(newEntry);
+        this.setupProcedureFilter(entriesFormArray.length - 1);
+        this.toastr.info('Запись успешно добавлена');
+        this.isCreating = false;
+      },
+      error: error => {
+        this.toastr.error('Ошибка добавления записи');
+        this.isCreating = false; // В случае ошибки создания
+      },
+      complete: () => this.isCreating = false
+    });
   }
 
   removeProcedureEntry(index: number): void {
@@ -188,15 +247,22 @@ export class ViewReportComponent implements OnInit {
         next: () => {
           this.toastr.info('Запись успешно удалена');
           this.entries.removeAt(index);
+          this.calculateTimeGaps();
+          this.isDeleting[index] = false;
         },
-        error: error => this.toastr.error(error.error)
+        error: error => {
+          this.toastr.error(error.error);
+          this.isDeleting[index] = false; // В случае ошибки удаления
+        },
+        complete: () => this.isDeleting[index] = false
       });
     } else {
       this.entries.removeAt(index);
+      this.calculateTimeGaps();
+      this.isDeleting[index] = false;
     }
-    this.calculateTimeGaps(); // Пересчитать временные интервалы после удаления
   }
-
+  
   createProcedureEntry(entry?: Partial<Entry>): FormGroup {
     const now = new Date();
     const tenMinutesLater = new Date(now.getTime() + 10 * 60000); // добавляем 10 минут
@@ -211,7 +277,7 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
     });
   }
-
+  
   formatDate(date: Date | undefined): string {
     return date ? formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru') : '';
   }
@@ -225,119 +291,90 @@ export class ViewReportComponent implements OnInit {
       this.toastr.error('Форма заполнена неверно');
       return;
     }
-
-    const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
-      procedureId: entry.procedureName.id,
-      startTime: new Date(entry.startTime),
-      endTime: new Date(entry.endTime),
-      comment: entry.comment,
-      isConfirmed: true
-    }));
-
-    if (updatedReportEntries.some((entry: CreateReportEntryDto) => !this.checkTimeGapWithinEntry(entry))) {
-      this.toastr.warning('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
-      return;
-    }
-
-    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
-      this.toastr.warning('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
-      return;
-    }
-
-    const requests: Observable<CreateReportEntryDto | null>[] = this.reportForm.value.entries.map((entry: Entry, index: number) => {
-      const entryData = {
-        ...updatedReportEntries[index],
-        reportId: this.report?.id,
-        agentID: this.report?.agentId,
-        respondentId: this.report?.respondentId,
-      };
-
-      if (entry.id) {
-        return this.reportService.updateReportEntry(this.report!.id!, entry.id, entryData).pipe(
-          catchError(error => {
-            this.toastr.error(`Ошибка обновления записи ID ${entry.id}`);
-            return of(null); // Возвращаем null в случае ошибки
-          })
-        );
-      } else {
-        return this.reportService.createReportEntry(this.report!.id!, entryData).pipe(
-          catchError(error => {
-            this.toastr.error('Ошибка добавления записи');
-            return of(null); // Возвращаем null в случае ошибки
-          })
-        );
-      }
-    });
-
-    forkJoin(requests).subscribe((results: (CreateReportEntryDto | null)[]) => {
-      // Обработка результатов после завершения всех запросов
+  
+    // Подтверждение всех записей
+    const entryConfirmationRequests: Observable<any>[] = this.reportForm.value.entries.map((entry: any) =>
+      this.reportService.confirmReportEntry(this.report.id, entry.id).pipe(
+        catchError(error => {
+          this.toastr.error(`Ошибка подтверждения записи ID ${entry.id}`);
+          return of(null); // Возвращаем null в случае ошибки
+        })
+      )
+    );
+  
+    // Объединение всех запросов на подтверждение записей
+    forkJoin(entryConfirmationRequests).subscribe((results: any[]) => {
       if (results.every(result => result !== null)) {
-        this.toastr.info('Отчет успешно сохранен');
+        // Подтверждение самого отчета после подтверждения всех записей
+        this.reportService.confirmReport(this.report.id).subscribe({
+          next: () => {
+            this.toastr.info('Отчет успешно подтвержден');
+            this.reportStateService.loadReports();
+            this.router.navigate(['/reports']);
+          },
+          error: error => this.toastr.error('Ошибка подтверждения отчета')
+        });
       } else {
-        this.toastr.warning('Некоторые записи не были сохранены');
+        this.toastr.warning('Некоторые записи не были подтверждены');
       }
-      this.calculateTimeGaps();
     });
-
-    if (this.report?.id) {
-      this.reportService.confirmReport(this.report.id).subscribe({
-        next: () => {
-          this.toastr.info('Отчет успешно подтвержден');
-          this.reportStateService.loadReports();
-          this.router.navigate(['/reports']);
-        },
-        error: error => this.toastr.error('Ошибка подтверждения отчета')
-      });
-    }
   }
+  
 
-  saveReport() {
-
+  saveReport(): void {
     if (this.reportForm.invalid) {
       this.toastr.error('Форма заполнена неверно');
       return;
     }
-    const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
+  
+    this.isCreating = true;
+
+    const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries
+      .filter((entry: any) => this.entries.at(this.reportForm.value.entries.indexOf(entry)).dirty)
+      .map((entry: any) => {
+      const startTimeUTC = new Date(entry.startTime).toISOString();
+      const endTimeUTC = new Date(entry.endTime).toISOString();
+
+      return {
       id: entry.id,
+      agentId: this.report.agentId,
+      respondentId: this.report.respondentId,
       procedureId: entry.procedureName.id,
-      startTime: new Date(entry.startTime),
-      endTime: new Date(entry.endTime),
+      startTime: startTimeUTC,
+      endTime: endTimeUTC,
       comment: entry.comment,
-      isConfirmed: true
-    }));
+      reportId: this.report.id
+      }
+    });
+    console.log('Updated Report Entries:', updatedReportEntries);
 
-    if (updatedReportEntries.some(entry => !this.checkTimeGapWithinEntry(entry))) {
-      this.toastr.error('Некоторые записи имеют некорректные начало и окончание');
-      //return;
-    }
-
-    if (!this.checkTimeGapsBetweenEntries(updatedReportEntries)) {
-      this.toastr.error('Некоторые записи начинаются позже (> 5 мин), чем заканчиваются предыдущие');
-      //return;
-    }
-
-    this.reportForm.value.entries.forEach((entry: CreateReportEntryDto, index: number) => {
-      const entryData = {
-        ...updatedReportEntries[index],
-        reportId: this.report?.id,
-        agentID: this.report?.agentId,
-        respondentId: this.report?.respondentId,
-      };
-
+    updatedReportEntries.forEach(entry => {
       if (entry.id) {
-        this.reportService.updateReportEntry(this.report!.id!, entry.id, entryData).subscribe({
-          next: () => this.toastr.info('Запись успешно обновлена'),
-          error: error => this.toastr.error('Ошибка обновления записи')
-        });
-      } else {
-        this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
-          next: (newEntry: CreateReportEntryDto) => this.toastr.info('Запись успешно добавлена'),
-          error: error => this.toastr.error('Ошибка добавления записи')
+        this.reportService.updateReportEntry(this.report.id, entry.id, entry).subscribe({
+          next: () => {
+            this.toastr.info('Запись успешно обновлена'),
+            this.resetFormState();
+          },
+          error: error => this.toastr.error('Ошибка обновления записи'),
+          complete: () => this.isCreating = false
         });
       }
     });
+  
     this.calculateTimeGaps();
-    this.toastr.info('Отчет успешно сохранен')
+    this.toastr.info('Отчет успешно сохранен');
+  }
+  
+  resetFormState() {
+    const entries = this.reportForm.get('entries') as FormArray;
+  
+    entries.controls.forEach(control => {
+      control.markAsPristine();
+      control.markAsUntouched();
+    });
+  
+    this.reportForm.markAsPristine();
+    this.reportForm.markAsUntouched();
   }
 
   hasTimeGapWarning(index: number): boolean {

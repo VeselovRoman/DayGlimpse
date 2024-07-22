@@ -3,7 +3,6 @@ export interface CreateReportDto {
   reportDate: string;
   agentId: number;  
   respondentId: number;
-  isConfirmed?: boolean; // Добавлен флаг isConfirmed
   }
   
   // create-report-entry.dto.ts
@@ -27,6 +26,7 @@ export interface CreateReportDto {
     respondentId: number;
     respondentName: string;
     reportEntries: ReportEntryDto[];
+    isConfirmed: boolean;
   }
   
   // report-entry.dto.ts
@@ -41,5 +41,6 @@ export interface CreateReportDto {
     agentName: string;
     respondentId: number;
     respondentName: string;
+    isConfirmed: boolean;
   }
   
