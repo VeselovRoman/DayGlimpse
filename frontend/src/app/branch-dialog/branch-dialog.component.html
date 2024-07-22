@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>{{ data.id ? 'Редактировать филиал' : 'Добавить филиал' }}</h1>
 <div mat-dialog-content>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="full-width">
     <mat-label>Наименование</mat-label>
     <input matInput [(ngModel)]="data.name" name="name" required>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSave()">Сохранить</button>
+  <button mat-flat-button (click)="onSave()">Сохранить</button>
   <button mat-button (click)="onCancel()">Отмена</button>
 </div>

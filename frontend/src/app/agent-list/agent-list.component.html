@@ -30,7 +30,7 @@
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
       <mat-cell *matCellDef="let agent">
-        <button mat-icon-button color="primary" (click)="editAgent(agent.id!)">
+        <button mat-icon-button color="primary" (click)="editAgent(agent)">
           <mat-icon>edit</mat-icon>
         </button>
       </mat-cell>

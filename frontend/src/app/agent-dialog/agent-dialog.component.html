@@ -1,26 +1,25 @@
 <h1 mat-dialog-title>{{ agent.id ? 'Редактировать агента' : 'Добавить агента' }}</h1>
 <div mat-dialog-content>
   <form>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Имя агента</mat-label>
       <input matInput [(ngModel)]="agent.agentName" name="agentName">
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Город</mat-label>
       <input matInput [(ngModel)]="agent.city" name="city">
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Филиал</mat-label>
-      <mat-select [(ngModel)]="agent.branchId" (selectionChange)="onBranchChange($event.value)">
+      <mat-select [(ngModel)]="agent.branchId" name="branchId">
         <mat-option *ngFor="let branch of branches" [value]="branch.id">
           {{ branch.name }}
         </mat-option>
       </mat-select>
-      <mat-hint>Выбран: {{ selectedBranchName }}</mat-hint>
     </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions>
+  <button mat-flat-button (click)="saveAgent()">Сохранить</button>
   <button mat-button (click)="onNoClick()">Отмена</button>
-  <button mat-button (click)="saveAgent()">{{ agent.id ? 'Сохранить' : 'Добавить' }}</button>
 </div>
