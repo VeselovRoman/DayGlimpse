@@ -65,7 +65,7 @@
                         <input matInput formControlName="comment">
                       </mat-form-field>
                     </div>
-                    <button mat-fab aria-label="Example icon button with a delete icon" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
+                    <button mat-fab type="button" aria-label="Example icon button with a delete icon" (click)="removeProcedureEntry(i)" matTooltip="Удалить">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
@@ -87,15 +87,14 @@
           </div>
 
           <div class="col-auto">
-            <button class="mb-3" mat-fab (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'">
+            <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'">
               <mat-icon>add</mat-icon>
-              
             </button>
           </div>
         </mat-card-content>
         <mat-card-actions>
           <button mat-flat-button type="submit" class="btn btn-primary" [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
-          <button class="me-2" mat-button (click)="saveReport()" [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
+          <button class="me-2" mat-button type="button" (click)="saveReport()" [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
         </mat-card-actions>
       </mat-card>
     </form>
