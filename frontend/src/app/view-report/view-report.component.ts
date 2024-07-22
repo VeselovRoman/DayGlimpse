@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReportStateService } from '../_services/report-state.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { catchError, map, Observable, of, retry, startWith } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, retry, startWith } from 'rxjs';
 import { CreateReportEntryDto } from '../_dto/report.dto';
 
 @Component({
@@ -37,7 +37,7 @@ export class ViewReportComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private reportStateService: ReportStateService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -140,18 +140,18 @@ export class ViewReportComponent implements OnInit {
     });
   }*/
 
-    loadProcedures(): void {
-      this.procedureService.getProcedures().pipe(
-        retry(3), // Попытка повторить запрос до 3 раз в случае ошибки
-        catchError(error => {
-          this.toastr.error('Ошибка загрузки процедур');
-          return of([]); // Возвращает пустой массив в случае окончательной ошибки
-        })
-      ).subscribe({
-        next: procedures => this.procedures = procedures,
-        error: error => console.error('Error loading procedures after retries:', error)
-      });
-    }
+  loadProcedures(): void {
+    this.procedureService.getProcedures().pipe(
+      retry(3), // Попытка повторить запрос до 3 раз в случае ошибки
+      catchError(error => {
+        this.toastr.error('Ошибка загрузки процедур');
+        return of([]); // Возвращает пустой массив в случае окончательной ошибки
+      })
+    ).subscribe({
+      next: procedures => this.procedures = procedures,
+      error: error => console.error('Error loading procedures after retries:', error)
+    });
+  }
 
   refreshReportAndProcedures(): void {
     this.loadReport();
@@ -160,7 +160,24 @@ export class ViewReportComponent implements OnInit {
 
   addProcedureEntry(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
-    entriesFormArray.push(this.createProcedureEntry());
+
+    // Получаем время окончания последней записи, если она есть
+    let lastEndTime: Date = new Date();
+    if (entriesFormArray.length > 0) {
+      const lastEntry = entriesFormArray.at(entriesFormArray.length - 1).value;
+      lastEndTime = new Date(lastEntry.endTime);
+    }
+
+    // Устанавливаем время начала новой записи равным времени окончания последней записи
+    const startTime = new Date(lastEndTime);
+    // Устанавливаем время окончания новой записи на 10 минут позже времени начала
+    const endTime = new Date(startTime.getTime() + 10 * 60000);
+
+    entriesFormArray.push(this.createProcedureEntry({
+      startTime: startTime,
+      endTime: endTime
+    }));
+
     this.setupProcedureFilter(entriesFormArray.length - 1);
   }
 
@@ -180,10 +197,10 @@ export class ViewReportComponent implements OnInit {
     this.calculateTimeGaps(); // Пересчитать временные интервалы после удаления
   }
 
-  createProcedureEntry(entry?: Entry): FormGroup {
+  createProcedureEntry(entry?: Partial<Entry>): FormGroup {
     const now = new Date();
     const tenMinutesLater = new Date(now.getTime() + 10 * 60000); // добавляем 10 минут
-    
+
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
@@ -205,7 +222,7 @@ export class ViewReportComponent implements OnInit {
 
   submitReport(): void {
     if (this.reportForm.invalid) {
-      console.log('Форма заполнена неверно');
+      this.toastr.error('Форма заполнена неверно');
       return;
     }
 
@@ -227,7 +244,7 @@ export class ViewReportComponent implements OnInit {
       return;
     }
 
-    this.reportForm.value.entries.forEach((entry: Entry, index: number) => {
+    const requests: Observable<CreateReportEntryDto | null>[] = this.reportForm.value.entries.map((entry: Entry, index: number) => {
       const entryData = {
         ...updatedReportEntries[index],
         reportId: this.report?.id,
@@ -236,17 +253,30 @@ export class ViewReportComponent implements OnInit {
       };
 
       if (entry.id) {
-        this.reportService.confirmReportEntry(this.report!.id!, entry.id).subscribe({
-          next: () => this.toastr.info('Запись подтверждена успешно'),
-          error: error => this.toastr.error('Ошибка подтверждения записи')
-        });
+        return this.reportService.updateReportEntry(this.report!.id!, entry.id, entryData).pipe(
+          catchError(error => {
+            this.toastr.error(`Ошибка обновления записи ID ${entry.id}`);
+            return of(null); // Возвращаем null в случае ошибки
+          })
+        );
       } else {
-        // Если у записи нет ID, создаем новую запись
-        this.reportService.createReportEntry(this.report!.id!, entryData).subscribe({
-          next: (newEntry: CreateReportEntryDto) => this.toastr.info('Запись добавлена успешно'),
-          error: error => this.toastr.error('Ошибка добавления записи')
-        });
+        return this.reportService.createReportEntry(this.report!.id!, entryData).pipe(
+          catchError(error => {
+            this.toastr.error('Ошибка добавления записи');
+            return of(null); // Возвращаем null в случае ошибки
+          })
+        );
       }
+    });
+
+    forkJoin(requests).subscribe((results: (CreateReportEntryDto | null)[]) => {
+      // Обработка результатов после завершения всех запросов
+      if (results.every(result => result !== null)) {
+        this.toastr.info('Отчет успешно сохранен');
+      } else {
+        this.toastr.warning('Некоторые записи не были сохранены');
+      }
+      this.calculateTimeGaps();
     });
 
     if (this.report?.id) {
@@ -267,8 +297,8 @@ export class ViewReportComponent implements OnInit {
       this.toastr.error('Форма заполнена неверно');
       return;
     }
-    const updatedReportEntries : CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
-      id: entry.id, 
+    const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries.map((entry: any) => ({
+      id: entry.id,
       procedureId: entry.procedureName.id,
       startTime: new Date(entry.startTime),
       endTime: new Date(entry.endTime),
