@@ -29,18 +29,19 @@ namespace server.Controllers
         public async Task<ActionResult<IEnumerable<ReportDto>>> GetReports()
         {
             var reports = await _context.Reports
-                .Include(r => r.Agent) // Включаем данные об агенте
-                .Include(r => r.Respondent) // Включаем данные о респонденте
-                .Include(r => r.ReportEntries) // Включаем данные о записях отчета
-                    .ThenInclude(re => re.Procedure) // Включаем данные о процедуре
+                .Include(r => r.Agent)
+                .Include(r => r.Respondent)
+                .Include(r => r.ReportEntries)
+                    .ThenInclude(re => re.Procedure)
+                    .OrderByDescending(r => r.Id)
                 .Select(report => new ReportDto
                 {
                     Id = report.Id,
                     ReportDate = report.ReportDate,
                     AgentId = report.AgentId,
-                    AgentName = report.Agent.AgentName, // Включаем имя агента
+                    AgentName = report.Agent.AgentName,
                     RespondentId = report.RespondentId,
-                    RespondentName = report.Respondent.Name, // Включаем имя респондента
+                    RespondentName = report.Respondent.Name,
                     isConfirmed = report.IsConfirmed,
                     ReportEntries = report.ReportEntries.Select(entry => new ReportEntryDto
                     {

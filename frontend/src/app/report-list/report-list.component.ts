@@ -39,6 +39,14 @@ export class ReportListComponent implements OnInit {
       if (this.paginator) {
         this.dataSource.paginator = this.paginator;
       }
+
+      // Переопределение метода фильтрации, чтобы исключить startTime и endTime
+      this.dataSource.filterPredicate = (data: Report, filter: string) => {
+        const transformedFilter = filter.trim().toLowerCase();
+        const dataStr = (data.id + ' ' + data.agentName + ' ' + data.respondentName + ' ' + data.isConfirmed).toLowerCase();
+        return dataStr.includes(transformedFilter);
+      };
+
         this.isLoading = false;
         console.log('Загруженные отчеты:', this.reports);
       },

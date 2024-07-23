@@ -92,9 +92,7 @@ export class NewReportComponent implements OnInit {
     this.reportService.createReport(newReport).subscribe({
       next: (createdReport) => {
         console.log('Report created successfully:', createdReport);
-        //this.router.navigate(['/reports', createdReport.id]); // Переход на страницу созданного отчета
-        this.router.navigate(['/reports']); // Возвращаемся к списку отчетов
-
+        this.router.navigate(['/reports', createdReport.id, 'edit']);
       },
       error: (error) => {
         console.error('Error creating report:', error);
