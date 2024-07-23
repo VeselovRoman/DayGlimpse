@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AgentDetailComponent } from './agent-detail/agent-detail.component';
 import { AgentListComponent } from './agent-list/agent-list.component';
 import { BranchListComponent } from './branch-list/branch-list.component';
-import { AddReportComponent } from './add-report/add-report.component';
 import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
 import { AuthGuard } from './_guards/auth.guard';
@@ -27,7 +26,6 @@ const routes: Routes = [
   
   /*
   //{ path: 'respondents', component: RespondentsComponent, canActivate: [AuthGuard] },
-  { path: 'add-report', component: AddReportComponent },
   { path: 'view-report/:reportId', component: ViewReportComponent },*/
   
  

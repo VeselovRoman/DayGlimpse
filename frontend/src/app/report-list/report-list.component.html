@@ -47,11 +47,13 @@
     </ng-container>
 
     <!-- Статус -->
+    <!-- Статус отчета -->
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Статус </mat-header-cell>
       <mat-cell *matCellDef="let report">
-        <span class="status-circle"
-          [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"></span>
+        <span class="status-circle" [ngClass]="{'confirmed': report.isConfirmed, 'not-confirmed': !report.isConfirmed}"
+          [matTooltip]="report.isConfirmed ? 'Подтверждено' : 'Не подтверждено'" matTooltipPosition="above">
+        </span>
       </mat-cell>
     </ng-container>
 
@@ -76,43 +78,43 @@
       <td class="mat-cell" colspan="7">No data matching the filter "{{input.value}}"</td>
     </tr>
   </table>
-  </div>
+</div>
 
-  <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
-
-  <!-- Modal для отображения записей отчета -->
-  <div *ngIf="selectedReport" class="modal" tabindex="-1" [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Записи отчета #{{ selectedReport.id }}</h5>
-          <button type="button" class="btn-close" aria-label="Close" (click)="closeViewReport()"></button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Номер записи</th>
-                <th>Процедура</th>
-                <th>Начало</th>
-                <th>Конец</th>
-                <th>Комментарий</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let entry of selectedReport.reportEntries">
-                <td>{{ entry.id }}</td>
-                <td>{{ entry.procedureName }}</td>
-                <td>{{ entry.startTime | date:'short' }}</td>
-                <td>{{ entry.endTime | date:'short' }}</td>
-                <td>{{ entry.comment }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button mat-flat-button (click)="closeViewReport()">Закрыть</button>
-        </div>
+<mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+<!-- Modal для отображения записей отчета -->
+<div *ngIf="selectedReport" class="modal" tabindex="-1"
+  [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Записи отчета #{{ selectedReport.id }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeViewReport()"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Номер записи</th>
+              <th>Процедура</th>
+              <th>Начало</th>
+              <th>Конец</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of selectedReport.reportEntries">
+              <td>{{ entry.id }}</td>
+              <td>{{ entry.procedureName }}</td>
+              <td>{{ entry.startTime | date:'short' }}</td>
+              <td>{{ entry.endTime | date:'short' }}</td>
+              <td>{{ entry.comment }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button mat-flat-button (click)="closeViewReport()">Закрыть</button>
       </div>
     </div>
   </div>
+</div>

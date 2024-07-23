@@ -16,7 +16,6 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { AgentDetailComponent } from './agent-detail/agent-detail.component';
 import { AgentListComponent } from './agent-list/agent-list.component';
-import { AddReportComponent } from './add-report/add-report.component';
 import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
@@ -56,7 +55,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     RegisterComponent,
     AgentListComponent,
     AgentDetailComponent,
-    AddReportComponent,
     ReportListComponent,
     ViewReportComponent,
     RespondentListComponent,
