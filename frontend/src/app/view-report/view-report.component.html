@@ -1,7 +1,7 @@
 <div *ngIf="report">
   <div class="container">
 
-    <button class="mb-3" mat-fab extended (click)="closeViewReport()">
+    <button class="mb-3" mat-fab extended (click)="openConfirmLeaveDialog()">
       <mat-icon>arrow_back_ios</mat-icon>
       Назад
     </button>
@@ -73,7 +73,7 @@
                       </mat-form-field>
                     </div>
                     <div class="col-auto">
-                      <button mat-fab type="button" (click)="confirmDelete(i)" matTooltip="Удалить" [class.disabled]="isDeleting[i]">
+                      <button mat-fab type="button" (click)="openConfirmDeleteDialog(i)" matTooltip="Удалить" [class.disabled]="isDeleting[i]">
                         <ng-container *ngIf="!isDeleting[i]; else deletingSpinner">
                           <mat-icon>delete</mat-icon>
                         </ng-container>
@@ -97,7 +97,6 @@
 
             </div>
           </div>
-
           <div class="col-auto">
             <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'"
               [class.disabled]="isCreating">

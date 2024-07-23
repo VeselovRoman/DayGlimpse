@@ -66,12 +66,18 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  openConfirmDialog(index: number): void {
+  openConfirmDeleteDialog(index: number) {
+    this.isDeleting[index] = true;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: { message: 'Вы уверены, что хотите удалить эту запись?' }
+      width: '350px',
+      data: {
+        title: 'Удаление',
+        message: 'Вы уверены, что хотите удалить эту запись?',
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена'
+      }
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.removeProcedureEntry(index);
@@ -81,16 +87,23 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  confirmDelete(index: number): void {
-    this.isDeleting[index] = true; // Начало загрузки удаления
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent);
-
+  openConfirmLeaveDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Изменения',
+        message: 'У вас есть несохраненные изменения. Закрыть?',
+        confirmButtonText: 'Закрыть',
+        cancelButtonText: 'Отмена'
+      }
+    });
+  
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.removeProcedureEntry(index);
+      if (result) {
+        this.reportStateService.loadReports();
+          this.router.navigate(['/reports']);
       } else {
-        this.isDeleting[index] = false; // Отмена удаления
+        
       }
     });
   }
@@ -291,17 +304,17 @@ export class ViewReportComponent implements OnInit {
       this.toastr.error('Форма заполнена неверно');
       return;
     }
-  
+
     const entryConfirmationRequests: Observable<any>[] = this.reportForm.value.entries.map((entry: any) =>
       this.reportService.confirmReportEntry(this.report.id, entry.id)
     );
-  
+
     console.log('Entry confirmation requests:', entryConfirmationRequests);
-  
+
     forkJoin(entryConfirmationRequests).subscribe({
       next: (results: any[]) => {
         console.log('Confirmation results:', results);
-  
+
         const allConfirmed = results.every(result => result !== null);
         if (allConfirmed) {
           console.log('All entries confirmed, proceeding to confirm report.');
@@ -327,8 +340,8 @@ export class ViewReportComponent implements OnInit {
       }
     });
   }
-  
-  
+
+
 
   saveReport(): void {
     if (this.reportForm.invalid) {
@@ -402,8 +415,20 @@ export class ViewReportComponent implements OnInit {
   }
 
   closeViewReport(): void {
-    this.reportStateService.loadReports();
-    this.router.navigate(['/reports']);
+    if (this.reportForm.dirty || this.reportForm.touched) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '400px',
+        data: { message: "У вас есть несохраненные изменения. Вы уверены, что хотите покинуть страницу?" }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.reportStateService.loadReports();
+          this.router.navigate(['/reports']); // Или любой другой маршрут
+        }
+      });
+    } else {
+      this.router.navigate(['/reports']); // Или любой другой маршрут
+    }
   }
 
   calculateTimeGaps(): void {

@@ -4,6 +4,8 @@ import { Report } from '../_models/report';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { NewReportComponent } from '../new-report/new-report.component';
 
 @Component({
   selector: 'app-report-list',
@@ -18,10 +20,11 @@ export class ReportListComponent implements OnInit {
   dataSource = new MatTableDataSource<Report>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   constructor(
     private reportService: ReportService,
     private router: Router,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -33,19 +36,19 @@ export class ReportListComponent implements OnInit {
     this.reportService.getReports().subscribe({
       next: (reports: Report[]) => {
         this.reports = reports;
-        
-        // Создаем новый MatTableDataSource и устанавливаем пагинатор
-      this.dataSource = new MatTableDataSource(this.reports);
-      if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-      }
 
-      // Переопределение метода фильтрации, чтобы исключить startTime и endTime
-      this.dataSource.filterPredicate = (data: Report, filter: string) => {
-        const transformedFilter = filter.trim().toLowerCase();
-        const dataStr = (data.id + ' ' + data.agentName + ' ' + data.respondentName + ' ' + data.isConfirmed).toLowerCase();
-        return dataStr.includes(transformedFilter);
-      };
+        // Создаем новый MatTableDataSource и устанавливаем пагинатор
+        this.dataSource = new MatTableDataSource(this.reports);
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
+
+        // Переопределение метода фильтрации, чтобы исключить startTime и endTime
+        this.dataSource.filterPredicate = (data: Report, filter: string) => {
+          const transformedFilter = filter.trim().toLowerCase();
+          const dataStr = (data.id + ' ' + data.agentName + ' ' + data.respondentName + ' ' + data.isConfirmed).toLowerCase();
+          return dataStr.includes(transformedFilter);
+        };
 
         this.isLoading = false;
         console.log('Загруженные отчеты:', this.reports);
@@ -70,6 +73,19 @@ export class ReportListComponent implements OnInit {
   editReport(report: Report) {
     console.log('Редактирование отчета:', report);
     this.router.navigate(['/reports', report.id, 'edit']);
+  }
+
+  openNewReportDialog(): void {
+    const dialogRef = this.dialog.open(NewReportComponent, {
+      width: '600px',
+      data: { /* данные, если необходимы */ }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.router.navigate(['/reports', result, 'edit']); // Переход к редактированию созданного отчёта
+      }
+    });
   }
 
   closeViewReport() {

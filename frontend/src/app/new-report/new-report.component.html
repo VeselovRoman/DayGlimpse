@@ -1,23 +1,28 @@
-<div class="container">
-  <h2 class="text-center">Создание нового отчета</h2>
-  <form [formGroup]="newReportForm" (ngSubmit)="submitForm()" class="mx-auto" style="max-width: 500px;">
+<h2 mat-dialog-title class="text-center">Создание нового отчета</h2>
+<mat-dialog-content class="container">
+  <form [formGroup]="newReportForm" class="mx-auto" style="max-width: 500px;">
+
+    <mat-form-field appearance="fill" class="w-100 mb-3">
+      <mat-label>Агент</mat-label>
+      <input matInput type="text" [value]="agentName" disabled>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-100 mb-3">
+      <mat-label>Дата отчета</mat-label>
+      <input matInput type="datetime-local" formControlName="reportDate">
+    </mat-form-field>
+
     <div class="form-group mb-3">
-      <label for="agentName">Агент</label>
-      <input type="text" id="agentName" [value]="agentName" class="form-control" disabled>
-    </div>
-    <div class="form-group mb-3">
-      <label for="reportDate">Дата отчета</label>
-      <input type="datetime-local" id="reportDate" formControlName="reportDate" class="form-control">
-    </div>
-    <div class="form-group mb-3">
-      <label for="respondentId">Выберите респондента</label>
-      <select id="respondentId" formControlName="respondentId" class="form-control">
-        <option *ngFor="let respondent of respondents" [value]="respondent.id">{{ respondent.name }}</option>
-      </select>
-    </div>
-    <div class="d-flex justify-content-between">
-      <button mat-flat-button type="submit">Создать отчет</button>
-      <button mat-button (click)="cancel()">Отмена</button>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Выберите респондента</mat-label>
+        <mat-select id="respondentName" formControlName="respondentName">
+          <mat-option *ngFor="let respondent of respondents" [value]="respondent.id">{{ respondent.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </form>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Отмена</button>
+  <button mat-flat-button color="primary" (click)="submitForm()" [disabled]="newReportForm.invalid">Создать отчет</button>
+</mat-dialog-actions>

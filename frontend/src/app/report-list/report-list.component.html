@@ -2,7 +2,7 @@
 <div class="container mt-4" *ngIf="!isLoading">
   <div class="row">
     <div class="col-2">
-      <button class="mb-3" mat-fab extended routerLink="/reports/new">
+      <button class="mb-3" mat-fab extended (click)="openNewReportDialog()">
         <mat-icon>add</mat-icon>
         Добавить
       </button>

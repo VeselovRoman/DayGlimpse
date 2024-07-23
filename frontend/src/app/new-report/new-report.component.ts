@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AccountService } from '../_services/account.service';
 import { RespondentService } from '../_services/respondent.service';
-import { Agent } from '../_models/agent';
-import { Respondent } from '../_models/respondent';
 import { ReportService } from '../_services/report.service';
 import { CreateReportDto } from '../_dto/report.dto';
+import { Respondent } from '../_models/respondent';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-new-report',
@@ -14,19 +14,19 @@ import { CreateReportDto } from '../_dto/report.dto';
   styleUrls: ['./new-report.component.css']
 })
 export class NewReportComponent implements OnInit {
-  newReportForm = this.formBuilder.group({
-    reportDate: [new Date().toISOString()],
-    respondentId: ['']
-  });
-  agentId: number = 0;
-  agentName: string = '';
+  newReportForm!: FormGroup;
   respondents: Respondent[] = [];
+  agentId: number;
+  agentName: string;
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
+    private snackBar: MatSnackBar,
+    private dialogRef: MatDialogRef<NewReportComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private respondentService: RespondentService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -37,11 +37,12 @@ export class NewReportComponent implements OnInit {
 
   initializeForm(): void {
     this.newReportForm = this.formBuilder.group({
+      agentName: [{ value: this.agentName, disabled: true }],
       reportDate: [{ value: this.getUTCTimeString(), disabled: true }],
-      respondentId: ['', Validators.required]
+      respondentName: ['', Validators.required]
     });
   }
-  
+
   getUTCTimeString(): string {
     const now = new Date();
     const tzOffset = now.getTimezoneOffset() * 60000; // Offset in milliseconds
@@ -66,7 +67,6 @@ export class NewReportComponent implements OnInit {
   }
 
   loadRespondents(): void {
-    // Метод загрузки респондентов
     this.respondentService.getRespondents().subscribe(respondents => {
       this.respondents = respondents;
     });
@@ -74,33 +74,44 @@ export class NewReportComponent implements OnInit {
 
   submitForm(): void {
     if (this.newReportForm.invalid) {
-      console.log('Form is invalid');
+      this.snackBar.open('Пожалуйста, заполните все обязательные поля.', 'Закрыть', {
+        duration: 3000, // Время отображения сообщения в миллисекундах
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-error'] // Классы для стилизации сообщения
+      });
       return;
     }
 
     const formData = this.newReportForm.getRawValue();
-    const reportDate: string = formData.reportDate ?? '';
-    const respondentId: number = Number(formData.respondentId);
+    const reportDate: string = formData.reportDate;
+    const selectedRespondent = formData.respondentName;
+
+    const respondentId = this.newReportForm.get('respondentName')?.value;
 
     const newReport: CreateReportDto = {
       reportDate: reportDate,
       agentId: this.agentId,
       respondentId: respondentId
     };
+
     console.log('Данные нового отчета', newReport);
-    // Отправляем данные на сервер через сервис
     this.reportService.createReport(newReport).subscribe({
       next: (createdReport) => {
         console.log('Report created successfully:', createdReport);
+        this.dialogRef.close();
         this.router.navigate(['/reports', createdReport.id, 'edit']);
       },
       error: (error) => {
-        console.error('Error creating report:', error);
+        this.snackBar.open('Ошибка при создании отчета.', 'Закрыть', {
+          duration: 5000,
+          panelClass: ['snackbar-error']
+        });
       }
     });
   }
 
   cancel(): void {
-    this.router.navigate(['/reports']); // замените '/previous-page' на нужный маршрут
+    this.dialogRef.close();
   }
 }
