@@ -48,6 +48,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { RegistrationFormComponent } from './registration-form/registration-form.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     RespondentDialogComponent,
     BranchDialogComponent,
     AgentDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    RegistrationFormComponent
   ],
   imports: [
     BrowserAnimationsModule,

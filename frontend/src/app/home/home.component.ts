@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { AccountService } from '../_services/account.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RegistrationFormComponent } from '../registration-form/registration-form.component';
 
 @Component({
   selector: 'app-home',
@@ -10,22 +12,18 @@ import { AccountService } from '../_services/account.service';
 export class HomeComponent implements OnInit {
   http = inject(HttpClient);
   accountService = inject(AccountService);
-  registerMode = false;
   users: any;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
-
   }
 
-  registerToggle() {
-    this.registerMode = !this.registerMode;
-  }
-
-
-  cancelRegisterMode(event: boolean) {
-    this.registerMode = event;
+  openRegistrationDialog(): void {
+    const dialogRef = this.dialog.open(RegistrationFormComponent, {
+      width: '400px'
+    });
+  
   }
 
 }

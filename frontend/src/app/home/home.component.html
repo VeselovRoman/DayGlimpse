@@ -1,17 +1,9 @@
 <div *ngIf="!accountService.isLoggedIn()">
     <div style="text-align: center;">
-        <div *ngIf="!registerMode">
             <h1>DayGlimpse</h1>
             <p class="lead">Сервис для создания фотографий рабочего дня. Войдите в систему</p>
             <div class="text-center">
-                <button mat-flat-button (click)="registerToggle()">Регистрация</button>
+                <button mat-flat-button (click)="openRegistrationDialog()">Регистрация</button>
             </div>
-        </div>
-        <div *ngIf="registerMode">
-            <div>
-                <app-register (cancelRegister)="cancelRegisterMode($event)">
-                </app-register>
-            </div>
-        </div>
     </div>
 </div>
