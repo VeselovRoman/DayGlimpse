@@ -52,7 +52,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'server/bin/Release/net8.0/publish/*'
-          target: '/var/www/server'
+          target: '/var/www/server/'
           strip_components: 4
           port: 22
 
@@ -64,7 +64,9 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'frontend/dist/client/*'
-          target: '/var/www/html'
+          target: '/var/www/html/'
+          strip_components: 4
+          port: 22
 
       # Выполнение SSH команд на сервере
       - name: Run SSH commands
@@ -75,7 +77,5 @@ jobs:
           key: ${{ secrets.VM_PRIVATE_KEY }}
           script: |
             sudo systemctl stop server.service
-            cd /var/www/server
-            dotnet ef database update
             sudo systemctl start server.service
           port: 22
