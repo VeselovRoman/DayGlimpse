@@ -13,7 +13,6 @@
 
 .form-floating {
   width: 100%;
-  max-width: 600px; /* Устанавливаем максимальную ширину для больших экранов */
 }
 
 .mat-form-field {

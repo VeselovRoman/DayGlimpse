@@ -44,7 +44,11 @@ import { RespondentDialogComponent } from './respondent-dialog/respondent-dialog
 import { BranchDialogComponent } from './branch-dialog/branch-dialog.component';
 import { AgentDialogComponent } from './agent-dialog/agent-dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
 
 @NgModule({
   declarations: [
@@ -89,6 +93,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatSortModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatMenuModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({
@@ -100,7 +106,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     provideHttpClient(
       withInterceptors([jwtInterceptor, loadingInterceptor])),
     provideAnimations(),
-    importProvidersFrom(NgxSpinnerModule)
+    importProvidersFrom(NgxSpinnerModule),
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

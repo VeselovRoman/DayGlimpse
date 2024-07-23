@@ -66,12 +66,10 @@ export class ReportListComponent implements OnInit {
   }
 
   viewEntries(report: Report) {
-    console.log('Просмотр записей для отчета:', report);
     this.selectedReport = report;
   }
 
   editReport(report: Report) {
-    console.log('Редактирование отчета:', report);
     this.router.navigate(['/reports', report.id, 'edit']);
   }
 

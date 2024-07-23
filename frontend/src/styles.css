@@ -1,7 +1,6 @@
 /* based on angular-toastr css https://github.com/Foxandxss/angular-toastr/blob/cb508fe6801d6b288d3afc525bb40fee1b101650/dist/angular-toastr.css */
 @import '~@angular/material/prebuilt-themes/azure-blue.css';
 
-
 /* position */
 .toast-center-center {
     top: 50%;
@@ -192,3 +191,5 @@
       width: 25em;
     }
   }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,19 +1,16 @@
-<div class="container mt-5" *ngIf="!accountService.isLoggedIn()">
+<div *ngIf="!accountService.isLoggedIn()">
     <div style="text-align: center;">
         <div *ngIf="!registerMode">
             <h1>DayGlimpse</h1>
             <p class="lead">Сервис для создания фотографий рабочего дня. Войдите в систему</p>
             <div class="text-center">
-                <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Регистрация</button>
+                <button mat-flat-button (click)="registerToggle()">Регистрация</button>
             </div>
         </div>
-        <div *ngIf="registerMode" class="container">
-            <div class="row justify-content-center">
-                <div class="col-4">
-                    <app-register
-                        (cancelRegister)="cancelRegisterMode($event)">               
-                    </app-register>
-                </div>
+        <div *ngIf="registerMode">
+            <div>
+                <app-register (cancelRegister)="cancelRegisterMode($event)">
+                </app-register>
             </div>
         </div>
     </div>

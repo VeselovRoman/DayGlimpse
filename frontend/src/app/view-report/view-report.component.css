@@ -39,31 +39,6 @@
   /* желтый */
 }
 
-.grey-background {
-  background-color: #f0f0f0;
-  /* или любой другой желаемый цвет */
-}
-
-.timeline-container {
-  position: relative;
-  width: 100%;
-  height: 40px;
-  background-color: #f0f0f0;
-  margin-bottom: 20px;
-}
-
-.timeline-bar {
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-}
-
-.timeline-segment {
-  position: absolute;
-  height: 100%;
-}
-
 .time-gap-indicator {
   position: relative;
   height: 20px;

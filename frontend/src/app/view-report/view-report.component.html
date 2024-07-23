@@ -1,12 +1,12 @@
 <div *ngIf="report">
   <div class="container">
 
-    <button class="mb-3" mat-fab extended (click)="openConfirmLeaveDialog()">
+    <button mat-flat-button class="mb-3" (click)="openConfirmLeaveDialog()">
       <mat-icon>arrow_back_ios</mat-icon>
       Назад
     </button>
 
-    <button class="mb-3 ms-3" mat-fab extended (click)="refreshReportAndProcedures()">
+    <button mat-flat-button class="mb-3 ms-3" (click)="refreshReportAndProcedures()">
       <mat-icon>refresh</mat-icon>
       Обновить
     </button>
@@ -15,11 +15,13 @@
     <div class="time-gap-indicator">
       <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
     </div>
+    <mat-divider class="mb-3 mt-2"></mat-divider>
 
     <!-- Заполнение шапки отчета -->
     <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
       <mat-card>
-        <h5>Редактирование отчета</h5>
+        <mat-label class="ms-3 mb-2">Редактирование отчета</mat-label>
+
         <mat-card-content>
           <div class="form-group mb-2">
             <span class="status-circle me-3"
@@ -35,15 +37,19 @@
           <mat-divider class="mb-2"></mat-divider>
 
           <div formArrayName="entries">
-            <div *ngFor="let entry of entries.controls; let i=index" [formGroupName]="i">
-              <div class="card-body">
-                <h6 class="card-title mb-2">Процедура {{ i + 1 }} (ID: {{ entry.value.id }})
+            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2">
+              <mat-card-header>
+                <mat-card-title class="ms-2">
+                  Процедура {{ i + 1 }} (ID: {{ entry.value.id }})
                   <mat-icon *ngIf="entry.dirty" class="text-danger ms-2 small-icon">edit</mat-icon>
-                </h6>
+                </mat-card-title>
+              </mat-card-header>
 
-                <mat-form-field appearance="fill" class="col-12">
+              <mat-card-content>
+                <mat-form-field appearance="fill" class="full-width mb-2">
                   <mat-label>Наименование</mat-label>
-                  <input type="text" matInput formControlName="procedureName" [matAutocomplete]="auto">
+                  <input matInput formControlName="procedureName" [matAutocomplete]="auto"
+                    matTooltip="{{ entry.value.procedureName }}">
                   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedure">
                     <mat-option *ngFor="let procedure of filteredProcedures[i] | async" [value]="procedure">
                       {{ procedure.name }}
@@ -51,55 +57,47 @@
                   </mat-autocomplete>
                 </mat-form-field>
 
-                <div class="container">
-
-                  <div class="row">
-                    <div class="col">
-                      <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Начало выполнения</mat-label>
-                        <input matInput type="datetime-local" formControlName="startTime" [id]="'startTime' + i">
-                      </mat-form-field>
-                    </div>
-                    <div class="col">
-                      <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Окончание выполнения</mat-label>
-                        <input matInput type="datetime-local" formControlName="endTime" [id]="'endime' + i">
-                      </mat-form-field>
-                    </div>
-                    <div class="col">
-                      <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Комментарий</mat-label>
-                        <input matInput formControlName="comment">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-auto">
-                      <button mat-fab type="button" (click)="openConfirmDeleteDialog(i)" matTooltip="Удалить" [class.disabled]="isDeleting[i]">
-                        <ng-container *ngIf="!isDeleting[i]; else deletingSpinner">
-                          <mat-icon>delete</mat-icon>
-                        </ng-container>
-                        <ng-template #deletingSpinner>
-                          <mat-progress-spinner mode="indeterminate" diameter="30" class="spinner-inside"></mat-progress-spinner>
-                        </ng-template>
-                      </button>
-                    </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>Начало выполнения</mat-label>
+                      <input matInput type="datetime-local" formControlName="startTime">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>Окончание выполнения</mat-label>
+                      <input matInput type="datetime-local" formControlName="endTime">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>Комментарий</mat-label>
+                      <input matInput formControlName="comment">
+                    </mat-form-field>
                   </div>
                 </div>
-                <div *ngIf="!checkTimeGapWithinEntry(entry.value)" class="mt-1 d-flex align-items-center">
-                  <i class="bi bi-exclamation-triangle text-warning"></i>
-                  <span class="text-warning ms-2">Временной интервал не заполнен или некорректен</span>
-                </div>
-                <div *ngIf="hasTimeGapWarning(i)" class="mt-1 d-flex align-items-center">
-                  <i class="bi bi-exclamation-triangle text-warning me-1"></i>
-                  <span class="text-warning">Время начала больше чем на 5 минут от окончания предыдущей процедуры</span>
-                </div>
-              </div>
-              <mat-divider class="mb-5"></mat-divider>
+              </mat-card-content>
 
-            </div>
+              <mat-card-actions class="justify-content-end">
+                <button mat-button color="warn" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
+                  <ng-container *ngIf="!isDeleting[i]">Удалить</ng-container>
+                  <mat-progress-spinner *ngIf="isDeleting[i]" mode="indeterminate" diameter="20"></mat-progress-spinner>
+                </button>
+              </mat-card-actions>
+
+              <mat-card-footer *ngIf="hasTimeGapWarning(i) || !checkTimeGapWithinEntry(entry.value)"
+                class="text-warning">
+                <span>{{ !checkTimeGapWithinEntry(entry.value) ? 'Временной интервал некорректен' : 'Время начала и окончания не соответствует' }}</span>
+              </mat-card-footer>
+            </mat-card>
           </div>
+
+
+
           <div class="col-auto">
-            <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()" [matTooltip]="'Добавить новую запись'"
-              [class.disabled]="isCreating">
+            <button class="mb-3" mat-fab type="button" (click)="addProcedureEntry()"
+              [matTooltip]="'Добавить новую запись'" [class.disabled]="isCreating">
               <ng-container *ngIf="!isCreating; else loadingSpinner">
                 <mat-icon>add</mat-icon>
               </ng-container>
@@ -110,7 +108,7 @@
           </div>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-flat-button type="submit" class="btn btn-primary"
+          <button mat-flat-button type="submit" class="me-2"
             [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
           <button class="me-2" mat-button type="button" (click)="saveReport()"
             [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>

@@ -1,3 +1,25 @@
 .dropdown-toggle, .dropdown-item, .nav-link{
     cursor: pointer
 }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .nav-links a {
+    margin-right: 10px;
+  }
+  
+  .account-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .login-form {
+    display: flex;
+    gap: 10px;
+  }
+  
