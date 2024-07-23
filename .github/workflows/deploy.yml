@@ -53,6 +53,7 @@ jobs:
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'server/bin/Release/net8.0/publish/*'
           target: '/var/www/server'
+          strip_components: 4
           port: 22
 
       # Деплой клиентской части
