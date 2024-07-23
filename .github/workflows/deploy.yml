@@ -53,6 +53,7 @@ jobs:
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'server/bin/Release/net8.0/publish/*'
           target: '/var/www/server'
+          port: 22
 
       # Деплой клиентской части
       - name: Deploy Angular to VM
@@ -76,3 +77,4 @@ jobs:
             cd /var/www/server
             dotnet ef database update
             sudo systemctl start server.service
+          port: 22
