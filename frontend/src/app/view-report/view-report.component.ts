@@ -15,7 +15,7 @@ import { catchError, forkJoin, map, Observable, of, retry, startWith } from 'rxj
 import { CreateReportEntryDto } from '../_dto/report.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-view-report',
@@ -32,7 +32,7 @@ export class ViewReportComponent implements OnInit {
   filteredProcedures: { [key: number]: Observable<Procedure[]> } = {};
   isCreating: boolean = false;
   isDeleting: boolean[] = [];
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -71,7 +71,7 @@ export class ViewReportComponent implements OnInit {
       width: '250px',
       data: { message: 'Вы уверены, что хотите удалить эту запись?' }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.removeProcedureEntry(index);
@@ -85,7 +85,7 @@ export class ViewReportComponent implements OnInit {
     this.isDeleting[index] = true; // Начало загрузки удаления
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
         this.removeProcedureEntry(index);
@@ -94,7 +94,7 @@ export class ViewReportComponent implements OnInit {
       }
     });
   }
-  
+
   loadReport(): void {
     this.reportService.getReport(this.reportId).subscribe(report => {
       this.report = report;
@@ -198,21 +198,21 @@ export class ViewReportComponent implements OnInit {
   addProcedureEntry(): void {
     this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
-  
+
     let lastEndTime: Date = new Date();
     if (entriesFormArray.length > 0) {
       const lastEntry = entriesFormArray.at(entriesFormArray.length - 1).value;
       lastEndTime = new Date(lastEntry.endTime);
     }
-  
+
     const startTime = new Date(lastEndTime);
     const endTime = new Date(startTime.getTime() + 10 * 60000);
-  
+
     const newEntry = this.createProcedureEntry({
       startTime: startTime,
       endTime: endTime
     });
-  
+
     const entryData: CreateReportEntryDto = {
       id: 0, // ID будет присвоен сервером
       agentId: this.report.agentId,
@@ -223,7 +223,7 @@ export class ViewReportComponent implements OnInit {
       comment: '',
       reportId: this.report.id
     };
-  
+
     this.reportService.createReportEntry(this.report.id, entryData).subscribe({
       next: (createdEntry: CreateReportEntryDto) => {
         newEntry.patchValue({ id: createdEntry.id });
@@ -262,7 +262,7 @@ export class ViewReportComponent implements OnInit {
       this.isDeleting[index] = false;
     }
   }
-  
+
   createProcedureEntry(entry?: Partial<Entry>): FormGroup {
     const now = new Date();
     const tenMinutesLater = new Date(now.getTime() + 10 * 60000); // добавляем 10 минут
@@ -277,7 +277,7 @@ export class ViewReportComponent implements OnInit {
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
     });
   }
-  
+
   formatDate(date: Date | undefined): string {
     return date ? formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru') : '';
   }
@@ -292,33 +292,42 @@ export class ViewReportComponent implements OnInit {
       return;
     }
   
-    // Подтверждение всех записей
     const entryConfirmationRequests: Observable<any>[] = this.reportForm.value.entries.map((entry: any) =>
-      this.reportService.confirmReportEntry(this.report.id, entry.id).pipe(
-        catchError(error => {
-          this.toastr.error(`Ошибка подтверждения записи ID ${entry.id}`);
-          return of(null); // Возвращаем null в случае ошибки
-        })
-      )
+      this.reportService.confirmReportEntry(this.report.id, entry.id)
     );
   
-    // Объединение всех запросов на подтверждение записей
-    forkJoin(entryConfirmationRequests).subscribe((results: any[]) => {
-      if (results.every(result => result !== null)) {
-        // Подтверждение самого отчета после подтверждения всех записей
-        this.reportService.confirmReport(this.report.id).subscribe({
-          next: () => {
-            this.toastr.info('Отчет успешно подтвержден');
-            this.reportStateService.loadReports();
-            this.router.navigate(['/reports']);
-          },
-          error: error => this.toastr.error('Ошибка подтверждения отчета')
-        });
-      } else {
-        this.toastr.warning('Некоторые записи не были подтверждены');
+    console.log('Entry confirmation requests:', entryConfirmationRequests);
+  
+    forkJoin(entryConfirmationRequests).subscribe({
+      next: (results: any[]) => {
+        console.log('Confirmation results:', results);
+  
+        const allConfirmed = results.every(result => result !== null);
+        if (allConfirmed) {
+          console.log('All entries confirmed, proceeding to confirm report.');
+          this.reportService.confirmReport(this.report.id).subscribe({
+            next: () => {
+              this.toastr.info('Отчет успешно подтвержден');
+              this.reportStateService.loadReports();
+              this.router.navigate(['/reports']);
+            },
+            error: error => {
+              this.toastr.error('Ошибка подтверждения отчета');
+              console.error('Error confirming report:', error);
+            }
+          });
+        } else {
+          this.toastr.warning('Некоторые записи не были подтверждены');
+          console.warn('Not all entries confirmed.');
+        }
+      },
+      error: error => {
+        console.error('Error in forkJoin:', error);
+        this.toastr.error('Ошибка при выполнении запросов на подтверждение записей');
       }
     });
   }
+  
   
 
   saveReport(): void {
@@ -326,26 +335,26 @@ export class ViewReportComponent implements OnInit {
       this.toastr.error('Форма заполнена неверно');
       return;
     }
-  
+
     this.isCreating = true;
 
     const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries
       .filter((entry: any) => this.entries.at(this.reportForm.value.entries.indexOf(entry)).dirty)
       .map((entry: any) => {
-      const startTimeUTC = new Date(entry.startTime).toISOString();
-      const endTimeUTC = new Date(entry.endTime).toISOString();
+        const startTimeUTC = new Date(entry.startTime).toISOString();
+        const endTimeUTC = new Date(entry.endTime).toISOString();
 
-      return {
-      id: entry.id,
-      agentId: this.report.agentId,
-      respondentId: this.report.respondentId,
-      procedureId: entry.procedureName.id,
-      startTime: startTimeUTC,
-      endTime: endTimeUTC,
-      comment: entry.comment,
-      reportId: this.report.id
-      }
-    });
+        return {
+          id: entry.id,
+          agentId: this.report.agentId,
+          respondentId: this.report.respondentId,
+          procedureId: entry.procedureName.id,
+          startTime: startTimeUTC,
+          endTime: endTimeUTC,
+          comment: entry.comment,
+          reportId: this.report.id
+        }
+      });
     console.log('Updated Report Entries:', updatedReportEntries);
 
     updatedReportEntries.forEach(entry => {
@@ -353,26 +362,26 @@ export class ViewReportComponent implements OnInit {
         this.reportService.updateReportEntry(this.report.id, entry.id, entry).subscribe({
           next: () => {
             this.toastr.info('Запись успешно обновлена'),
-            this.resetFormState();
+              this.resetFormState();
           },
           error: error => this.toastr.error('Ошибка обновления записи'),
           complete: () => this.isCreating = false
         });
       }
     });
-  
+
     this.calculateTimeGaps();
     this.toastr.info('Отчет успешно сохранен');
   }
-  
+
   resetFormState() {
     const entries = this.reportForm.get('entries') as FormArray;
-  
+
     entries.controls.forEach(control => {
       control.markAsPristine();
       control.markAsUntouched();
     });
-  
+
     this.reportForm.markAsPristine();
     this.reportForm.markAsUntouched();
   }

@@ -55,7 +55,6 @@ jobs:
           target: '/var/www/server/'
           strip_components: 5
           port: 22
-          debug: true
 
       # Деплой клиентской части
       - name: Deploy Angular to VM
@@ -68,7 +67,6 @@ jobs:
           target: '/var/www/html/'
           strip_components: 3
           port: 22
-          debug: true
 
       # Выполнение SSH команд на сервере
       - name: Run SSH commands

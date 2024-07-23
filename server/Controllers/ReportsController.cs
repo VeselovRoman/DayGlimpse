@@ -264,7 +264,6 @@ namespace server.Controllers
         }
 
         // Подтверждение отчета
-
         [HttpPut("{reportId}/confirm")]
         public async Task<IActionResult> ConfirmReport(int reportId)
         {
@@ -272,33 +271,33 @@ namespace server.Controllers
 
             if (report == null)
             {
-                return NotFound($"Report with id {reportId} not found.");
+                return NotFound(new { message = $"Report with id {reportId} not found." });
             }
 
             report.IsConfirmed = true;
-
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = $"Report with id {reportId} confirmed." });
         }
 
         // Подтверждение записи
 
         [HttpPut("{reportId}/entries/{entryId}/confirm")]
-        public async Task<IActionResult> ConfirmReportEntry(int entryId)
+        public async Task<IActionResult> ConfirmReportEntry(int reportId, int entryId)
         {
-            var entry = await _context.ReportEntries.FindAsync(entryId);
+            var entry = await _context.ReportEntries
+                .Where(e => e.ReportId == reportId && e.Id == entryId)
+                .FirstOrDefaultAsync();
 
             if (entry == null)
             {
-                return NotFound($"Report entry with id {entryId} not found.");
+                return NotFound(new { message = $"Entry with id {entryId} for report {reportId} not found." });
             }
 
             entry.IsConfirmed = true;
-
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = $"Entry {entryId} confirmed for report {reportId}." });
         }
 
         // Обновляет запись отчета

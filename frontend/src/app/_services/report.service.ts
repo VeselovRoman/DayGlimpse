@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CreateReportDto, CreateReportEntryDto, ReportDto } from '../_dto/report.dto';
 import { Report } from '../_models/report';
@@ -60,16 +60,44 @@ export class ReportService {
   }
 
   // Подтверждает отчет по его идентификатору.
-  confirmReport(reportId: number): Observable<any> {
+  /*confirmReport(reportId: number): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}${reportId}/confirm`, {});
-  }
+  }*/
 
+    confirmReport(reportId: number): Observable<any> {
+      const url = `${this.baseUrl}${reportId}/confirm`;
+      console.log(`Sending request to: ${url}`);
+      return this.http.put<any>(url, {}).pipe(
+        tap(response => {
+          console.log(`Response for report ${reportId}:`, response);
+        }),
+        catchError(error => {
+          console.error(`Error confirming report ${reportId}:`, error);
+          return of(null); // Возвращаем null в случае ошибки
+        })
+      );
+    }
+    
   //Подтверждает запись отчета по ее идентификаторам.
-  confirmReportEntry(reportId: number, entryId: number): Observable<any> {
+  /*confirmReportEntry(reportId: number, entryId: number): Observable<any> {
     console.log(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`);
     return this.http.put<any>(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`, {});
-  }
+  }*/
 
+    confirmReportEntry(reportId: number, entryId: number): Observable<any> {
+      const url = `${this.baseUrl}${reportId}/entries/${entryId}/confirm`;
+      console.log(`Sending request to: ${url}`);
+      return this.http.put<any>(url, {}).pipe(
+        tap(response => {
+          console.log(`Response for entry ${entryId}:`, response);
+        }),
+        catchError(error => {
+          console.error(`Error confirming entry ${entryId}:`, error);
+          return of(null); // Возвращаем null в случае ошибки
+        })
+      );
+    }
+  
   //Получает список всех отчетов.
   getReports(): Observable<Report[]> {
     return this.http.get<Report[]>(`${this.baseUrl}`).pipe(

@@ -39,8 +39,6 @@ export class ReportListComponent implements OnInit {
       if (this.paginator) {
         this.dataSource.paginator = this.paginator;
       }
-        console.log('this.dataSource.data: ', this.dataSource);
-        console.log('Paginator:', this.paginator, this.dataSource.paginator);
         this.isLoading = false;
         console.log('Загруженные отчеты:', this.reports);
       },
