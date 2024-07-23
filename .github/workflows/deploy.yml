@@ -53,8 +53,9 @@ jobs:
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'server/bin/Release/net8.0/publish/*'
           target: '/var/www/server/'
-          strip_components: 4
+          strip_components: 5
           port: 22
+          debug: true
 
       # Деплой клиентской части
       - name: Deploy Angular to VM
@@ -65,8 +66,9 @@ jobs:
           key: ${{ secrets.VM_PRIVATE_KEY }}
           source: 'frontend/dist/client/*'
           target: '/var/www/html/'
-          strip_components: 4
+          strip_components: 3
           port: 22
+          debug: true
 
       # Выполнение SSH команд на сервере
       - name: Run SSH commands
