@@ -9,6 +9,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
 import { NewReportComponent } from './new-report/new-report.component';
+import { CategoryEditorComponent } from './category-editor/category-editor.component';
 
 const routes: Routes = [
   
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'reports/new', component: NewReportComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
   { path: 'agents/:id', component: AgentDetailComponent, canActivate: [AuthGuard] },
+  { path: 'categories', component: CategoryEditorComponent, canActivate: [AuthGuard] },
   { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
   

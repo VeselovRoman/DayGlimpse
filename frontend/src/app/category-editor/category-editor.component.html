@@ -1,0 +1,65 @@
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="categories" class="full-width-table" matSort>
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <!-- Main Group Column -->
+    <ng-container matColumnDef="mainGroup">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Основные группы</th>
+      <td mat-cell *matCellDef="let element">
+        <textarea matInput [(ngModel)]="element.mainGroup" rows="1" class="textarea-input"></textarea>
+      </td>
+    </ng-container>
+
+    <!-- Cost Group Column -->
+    <ng-container matColumnDef="costGroup">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Группа затрат рабочего времени</th>
+      <td mat-cell *matCellDef="let element">
+        <textarea matInput [(ngModel)]="element.costGroup" rows="1" class="textarea-input"></textarea>
+      </td>
+    </ng-container>
+
+    <!-- Cost Category Column -->
+    <ng-container matColumnDef="costCategory">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Категория затрат рабочего времени</th>
+      <td mat-cell *matCellDef="let element">
+        <textarea matInput [(ngModel)]="element.costCategory" rows="1" class="textarea-input"></textarea>
+      </td>
+    </ng-container>
+
+    <!-- Cost Index Column -->
+    <ng-container matColumnDef="costIndex">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Индекс элемента затрат рабочего времени</th>
+      <td mat-cell *matCellDef="let element">
+        <textarea matInput [(ngModel)]="element.costIndex" rows="1" class="textarea-input"></textarea>
+      </td>
+    </ng-container>
+
+    <!-- Cost Name Column -->
+    <ng-container matColumnDef="costName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Наименование затрат времени</th>
+      <td mat-cell *matCellDef="let element">
+        <textarea matInput [(ngModel)]="element.costName" rows="1" class="textarea-input"></textarea>
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Действия</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="save(element)" aria-label="Save">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="delete(element)" aria-label="Delete">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

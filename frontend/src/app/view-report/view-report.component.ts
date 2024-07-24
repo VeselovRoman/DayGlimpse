@@ -16,6 +16,8 @@ import { CreateReportEntryDto } from '../_dto/report.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Category } from '../_models/category';
+import { CategoryService } from '../_services/category.service';
 
 @Component({
   selector: 'app-view-report',
@@ -23,9 +25,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./view-report.component.css']
 })
 export class ViewReportComponent implements OnInit {
+  [x: string]: any;
   reportForm!: FormGroup;
   respondents: Respondent[] = [];
   procedures: Procedure[] = [];
+  costCategories: Category[] = [];
   reportId!: number;
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
@@ -42,7 +46,8 @@ export class ViewReportComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private reportStateService: ReportStateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private categoryService: CategoryService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +58,7 @@ export class ViewReportComponent implements OnInit {
     this.initializeForm();
     this.loadProcedures();
     this.loadRespondents();
+    this.loadCostCategories()
   }
 
   initializeForm(): void {
@@ -62,7 +68,8 @@ export class ViewReportComponent implements OnInit {
       agentName: [{ value: '', disabled: false }],
       respondentName: [{ value: '', disabled: false }],
       isConfirmed: [{ value: '', disabled: false }],
-      entries: this.formBuilder.array([])
+      entries: this.formBuilder.array([]),
+      CategoryId: [{ value: '', disabled: false }]
     });
   }
 
@@ -87,6 +94,14 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
+  goBack(): void {
+    if (this.reportForm.dirty || this.reportForm.touched) {
+      this.openConfirmLeaveDialog();
+    } else {
+      this.router.navigate(['/reports']); // или любой другой маршрут назад
+    }
+  }
+  
   openConfirmLeaveDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -112,6 +127,15 @@ export class ViewReportComponent implements OnInit {
     this.reportService.getReport(this.reportId).subscribe(report => {
       this.report = report;
       this.fillReportForm();
+    });
+  }
+
+  loadCostCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.costCategories = categories;
+      },
+      error: (error) => this.toastr.error('Ошибка загрузки категорий затрат')
     });
   }
 
@@ -234,7 +258,8 @@ export class ViewReportComponent implements OnInit {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       comment: '',
-      reportId: this.report.id
+      reportId: this.report.id,
+      CategoryId: 1
     };
 
     this.reportService.createReportEntry(this.report.id, entryData).subscribe({
@@ -284,10 +309,11 @@ export class ViewReportComponent implements OnInit {
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
       procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
-      startTime: [this.formatDate(entry?.startTime || now)], // Преобразование строки в Date и затем в строку
-      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],     // Преобразование строки в Date и затем в строку
+      startTime: [this.formatDate(entry?.startTime || now)],
+      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)], 
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
+      costCategoryId: [entry?.categoryId]
     });
   }
 
@@ -361,11 +387,12 @@ export class ViewReportComponent implements OnInit {
           id: entry.id,
           agentId: this.report.agentId,
           respondentId: this.report.respondentId,
-          procedureId: entry.procedureName.id,
+          procedureId: entry.procedureId,
           startTime: startTimeUTC,
           endTime: endTimeUTC,
           comment: entry.comment,
-          reportId: this.report.id
+          reportId: this.report.id,
+          CategoryId: entry.costCategoryId
         }
       });
     console.log('Updated Report Entries:', updatedReportEntries);
