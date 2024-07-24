@@ -15,6 +15,7 @@ export interface CreateReportDto {
     endTime: string;
     comment: string;
     reportId: number;
+    CategoryId: number;
   }
   
   // report.dto.ts
@@ -42,5 +43,6 @@ export interface CreateReportDto {
     respondentId: number;
     respondentName: string;
     isConfirmed: boolean;
+    CategoryId: number;
   }
   

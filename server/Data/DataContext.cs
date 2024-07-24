@@ -13,6 +13,7 @@ namespace server.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportEntry> ReportEntries { get; set; }
         public DbSet<Procedure> Procedures { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

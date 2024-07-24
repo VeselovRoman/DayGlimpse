@@ -16,6 +16,8 @@ import { CreateReportEntryDto } from '../_dto/report.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Category } from '../_models/category';
+import { CategoryService } from '../_services/category.service';
 
 @Component({
   selector: 'app-view-report',
@@ -23,9 +25,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./view-report.component.css']
 })
 export class ViewReportComponent implements OnInit {
+  [x: string]: any;
   reportForm!: FormGroup;
   respondents: Respondent[] = [];
   procedures: Procedure[] = [];
+  costCategories: Category[] = [];
   reportId!: number;
   report!: Report;
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
@@ -42,7 +46,8 @@ export class ViewReportComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private reportStateService: ReportStateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private categoryService: CategoryService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +58,7 @@ export class ViewReportComponent implements OnInit {
     this.initializeForm();
     this.loadProcedures();
     this.loadRespondents();
+    this.loadCostCategories()
   }
 
   initializeForm(): void {
@@ -62,7 +68,8 @@ export class ViewReportComponent implements OnInit {
       agentName: [{ value: '', disabled: false }],
       respondentName: [{ value: '', disabled: false }],
       isConfirmed: [{ value: '', disabled: false }],
-      entries: this.formBuilder.array([])
+      entries: this.formBuilder.array([]),
+      costCategoryId: [{ value: '', disabled: false }]
     });
   }
 
@@ -112,6 +119,15 @@ export class ViewReportComponent implements OnInit {
     this.reportService.getReport(this.reportId).subscribe(report => {
       this.report = report;
       this.fillReportForm();
+    });
+  }
+
+  loadCostCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.costCategories = categories;
+      },
+      error: (error) => this.toastr.error('Ошибка загрузки категорий затрат')
     });
   }
 
@@ -234,7 +250,8 @@ export class ViewReportComponent implements OnInit {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       comment: '',
-      reportId: this.report.id
+      reportId: this.report.id,
+      CategoryId: 1
     };
 
     this.reportService.createReportEntry(this.report.id, entryData).subscribe({
@@ -288,6 +305,7 @@ export class ViewReportComponent implements OnInit {
       endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],     // Преобразование строки в Date и затем в строку
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
+      costCategoryId: [entry?.costCategoryId]
     });
   }
 
@@ -365,7 +383,8 @@ export class ViewReportComponent implements OnInit {
           startTime: startTimeUTC,
           endTime: endTimeUTC,
           comment: entry.comment,
-          reportId: this.report.id
+          reportId: this.report.id,
+          CategoryId: entry.CategoryId
         }
       });
     console.log('Updated Report Entries:', updatedReportEntries);

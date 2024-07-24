@@ -154,7 +154,8 @@ namespace server.Controllers
                     EndTime = DateTime.SpecifyKind(createReportEntryDto.EndTime, DateTimeKind.Utc),
                     Comment = createReportEntryDto.Comment,
                     ReportId = reportId,
-                    IsConfirmed = false
+                    IsConfirmed = false,
+                    CategoryId = createReportEntryDto.CategoryId
                 };
 
                 _context.ReportEntries.Add(reportEntry);
@@ -170,7 +171,8 @@ namespace server.Controllers
                     EndTime = reportEntry.EndTime,
                     Comment = reportEntry.Comment,
                     ReportId = reportEntry.ReportId,
-                    isConfirmed = reportEntry.IsConfirmed
+                    isConfirmed = reportEntry.IsConfirmed,
+                    CategoryId = reportEntry.CategoryId
                 };
             }
             catch (Exception ex)
@@ -255,7 +257,9 @@ namespace server.Controllers
                     AgentName = reportEntry.Agent?.AgentName, // Возвращаем имя агента
                     RespondentId = reportEntry.RespondentId,
                     RespondentName = reportEntry.Respondent?.Name, // Возвращаем имя респондента
-                    isConfirmed = reportEntry.IsConfirmed
+                    isConfirmed = reportEntry.IsConfirmed,
+                    CategoryId = reportEntry.CategoryId
+
                 };
             }
             catch (Exception ex)
@@ -328,6 +332,7 @@ namespace server.Controllers
                 entry.StartTime = DateTime.SpecifyKind(updateReportEntryDto.StartTime, DateTimeKind.Utc);
                 entry.EndTime = DateTime.SpecifyKind(updateReportEntryDto.EndTime, DateTimeKind.Utc);
                 entry.Comment = updateReportEntryDto.Comment;
+                entry.CategoryId = updateReportEntryDto.CategoryId;
 
                 await _context.SaveChangesAsync();
 
@@ -340,7 +345,8 @@ namespace server.Controllers
                     Comment = entry.Comment,
                     AgentId = entry.AgentId,
                     RespondentId = entry.RespondentId,
-                    isConfirmed = entry.IsConfirmed
+                    isConfirmed = entry.IsConfirmed,
+                    CategoryId = entry.CategoryId
                 };
             }
             catch (Exception ex)

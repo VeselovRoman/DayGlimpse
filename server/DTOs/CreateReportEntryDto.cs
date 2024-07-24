@@ -10,6 +10,8 @@ namespace server.DTOs
         public string Comment { get; set; }
         public int ReportId { get; set; }
         public bool isConfirmed { get; set; }
+        public int? CategoryId { get; set; }
+        
         
         public CreateReportEntryDto()
         {

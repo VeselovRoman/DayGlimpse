@@ -19,11 +19,14 @@ namespace server.Entities
         public int AgentId { get; set; }
         public int RespondentId { get; set; }
         public int ProcedureId { get; set; } // Foreign key to Procedure
+        public int? CategoryId { get; set; } // Сделали ключ nullable
         
         // Navigation properties
         public Report Report { get; set; } // Navigation property to Report
         public Agent Agent { get; set; } // Navigation property to Agent
         public Respondent Respondent { get; set; } // Navigation property to Respondent
         public Procedure Procedure { get; set; } // Navigation property to Procedure
+        public Category Category { get; set; } // Навигационное свойство к Category
+
     }
 }

@@ -50,6 +50,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RegistrationFormComponent } from './registration-form/registration-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CategoryEditorComponent } from './category-editor/category-editor.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     BranchDialogComponent,
     AgentDialogComponent,
     ConfirmDialogComponent,
-    RegistrationFormComponent
+    RegistrationFormComponent,
+    CategoryEditorComponent
   ],
   imports: [
     BrowserAnimationsModule,

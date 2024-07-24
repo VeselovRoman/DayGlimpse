@@ -1,0 +1,10 @@
+.full-width-table {
+    width: 100%;
+}
+
+.textarea-input {
+    min-height: 50px;
+    /* минимальная высота каждого textarea */
+    width: 100%;
+    /* ширина на всю доступную ширину */
+}
