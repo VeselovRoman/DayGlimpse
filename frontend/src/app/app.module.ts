@@ -49,7 +49,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RegistrationFormComponent } from './registration-form/registration-form.component';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -97,6 +97,7 @@ import { RegistrationFormComponent } from './registration-form/registration-form
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatMenuModule,
+    MatSnackBarModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

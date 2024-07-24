@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
 import { BranchService } from '../_services/branch.service';
 import { Branch } from '../_models/branch';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register-form',
@@ -13,15 +13,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class RegistrationFormComponent {
   registerForm: FormGroup
-  model: any = {};
   branches: Branch[] = [];
   branchesLoaded = false;
 
   constructor(
+    public dialogRef: MatDialogRef<RegistrationFormComponent>,
     private fb: FormBuilder,
     private accountService: AccountService,
     private branchService: BranchService,
-    private toaster: ToastrService
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -31,35 +31,31 @@ export class RegistrationFormComponent {
 
   initializeForm() {
     this.registerForm = this.fb.group({
-      Agentname: ['', Validators.required],
+      AgentName: ['', Validators.required],
       Password: ['', [Validators.required, Validators.minLength(4)]],
-      Branch: [null, Validators.required],
+      BranchId: [null, Validators.required],
       City: ['', Validators.required]
     });
   }
 
   register() {
     if (this.registerForm.valid) {
-      let formData = {
-        ...this.registerForm.value,
-        BranchId: this.registerForm.value.Branch.id
-      };
-      delete formData.Branch;
-  
-      this.accountService.register(formData).subscribe({
+      this.accountService.register(this.registerForm.value).subscribe({
         next: response => {
-          console.log('Registration successful');
-          // действие после успешной регистрации
+          this.showSuccess ("Регистрация прошла успешно")
+          this.dialogRef.close();
         },
-        error: error => this.toaster.error(error.error)
+        error: error => this.showError ("Ошибка во время регистарции. Попробуйте обновить страницу")
       });
     } else {
-      this.toaster.error('Please fill all required fields correctly.');
+      this.showError ("Проверьте правильность заполнения полей")
     }
   }
-
- 
-
+   
+  cancel() {
+    this.dialogRef.close();  // Закрыть диалог при нажатии на кнопку "Отмена"
+  }
+  
   loadBranches() {
     this.branchService.getBranches().subscribe({
       next: (branches: Branch[]) => {
@@ -67,6 +63,21 @@ export class RegistrationFormComponent {
         this.branchesLoaded = true;
       },
       error: error => console.error(error)
+    });
+  }
+
+  showSuccess(message: string) {
+    this.snackBar.open(message, 'OK', {
+      duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    });
+  }
+
+  showError(error: string) {
+    this.snackBar.open(error, 'Закрыть', {
+      duration: 3000,
+      panelClass: ['red-snackbar']
     });
   }
 }

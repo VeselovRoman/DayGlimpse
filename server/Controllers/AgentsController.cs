@@ -69,9 +69,9 @@ public class AgentsController : BaseApiController
             AgentName = registerDTO.AgentName.ToLower(),
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.Password)),
             PasswordSalt = hmac.Key,
-            RegistrationDate = DateTime.UtcNow, // Устанавливаем текущую дату и время
-            BranchId = registerDTO.BranchId, // Устанавливаем BranchId 
-            City = registerDTO.City // Сохраняем город
+            RegistrationDate = DateTime.UtcNow, 
+            BranchId = registerDTO.BranchId,
+            City = registerDTO.City
         };
 
         _context.Agents.Add(agent);
@@ -82,7 +82,9 @@ public class AgentsController : BaseApiController
             Id = agent.Id,
             AgentName = agent.AgentName,
             Token = _tokenService.CreateToken(agent),
-            BranchId = agent.BranchId
+            BranchId = agent.BranchId,
+            RegistrationDate = agent.RegistrationDate,
+            City = agent.City
         };
 
     }
