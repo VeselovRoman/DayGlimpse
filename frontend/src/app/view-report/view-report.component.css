@@ -127,3 +127,24 @@ button[mat-fab] {
 button.disabled {
   pointer-events: none; /* Отключить взаимодействие с кнопкой, если идет загрузка */
 }
+
+mat-card-header {
+  cursor: pointer;
+}
+
+.expanded mat-card-content {
+  display: block;
+}
+
+.card-collapsed {
+  height: 50px; /* или любая другая высота, которая подходит для свернутого состояния */
+  overflow: hidden;
+}
+
+.card-expanded {
+  height: auto; /* или установите конкретную максимальную высоту, если нужно */
+}
+
+.small-title {
+  font-size: 0.8rem; /* Или любой другой размер, который вам подходит */
+}

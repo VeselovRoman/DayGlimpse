@@ -37,15 +37,18 @@
           <mat-divider class="mb-2"></mat-divider>
 
           <div formArrayName="entries">
-            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2">
-              <mat-card-header>
-                <mat-card-title class="ms-2">
-                  Процедура {{ i + 1 }} (ID: {{ entry.value.id }})
-                  <mat-icon *ngIf="entry.dirty" class="text-danger ms-2 small-icon">edit</mat-icon>
+            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2"
+            [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}"
+            (click)="toggleCard(i)">
+              
+              <mat-card-header >
+                <mat-card-title class="ms-2 mb-1 small-title">
+                  Процедура {{ i + 1 }} (ID: {{ entry.value.id }}) ({{ entry.value.startTime | date:'shortTime' }} - {{ entry.value.endTime | date:'shortTime' }})
+                  <mat-icon>{{ expandedStates[i] ? 'expand_less' : 'expand_more' }}</mat-icon>
                 </mat-card-title>
               </mat-card-header>
 
-              <mat-card-content>
+              <mat-card-content *ngIf="true" [@expandCollapse]="expandedStates[i] ? 'expanded' : 'collapsed'">
                 <mat-form-field appearance="fill" class="full-width mb-2">
                   <mat-label>Наименование</mat-label>
                   <input matInput formControlName="procedureName" [matAutocomplete]="auto"
@@ -85,13 +88,14 @@
                   <div class="col-md-3">
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Комментарий</mat-label>
-                      <input matInput formControlName="comment">
+                      <input matInput formControlName="comment" stopClickPropagation>
                     </mat-form-field>
                   </div>
                 </div>
               </mat-card-content>
 
               <mat-card-actions class="justify-content-end">
+                  <mat-label *ngIf="entry.dirty" class="text-danger ms-2 small-icon">Изменено</mat-label>
                 <button mat-button color="warn" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
                   <ng-container *ngIf="!isDeleting[i]">Удалить</ng-container>
                   <mat-progress-spinner *ngIf="isDeleting[i]" mode="indeterminate" diameter="20"></mat-progress-spinner>

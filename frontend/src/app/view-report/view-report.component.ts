@@ -18,13 +18,31 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Category } from '../_models/category';
 import { CategoryService } from '../_services/category.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-view-report',
   templateUrl: './view-report.component.html',
-  styleUrls: ['./view-report.component.css']
+  styleUrls: ['./view-report.component.css'],
+  animations: [
+    trigger('expandCollapse', [
+      state('collapsed', style({
+        height: '0',
+        overflow: 'hidden',
+        opacity: '0',
+        visibility: 'hidden'
+      })),
+      state('expanded', style({
+        height: '*',
+        opacity: '1',
+        visibility: 'visible'
+      })),
+      transition('expanded <=> collapsed', animate('200ms ease-out'))
+    ])
+  ]
 })
 export class ViewReportComponent implements OnInit {
+  expandedStates: boolean[] = [];
   [x: string]: any;
   reportForm!: FormGroup;
   respondents: Respondent[] = [];
@@ -71,6 +89,11 @@ export class ViewReportComponent implements OnInit {
       entries: this.formBuilder.array([]),
       CategoryId: [{ value: '', disabled: false }]
     });
+  }
+
+  toggleCard(index: number): void {
+    // Переключает состояние свернутости для конкретной карточки
+    this.expandedStates[index] = !this.expandedStates[index];
   }
 
   openConfirmDeleteDialog(index: number) {
@@ -192,6 +215,7 @@ export class ViewReportComponent implements OnInit {
         entriesFormArray.push(this.createProcedureEntry(entry));
         this.setupProcedureFilter(index);
         this.isDeleting.push(false);
+        this.expandedStates = this.entries.value.map(() => false);
       });
     } else {
       console.log('No report entries found.');
