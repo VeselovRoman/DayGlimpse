@@ -55,7 +55,8 @@ namespace server.Controllers
                         AgentName = entry.Agent.AgentName,
                         RespondentId = entry.RespondentId,
                         RespondentName = entry.Respondent.Name,
-                        isConfirmed = entry.IsConfirmed
+                        isConfirmed = entry.IsConfirmed,
+                        CategoryId = entry.CategoryId
                     }).ToList()
                 })
                 .ToListAsync();
@@ -219,7 +220,8 @@ namespace server.Controllers
                         EndTime = re.EndTime,
                         Comment = re.Comment,
                         AgentId = re.AgentId,
-                        RespondentId = re.RespondentId
+                        RespondentId = re.RespondentId,
+                        CategoryId = re.CategoryId
                     }).ToList()
                 };
             }

@@ -22,5 +22,5 @@ export interface Entry {
   respondentName: string;
   reportId: number;
   isConfirmed: boolean;
-  costCategoryId?: number;
+  categoryId?: number;
 }

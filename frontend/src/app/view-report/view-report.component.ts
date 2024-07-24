@@ -69,7 +69,7 @@ export class ViewReportComponent implements OnInit {
       respondentName: [{ value: '', disabled: false }],
       isConfirmed: [{ value: '', disabled: false }],
       entries: this.formBuilder.array([]),
-      costCategoryId: [{ value: '', disabled: false }]
+      CategoryId: [{ value: '', disabled: false }]
     });
   }
 
@@ -94,6 +94,14 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
+  goBack(): void {
+    if (this.reportForm.dirty || this.reportForm.touched) {
+      this.openConfirmLeaveDialog();
+    } else {
+      this.router.navigate(['/reports']); // или любой другой маршрут назад
+    }
+  }
+  
   openConfirmLeaveDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -301,11 +309,11 @@ export class ViewReportComponent implements OnInit {
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
       procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
-      startTime: [this.formatDate(entry?.startTime || now)], // Преобразование строки в Date и затем в строку
-      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],     // Преобразование строки в Date и затем в строку
+      startTime: [this.formatDate(entry?.startTime || now)],
+      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)], 
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
-      costCategoryId: [entry?.costCategoryId]
+      costCategoryId: [entry?.categoryId]
     });
   }
 
@@ -379,12 +387,12 @@ export class ViewReportComponent implements OnInit {
           id: entry.id,
           agentId: this.report.agentId,
           respondentId: this.report.respondentId,
-          procedureId: entry.procedureName.id,
+          procedureId: entry.procedureId,
           startTime: startTimeUTC,
           endTime: endTimeUTC,
           comment: entry.comment,
           reportId: this.report.id,
-          CategoryId: entry.CategoryId
+          CategoryId: entry.costCategoryId
         }
       });
     console.log('Updated Report Entries:', updatedReportEntries);
