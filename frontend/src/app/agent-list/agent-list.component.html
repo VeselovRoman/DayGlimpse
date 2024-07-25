@@ -9,9 +9,21 @@
     </ng-container>
 
     <!-- Имя агента -->
-    <ng-container matColumnDef="agentName">
-      <mat-header-cell *matHeaderCellDef> Имя агента </mat-header-cell>
-      <mat-cell *matCellDef="let agents"> {{ agents.agentName }} </mat-cell>
+    <ng-container matColumnDef="login">
+      <mat-header-cell *matHeaderCellDef> Логин </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.login }} </mat-cell>
+    </ng-container>
+    
+    <!-- Имя -->
+    <ng-container matColumnDef="firstName">
+      <mat-header-cell *matHeaderCellDef> Имя </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.firstName }} </mat-cell>
+    </ng-container>
+    
+    <!-- Фамилия -->
+    <ng-container matColumnDef="lastName">
+      <mat-header-cell *matHeaderCellDef> Фамилия </mat-header-cell>
+      <mat-cell *matCellDef="let agents"> {{ agents.lastName }} </mat-cell>
     </ng-container>
 
     <!-- Город -->
@@ -26,15 +38,11 @@
       <mat-cell *matCellDef="let agents"> {{ agents.branchName }} </mat-cell>
     </ng-container>
 
-    <!-- Действия -->
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
-      <mat-cell *matCellDef="let agent">
-        <button mat-icon-button color="primary" (click)="editAgent(agent)">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </mat-cell>
-    </ng-container>
+    <!-- Дата регистрации -->
+        <ng-container matColumnDef="registrationDate">
+          <mat-header-cell *matHeaderCellDef> Дата регистрации </mat-header-cell>
+          <mat-cell *matCellDef="let agents"> {{ agents.registrationDate | date:'dd.MM.yyyy HH:mm' }} </mat-cell>
+        </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

@@ -1,7 +1,8 @@
 export interface Agent {
     id: number;
-    agentName: string;
-    token: string;
+    login: string;
+    firstName: string;
+    lastName: string;
     branchId: number;
     branchName: string;
     city: string;

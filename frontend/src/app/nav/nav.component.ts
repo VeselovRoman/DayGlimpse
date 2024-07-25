@@ -1,8 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AccountService } from '../_services/account.service';
+import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
-import { Agent } from '../_models/agent';
 import { ToastrService } from 'ngx-toastr';
+import { AgentDialogComponent } from '../agent-dialog/agent-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AgentService } from '../_services/agent.service';
 
 @Component({
   selector: 'app-nav',
@@ -10,40 +12,51 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-  accountService = inject(AccountService);
+  authService = inject(AuthService);
   toasterService = inject(ToastrService);
+  agentService = inject(AgentService);
   router = inject(Router);
   model: any = {};
-  currentAgent: Agent | null = null;
 
-  constructor () {}
+  constructor (public dialog: MatDialog) {}
 
-  // Используем ngOnInit для подписки на изменения currentAgent
-  ngOnInit() {
-    // Подписка на текущего агента
-    this.accountService.currentAgent$.subscribe(agent => {
-      this.currentAgent = agent;
-    });
-  }
-  
+  ngOnInit() {}
+ 
   // Метод логина
   login() {
-    this.accountService.login(this.model).subscribe({
+    this.authService.login(this.model.username, this.model.password).subscribe({
       next: response => {
-        // Обновляем model с данными ответа
         this.model = response;
+        this.router.navigate(['/']);
       },
-      error: error => this.toasterService.error(error.error)
+      error: error => this.toasterService.error('Неверный логин или пароль')
     });
   }
 
   // Метод логаута
   logout() {
-    this.accountService.logout();
+    this.authService.logout();
     const currentUrl = this.router.url;
-    // Перенаправляем на главную страницу, если текущий URL не '/'
     if (currentUrl !== '/') {
       this.router.navigate(['/']);
     }
+  }
+  
+  editAgent() {
+    const username = this.authService.getUsername();
+    if (!username) return;
+
+    this.agentService.getAgentByUsername(username).subscribe(agent => {
+      const dialogRef = this.dialog.open(AgentDialogComponent, {
+        width: '400px',
+        data: { agent }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.toasterService.success('Agent updated successfully');
+        }
+      });
+    });
   }
 }

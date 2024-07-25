@@ -39,7 +39,7 @@ namespace server.Controllers
                     Id = report.Id,
                     ReportDate = report.ReportDate,
                     AgentId = report.AgentId,
-                    AgentName = report.Agent.AgentName,
+                    AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
                     RespondentId = report.RespondentId,
                     RespondentName = report.Respondent.Name,
                     isConfirmed = report.IsConfirmed,
@@ -52,7 +52,7 @@ namespace server.Controllers
                         EndTime = entry.EndTime,
                         Comment = entry.Comment,
                         AgentId = entry.AgentId,
-                        AgentName = entry.Agent.AgentName,
+                        AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
                         RespondentId = entry.RespondentId,
                         RespondentName = entry.Respondent.Name,
                         isConfirmed = entry.IsConfirmed,
@@ -198,7 +198,7 @@ namespace server.Controllers
 
                 if (report == null) return NotFound();
 
-                var agentName = report.Agent.AgentName;
+                var agentName = report.Agent.FirstName;
                 var respondentName = report.Respondent.Name;
 
                 return new ReportDto
@@ -256,7 +256,7 @@ namespace server.Controllers
                     EndTime = reportEntry.EndTime,
                     Comment = reportEntry.Comment,
                     AgentId = reportEntry.AgentId,
-                    AgentName = reportEntry.Agent?.AgentName, // Возвращаем имя агента
+                    AgentName = reportEntry.Agent?.FirstName, // Возвращаем имя агента
                     RespondentId = reportEntry.RespondentId,
                     RespondentName = reportEntry.Respondent?.Name, // Возвращаем имя респондента
                     isConfirmed = reportEntry.IsConfirmed,

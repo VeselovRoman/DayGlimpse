@@ -31,6 +31,11 @@
           </div>
           <mat-divider class="mb-2"></mat-divider>
 
+          <div class="button-group mb-2">
+            <button mat-raised-button color="primary" type="button" class="me-2" (click)="expandAll()">Раскрыть все</button>
+            <button mat-raised-button color="warn" type="button" (click)="collapseAll()">Свернуть все</button>
+          </div>
+          
           <div formArrayName="entries">
             <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2"
             [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}">

@@ -2,9 +2,9 @@
     <div class="container">
         <a class="navbar-brand" href="#">DayGlimpse</a>
 
-        <ul *ngIf="accountService.isLoggedIn()" class="navbar-nav me-auto mb-2 mb-md-0">
-        <li class="nav-item">
-            <a class="nav-link" routerLink="/agents">Агенты</a>
+        <ul *ngIf="authService.isLoggedIn()" class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/agents">Агенты</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" routerLink="/respondents">Респонденты</a>
@@ -17,29 +17,22 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" routerLink="/reports">Отчеты</a>
-            </li>        
-        </ul> 
-        
-        <div *ngIf="accountService.isLoggedIn()" dropdown class="dropdown">
-            <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">Welcome {{currentAgent?.agentName | titlecase}}</a>
-            <div *dropdownMenu  class="dropdown-menu">
+            </li>
+        </ul>
+
+        <div *ngIf="authService.isLoggedIn()" dropdown class="dropdown">
+            <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">{{ authService.getFullName() }}</a>
+            <div *dropdownMenu class="dropdown-menu">
+                <a class="dropdown-item" (click)="editAgent()">О себе...</a>
                 <a class="dropdown-item" (click)="logout()">Выход</a>
             </div>
         </div>
-        
-        <form *ngIf="!accountService.isLoggedIn()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex ms-auto" >
-            <input 
-                name="username" 
-                [(ngModel)]="model.AgentName" 
-                class="form-control me-2" 
-                placeholder="Username">
-            <input 
-                name="password"
-                [(ngModel)]="model.Password"
-                class="form-control me-2" 
-                placeholder="Password" 
+
+        <form *ngIf="!authService.isLoggedIn()" #loginForm="ngForm" (ngSubmit)="login()" class="d-flex ms-auto">
+            <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Логин">
+            <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Пароль"
                 type="password">
             <button mat-raised-button type="submit">Login</button>
-        </form>     
+        </form>
     </div>
 </nav>

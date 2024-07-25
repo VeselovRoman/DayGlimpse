@@ -13,8 +13,6 @@ import { BranchListComponent } from './branch-list/branch-list.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { HomeComponent } from './home/home.component';
-import { RegisterComponent } from './register/register.component';
-import { AgentDetailComponent } from './agent-detail/agent-detail.component';
 import { AgentListComponent } from './agent-list/agent-list.component';
 import { ReportListComponent } from './report-list/report-list.component';
 import { ViewReportComponent } from './view-report/view-report.component';
@@ -48,9 +46,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { RegistrationFormComponent } from './registration-form/registration-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
+import { LoginComponent } from './login-component/login-component.component';
+import { AuthService } from './_services/auth.service';
 
 @NgModule({
   declarations: [
@@ -58,9 +57,7 @@ import { CategoryEditorComponent } from './category-editor/category-editor.compo
     NavComponent,
     BranchListComponent,
     HomeComponent,
-    RegisterComponent,
     AgentListComponent,
-    AgentDetailComponent,
     ReportListComponent,
     ViewReportComponent,
     RespondentListComponent,
@@ -69,8 +66,8 @@ import { CategoryEditorComponent } from './category-editor/category-editor.compo
     BranchDialogComponent,
     AgentDialogComponent,
     ConfirmDialogComponent,
-    RegistrationFormComponent,
-    CategoryEditorComponent
+    CategoryEditorComponent,
+    LoginComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -108,6 +105,7 @@ import { CategoryEditorComponent } from './category-editor/category-editor.compo
       preventDuplicates: true})
   ],
   providers: [
+    AuthService,
     provideHttpClient(
       withInterceptors([jwtInterceptor, loadingInterceptor])),
     provideAnimations(),
