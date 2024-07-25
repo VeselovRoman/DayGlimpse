@@ -27,8 +27,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   animations: [
     trigger('expandCollapse', [
       state('collapsed', style({
-        height: '0',
-        overflow: 'hidden',
+        height: '0px',
         opacity: '0',
         visibility: 'hidden'
       })),
@@ -37,7 +36,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
         opacity: '1',
         visibility: 'visible'
       })),
-      transition('expanded <=> collapsed', animate('200ms ease-out'))
+      transition('expanded <=> collapsed', animate('300ms ease-out'))
     ])
   ]
 })
@@ -71,12 +70,9 @@ export class ViewReportComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.reportId = +params['id'];
-      this.loadReport();
+      this.initializeForm();
+      this.loadData();
     });
-    this.initializeForm();
-    this.loadProcedures();
-    this.loadRespondents();
-    this.loadCostCategories()
   }
 
   initializeForm(): void {
@@ -86,8 +82,28 @@ export class ViewReportComponent implements OnInit {
       agentName: [{ value: '', disabled: false }],
       respondentName: [{ value: '', disabled: false }],
       isConfirmed: [{ value: '', disabled: false }],
-      entries: this.formBuilder.array([]),
-      CategoryId: [{ value: '', disabled: false }]
+      entries: this.formBuilder.array([])
+    });
+  }
+
+  loadData(): void {
+    forkJoin({
+      report: this.reportService.getReport(this.reportId),
+      procedures: this.procedureService.getProcedures(),
+      categories: this.categoryService.getCategories(),
+      respondents: this.respondentService.getRespondents()
+    }).subscribe({
+      next: ({ report, procedures, categories, respondents }) => {
+        this.report = report;
+        this.procedures = procedures;
+        this.costCategories = categories;
+        this.respondents = respondents;
+        this.fillReportForm();
+      },
+      error: (error) => {
+        this.toastr.error('Ошибка загрузки данных');
+        console.error('Loading error:', error);
+      }
     });
   }
 
@@ -107,7 +123,7 @@ export class ViewReportComponent implements OnInit {
         cancelButtonText: 'Отмена'
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.removeProcedureEntry(index);
@@ -124,7 +140,7 @@ export class ViewReportComponent implements OnInit {
       this.router.navigate(['/reports']); // или любой другой маршрут назад
     }
   }
-  
+
   openConfirmLeaveDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -135,21 +151,14 @@ export class ViewReportComponent implements OnInit {
         cancelButtonText: 'Отмена'
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.reportStateService.loadReports();
-          this.router.navigate(['/reports']);
+        this.router.navigate(['/reports']);
       } else {
-        
-      }
-    });
-  }
 
-  loadReport(): void {
-    this.reportService.getReport(this.reportId).subscribe(report => {
-      this.report = report;
-      this.fillReportForm();
+      }
     });
   }
 
@@ -251,11 +260,6 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  refreshReportAndProcedures(): void {
-    this.loadReport();
-    this.loadProcedures();
-  }
-
   addProcedureEntry(): void {
     this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
@@ -334,7 +338,7 @@ export class ViewReportComponent implements OnInit {
       procedureId: [{ value: entry?.procedureId, disabled: false }],
       procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
       startTime: [this.formatDate(entry?.startTime || now)],
-      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)], 
+      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
       costCategoryId: [entry?.categoryId]

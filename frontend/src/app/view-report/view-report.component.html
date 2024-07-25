@@ -6,11 +6,6 @@
       Назад
     </button>
 
-    <button mat-flat-button class="mb-3 ms-3" (click)="refreshReportAndProcedures()">
-      <mat-icon>refresh</mat-icon>
-      Обновить
-    </button>
-
     <!-- Полоска временных интервалов -->
     <div class="time-gap-indicator">
       <span *ngFor="let gap of timeGaps" class="time-gap" [ngStyle]="getTimeGapStyles(gap)"></span>
