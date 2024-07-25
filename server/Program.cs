@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using server.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,13 +51,30 @@ builder.Configuration.AddInMemoryCollection(memoryConfig);
 // Add services to the container.
 
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddIdentityService(builder.Configuration);
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton(new ActiveDirectoryService(
+    "172.16.11.213",
+    389, 
+    "trcont.ru",
+    "this is my super secret unguessable key which can solve only my friend of mine Alex"));
 
-// Configure the HTTP request pipeline.
-//app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
-    //.WithOrigins("http://localhost:4200", "https://localhost:4200"));
+// Добавьте необходимые пакеты для аутентификации
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("this is my super secret unguessable key which can solve only my friend of mine Alex")),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -69,7 +90,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();

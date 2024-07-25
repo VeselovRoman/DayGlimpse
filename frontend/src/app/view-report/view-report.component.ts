@@ -224,7 +224,7 @@ export class ViewReportComponent implements OnInit {
         entriesFormArray.push(this.createProcedureEntry(entry));
         this.setupProcedureFilter(index);
         this.isDeleting.push(false);
-        this.expandedStates = this.entries.value.map(() => false);
+        this.expandedStates = this.entries.value.map(() => true);
       });
     } else {
       console.log('No report entries found.');
@@ -295,12 +295,13 @@ export class ViewReportComponent implements OnInit {
         newEntry.patchValue({ id: createdEntry.id });
         entriesFormArray.push(newEntry);
         this.setupProcedureFilter(entriesFormArray.length - 1);
+        this.expandedStates.push(true);
         this.toastr.info('Запись успешно добавлена');
         this.isCreating = false;
       },
       error: error => {
         this.toastr.error('Ошибка добавления записи');
-        this.isCreating = false; // В случае ошибки создания
+        this.isCreating = false;
       },
       complete: () => this.isCreating = false
     });
@@ -560,5 +561,13 @@ export class ViewReportComponent implements OnInit {
     const startTime = new Date(entry.startTime).getTime();
     const endTime = new Date(entry.endTime).getTime();
     return endTime >= startTime;
+  }
+
+  expandAll(): void {
+    this.expandedStates = this.entries.controls.map(() => true);
+  }
+
+  collapseAll(): void {
+    this.expandedStates = this.entries.controls.map(() => false);
   }
 }

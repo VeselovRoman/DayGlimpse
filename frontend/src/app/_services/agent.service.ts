@@ -11,60 +11,19 @@ import { environment } from 'src/environments/environment';
 })
 export class AgentService {
 
-  private baseUrl = environment.apiUrl; // Замените на ваш базовый URL API
-  //token = '';
-  //agent = localStorage.getItem('agent');
-
+  private baseUrl = environment.apiUrl;
+  
   constructor(private http: HttpClient) { }
 
   getAllAgents(): Observable<Agent[]> {
     return this.http.get<Agent[]>(this.baseUrl + 'agents');
   }
 
-  getAgentById(id: number): Observable<Agent> {
-    // Получение токена из localStorage
-
-    /*if (this.agent) {
-      // Преобразуем строку обратно в объект JavaScript
-      const agentData = JSON.parse(this.agent);
-
-      // Извлекаем значение токена
-      this.token = agentData.token;
-
-      console.log('Токен из объекта:', this.token);
-    } else {
-      console.log('Данные агента не найдены в localStorage');
-    }
-
-    // Установка заголовков для передачи токена
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.token}`
-    });*/
-
-    // Отправка GET-запроса на сервер с заголовками
-    return this.http.get<Agent>(`${this.baseUrl}agents/${id}`);
+  getAgentByUsername(username: string): Observable<Agent> {
+    return this.http.get<Agent>(`${this.baseUrl}agents/${username}`);
   }
 
   updateAgent(agent: updateAgent): Observable<void> {
-    // Получение токена из localStorage
-    /*if (this.agent) {
-      // Преобразуем строку обратно в объект JavaScript
-      const agentData = JSON.parse(this.agent);
-
-      // Извлекаем значение токена
-      this.token = agentData.token;
-
-      console.log('Токен из объекта:', this.token);
-    } else {
-      console.log('Данные агента не найдены в localStorage');
-    }
-
-    // Установка заголовков для передачи токена
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.token}`
-    });*/
-
-    // Отправка GET-запроса на сервер с заголовками
     return this.http.put<void>(`${this.baseUrl}agents/${agent.id}`, agent);
   }
 

@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { AgentService } from '../_services/agent.service';
 import { Agent } from '../_models/agent';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { AgentDialogComponent } from '../agent-dialog/agent-dialog.component';
 
 @Component({
   selector: 'app-agent-list',
@@ -13,12 +11,12 @@ import { AgentDialogComponent } from '../agent-dialog/agent-dialog.component';
 })
 export class AgentListComponent implements OnInit {
   agents: Agent[] = [];
-  displayedColumns: string[] = ['id', 'agentName', 'city', 'branchName', 'actions'];
+  displayedColumns: string[] = ['id', 'login', 'firstName','lastName', 'city', 'branchName', 'registrationDate'];
   dataSource = new MatTableDataSource<Agent>(this.agents);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private agentService: AgentService, public dialog: MatDialog) { }
+  constructor(private agentService: AgentService) { }
 
   ngOnInit(): void {
     this.loadAgents();
@@ -39,16 +37,4 @@ export class AgentListComponent implements OnInit {
     });
   }
 
-  editAgent(agent: Agent) {
-    const dialogRef = this.dialog.open(AgentDialogComponent, {
-      width: '400px',
-      data: { agent }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadAgents();
-      }
-    });
-  }
 }

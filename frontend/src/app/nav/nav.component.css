@@ -22,4 +22,13 @@
     display: flex;
     gap: 10px;
   }
+
+  .user-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Это позволяет выровнять элементы по центру */
+  }
   
+  .arrow-icon {
+    margin-left: 4px; /* Отступ слева для иконки */
+  }

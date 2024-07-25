@@ -18,7 +18,7 @@ namespace server.Services
             
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, agent.AgentName)
+                new(ClaimTypes.NameIdentifier, agent.Login)
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

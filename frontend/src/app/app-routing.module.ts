@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AgentDetailComponent } from './agent-detail/agent-detail.component';
 import { AgentListComponent } from './agent-list/agent-list.component';
 import { BranchListComponent } from './branch-list/branch-list.component';
 import { ReportListComponent } from './report-list/report-list.component';
@@ -10,6 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
 import { NewReportComponent } from './new-report/new-report.component';
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
+import { LoginComponent } from './login-component/login-component.component';
 
 const routes: Routes = [
   
@@ -19,19 +19,10 @@ const routes: Routes = [
   { path: 'branches', component: BranchListComponent, canActivate: [AuthGuard] },
   { path: 'reports/new', component: NewReportComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
-  { path: 'agents/:id', component: AgentDetailComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoryEditorComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
   { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
-  
-  //{ path: '', redirectTo: '/reports', pathMatch: 'full' }
-  
-  /*
-  //{ path: 'respondents', component: RespondentsComponent, canActivate: [AuthGuard] },
-  { path: 'view-report/:reportId', component: ViewReportComponent },*/
-  
- 
-
 ];
 
 @NgModule({

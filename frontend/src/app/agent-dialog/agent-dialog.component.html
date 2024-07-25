@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>{{ agent.id ? 'Редактировать агента' : 'Добавить агента' }}</h1>
+<h1 mat-dialog-title>Редактирование агента: {{ agent.id }}</h1>
 <div mat-dialog-content>
   <form>
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Имя агента</mat-label>
-      <input matInput [(ngModel)]="agent.agentName" name="agentName">
+      <input matInput [(ngModel)]="agent.login" name="agentName" disabled>
     </mat-form-field>
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Город</mat-label>

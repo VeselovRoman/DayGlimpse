@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
-import { AccountService } from '../_services/account.service';
 import { MatDialog } from '@angular/material/dialog';
-import { RegistrationFormComponent } from '../registration-form/registration-form.component';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -11,23 +10,12 @@ import { RegistrationFormComponent } from '../registration-form/registration-for
 })
 export class HomeComponent implements OnInit {
   http = inject(HttpClient);
-  accountService = inject(AccountService);
+  authService = inject(AuthService);
   users: any;
 
   constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
-  }
-
-  openRegistrationDialog(): void {
-    const dialogRef = this.dialog.open(RegistrationFormComponent, {
-      width: '400px'
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      //console.log('The dialog was closed');
-    });
-
   }
 
 }

@@ -7,6 +7,7 @@ import { ReportService } from '../_services/report.service';
 import { CreateReportDto } from '../_dto/report.dto';
 import { Respondent } from '../_models/respondent';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-new-report',
@@ -26,8 +27,9 @@ export class NewReportComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private respondentService: RespondentService,
     private reportService: ReportService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -55,15 +57,7 @@ export class NewReportComponent implements OnInit {
   }
 
   getAgentInfo(): void {
-    const agentJson = localStorage.getItem('agent');
-    if (agentJson) {
-      const agent = JSON.parse(agentJson);
-      this.agentName = agent.agentName;
-      this.agentId = agent.id;
-      console.log('Agent Name:', this.agentName);
-    } else {
-      console.log('No agent found in localStorage');
-    }
+    this.agentId = this.authService.getAgentId();
   }
 
   loadRespondents(): void {

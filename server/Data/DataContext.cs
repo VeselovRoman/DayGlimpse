@@ -42,7 +42,8 @@ namespace server.Data
             modelBuilder.Entity<Agent>()
                 .HasOne(a => a.Branch)
                 .WithMany(b => b.Agents)
-                .HasForeignKey(a => a.BranchId);
+                .HasForeignKey(a => a.BranchId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Respondent>()
                 .HasOne(r => r.Branch)
