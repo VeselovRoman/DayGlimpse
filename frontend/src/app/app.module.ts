@@ -51,7 +51,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RegistrationFormComponent } from './registration-form/registration-form.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
-import { StopClickPropagationDirective } from './_directives/stop-click-propagation.directive';
 
 @NgModule({
   declarations: [
@@ -71,8 +70,7 @@ import { StopClickPropagationDirective } from './_directives/stop-click-propagat
     AgentDialogComponent,
     ConfirmDialogComponent,
     RegistrationFormComponent,
-    CategoryEditorComponent,
-    StopClickPropagationDirective
+    CategoryEditorComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -108,10 +106,6 @@ import { StopClickPropagationDirective } from './_directives/stop-click-propagat
       timeOut: 5000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true})
-  ],
-  exports: [
-    StopClickPropagationDirective
-    // экспортируйте директиву, если она будет использоваться в других модулях
   ],
   providers: [
     provideHttpClient(

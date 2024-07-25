@@ -38,10 +38,9 @@
 
           <div formArrayName="entries">
             <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2"
-            [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}"
-            (click)="toggleCard(i)">
+            [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}">
               
-              <mat-card-header >
+              <mat-card-header (click)="toggleCard(i)">
                 <mat-card-title class="ms-2 mb-1 small-title">
                   Процедура {{ i + 1 }} (ID: {{ entry.value.id }}) ({{ entry.value.startTime | date:'shortTime' }} - {{ entry.value.endTime | date:'shortTime' }})
                   <mat-icon>{{ expandedStates[i] ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -88,7 +87,7 @@
                   <div class="col-md-3">
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Комментарий</mat-label>
-                      <input matInput formControlName="comment" stopClickPropagation>
+                      <input matInput formControlName="comment">
                     </mat-form-field>
                   </div>
                 </div>
