@@ -58,6 +58,7 @@ export class NewReportComponent implements OnInit {
 
   getAgentInfo(): void {
     this.agentId = this.authService.getAgentId();
+    this.agentName = this.authService.getFullName();
   }
 
   loadRespondents(): void {

@@ -52,6 +52,7 @@ export class ViewReportComponent implements OnInit {
   timeGaps: { start: Date, end: Date, gap: boolean }[] = [];
   filteredProcedures: { [key: number]: Observable<Procedure[]> } = {};
   isCreating: boolean = false;
+  isSaving: boolean = false;
   isDeleting: boolean[] = [];
 
   constructor(
@@ -172,7 +173,7 @@ export class ViewReportComponent implements OnInit {
   }
 
   setupProcedureFilter(index: number): void {
-    const control = this.entries.at(index).get('procedureName') as FormControl;
+    const control = this.entries.at(index).get('procedure') as FormControl;
     this.filteredProcedures[index] = control.valueChanges.pipe(
       startWith(''),
       map(value => this._filterProcedures(value))
@@ -180,6 +181,10 @@ export class ViewReportComponent implements OnInit {
   }
 
   onProcedureInput(index: number): void {
+    this.setupProcedureFilter(index);
+  }
+
+  focusProcedureInput(index: number): void {
     this.setupProcedureFilter(index);
   }
 
@@ -224,7 +229,7 @@ export class ViewReportComponent implements OnInit {
         entriesFormArray.push(this.createProcedureEntry(entry));
         this.setupProcedureFilter(index);
         this.isDeleting.push(false);
-        this.expandedStates = this.entries.value.map(() => true);
+        this.expandedStates = this.entries.value.map(() => false);
       });
     } else {
       console.log('No report entries found.');
@@ -272,17 +277,19 @@ export class ViewReportComponent implements OnInit {
 
     const startTime = new Date(lastEndTime);
     const endTime = new Date(startTime.getTime() + 10 * 60000);
+    const firstProcedureId = this.procedures.length > 0 ? this.procedures[0].id : 0;
 
     const newEntry = this.createProcedureEntry({
       startTime: startTime,
-      endTime: endTime
+      endTime: endTime,
+      procedureId: firstProcedureId
     });
 
     const entryData: CreateReportEntryDto = {
       id: 0, // ID будет присвоен сервером
       agentId: this.report.agentId,
       respondentId: this.report.respondentId,
-      procedureId: 0,
+      procedureId: firstProcedureId,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       comment: '',
@@ -337,7 +344,7 @@ export class ViewReportComponent implements OnInit {
     return this.formBuilder.group({
       id: [{ value: entry?.id, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
-      procedureName: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
+      procedure: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
       startTime: [this.formatDate(entry?.startTime || now)],
       endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],
       comment: [{ value: entry?.comment, disabled: false }],
@@ -404,8 +411,8 @@ export class ViewReportComponent implements OnInit {
       return;
     }
 
-    this.isCreating = true;
-
+    this.isSaving = true;
+    console.log(this.reportForm.value.entries);
     const updatedReportEntries: CreateReportEntryDto[] = this.reportForm.value.entries
       .filter((entry: any) => this.entries.at(this.reportForm.value.entries.indexOf(entry)).dirty)
       .map((entry: any) => {
@@ -416,7 +423,7 @@ export class ViewReportComponent implements OnInit {
           id: entry.id,
           agentId: this.report.agentId,
           respondentId: this.report.respondentId,
-          procedureId: entry.procedureId,
+          procedureId: entry.procedure.id,
           startTime: startTimeUTC,
           endTime: endTimeUTC,
           comment: entry.comment,
@@ -431,14 +438,18 @@ export class ViewReportComponent implements OnInit {
         this.reportService.updateReportEntry(this.report.id, entry.id, entry).subscribe({
           next: () => {
             this.toastr.info('Запись успешно обновлена'),
-              this.resetFormState();
+            this.resetFormState();
+            this.isSaving = false
           },
-          error: error => this.toastr.error('Ошибка обновления записи'),
-          complete: () => this.isCreating = false
+          error: error => {
+            this.toastr.error('Ошибка обновления записи');
+            this.isSaving = false
+          },
+          complete: () => this.isSaving = false
         });
       }
     });
-
+    this.isSaving = false;
     this.calculateTimeGaps();
     this.toastr.info('Отчет успешно сохранен');
   }
@@ -479,11 +490,11 @@ export class ViewReportComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.reportStateService.loadReports();
-          this.router.navigate(['/reports']); // Или любой другой маршрут
+          this.router.navigate(['/reports']);
         }
       });
     } else {
-      this.router.navigate(['/reports']); // Или любой другой маршрут
+      this.router.navigate(['/reports']);
     }
   }
 

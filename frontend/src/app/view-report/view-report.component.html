@@ -50,8 +50,8 @@
               <mat-card-content *ngIf="true" [@expandCollapse]="expandedStates[i] ? 'expanded' : 'collapsed'">
                 <mat-form-field appearance="fill" class="full-width mb-2">
                   <mat-label>Наименование</mat-label>
-                  <input matInput formControlName="procedureName" [matAutocomplete]="auto"
-                    matTooltip="{{ entry.value.procedureName }}">
+                  <input matInput formControlName="procedure" (focus)="focusProcedureInput(i)" [matAutocomplete]="auto"
+                    matTooltip="{{ entry.value.procedure.name }}">
                   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedure">
                     <mat-option *ngFor="let procedure of filteredProcedures[i] | async" [value]="procedure">
                       {{ procedure.name }}
@@ -95,7 +95,7 @@
 
               <mat-card-actions class="justify-content-end">
                   <mat-label *ngIf="entry.dirty" class="text-danger ms-2 small-icon">Изменено</mat-label>
-                <button mat-button color="warn" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
+                <button mat-button color="warn" type="button" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
                   <ng-container *ngIf="!isDeleting[i]">Удалить</ng-container>
                   <mat-progress-spinner *ngIf="isDeleting[i]" mode="indeterminate" diameter="20"></mat-progress-spinner>
                 </button>
