@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Переменные из конфигурации
-var host = config["DatabaseSettings:Host"] ?? "rc1a-b2jiiom6m0qzhcz1.mdb.yandexcloud.net";
+var host = config["DatabaseSettings:Host"] ?? "rc1a-3v5gm1c2hgmoxknv.mdb.yandexcloud.net";
 var port = config["DatabaseSettings:Port"] ?? "6432";
 var db = config["DatabaseSettings:Database"] ?? "dayglimpse_db";
 var username = config["DatabaseSettings:Username"] ?? "Admin";

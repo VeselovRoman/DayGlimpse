@@ -177,7 +177,7 @@ nano ~/.ssh/config
 
 ;Добавьте следующую конфигурацию:
 Host myserver
-    HostName 158.160.164.33
+    HostName 51.250.8.212
     User admin
     IdentityFile ~/.ssh/id_ed25519
 
@@ -185,8 +185,11 @@ Host myserver
 ssh myserver
 
 ;конфигурация Linux сервера
+Admin Password14
 ;подключение
- ssh -i "/Users/romanveselov/Documents/GitHub/DayGlimpse/.ssh/id_ed25519" admin@158.160.164.33
+ ssh -i "/Users/romanveselov/Documents/GitHub/DayGlimpse/.ssh/id_ed25519" admin@51.250.8.212
+ ssh -i "C:\Users\Roman\.ssh\id_ed25519" admin@51.250.8.212
+ 
  
  ;build
  ng build --configuration production
@@ -194,12 +197,12 @@ ssh myserver
 
 ;копируем web-сервер
 ;Windows
-scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@158.160.164.33:/var/www/html
+scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@51.250.8.212:/var/www/html
 ;mac
-scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* admin@158.160.164.33:/var/www/html
+scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* admin@51.250.8.212:/var/www/html
 
 ;копируем dotnet
-scp -r D:/var/www/server/* admin@158.160.164.33:/var/www/server
+scp -r D:/var/www/server/* admin@51.250.8.212:/var/www/server
 ;сконфигурировать службу
 sudo nano /etc/systemd/system/server.service
 [Unit]
@@ -228,7 +231,7 @@ sudo systemctl enable server.service
 sudo systemctl status server.service
 
 ;скопируем сертификат и ключ на сервер
-scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@158.160.164.33:/etc/nginx/ssl/
+scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@51.250.8.212:/etc/nginx/ssl/
 
 ;перезапустить сервер nginx
 sudo systemctl restart nginx
@@ -272,7 +275,7 @@ sudo journalctl -u myapp
 
   server {
     listen 80;
-    server_name 158.160.134.124;
+    server_name 51.250.8.212;
 
     location / {
         proxy_pass https://localhost:5001;
@@ -292,7 +295,7 @@ sudo journalctl -u myapp
 
 
 
-scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@158.160.134.124:/etc/nginx/ssl/ca_certificate.pem
+scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@51.250.8.212:/etc/nginx/ssl/ca_certificate.pem
 
 
 
@@ -301,7 +304,7 @@ scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@158.160.134.124:/etc
 
 server {
     listen 80;
-    server_name 158.160.134.124;
+    server_name 51.250.8.212;
 
     root /var/www/html; # Путь к папке с Angular приложением
 
