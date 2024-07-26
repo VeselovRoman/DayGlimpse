@@ -1,22 +1,22 @@
 <h2 mat-dialog-title>{{ data.respondent.id ? 'Редактировать респондента' : 'Добавить респондента' }}</h2>
 <mat-dialog-content>
-  <form>
+  <form [formGroup]="respondentForm">
     <div class="mb-3">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Имя</mat-label>
-        <input matInput type="text" [(ngModel)]="data.respondent.name" name="name">
+        <input matInput formControlName="name">
       </mat-form-field>
     </div>
     <div class="mb-3">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Город</mat-label>
-        <input matInput type="text" [(ngModel)]="data.respondent.city" name="city">
+        <input matInput formControlName="city">
       </mat-form-field>
     </div>
     <div class="mb-3">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Филиал</mat-label>
-        <mat-select [(ngModel)]="data.respondent.branchId" name="branchId">
+        <mat-select formControlName="branchId">
           <mat-option *ngFor="let branch of branches" [value]="branch.id">{{ branch.name }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -24,6 +24,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-flat-button (click)="onSave()">Сохранить</button>
+  <button mat-flat-button (click)="onSave()" [disabled]="!respondentForm.valid">Сохранить</button>
   <button mat-button (click)="onCancel()">Отмена</button>
 </mat-dialog-actions>

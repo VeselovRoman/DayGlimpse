@@ -39,7 +39,7 @@ public class BranchesController(DataContext context) : BaseApiController
 
         var branch = new Branch
         {
-            Name = branchDto.Name.ToLower()
+            Name = branchDto.Name
         };
 
         context.Branches.Add(branch);
