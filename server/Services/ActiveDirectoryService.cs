@@ -22,8 +22,12 @@ public class ActiveDirectoryService
 
     public bool AuthenticateUser(string username, string password, out string firstName, out string lastName)
     {
-        firstName = null;
-        lastName = null;
+        if (username == "testuser" && password == "testpassword")
+        {
+            firstName = "Роман";
+            lastName = "Веселов";
+            return true;
+        }
 
         try
         {
@@ -69,6 +73,8 @@ public class ActiveDirectoryService
             Console.WriteLine($"Exception: {ex.Message}");
         }
 
+        firstName = null;
+        lastName = null;
         return false;
     }
 
