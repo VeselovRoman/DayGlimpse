@@ -26,6 +26,7 @@ export class RespondentDialogComponent {
 
   private initForm(): void {
     this.respondentForm = this.fb.group({
+      id: [this.data.respondent.id],
       name: [this.data.respondent.name, Validators.required],
       city: [this.data.respondent.city, Validators.required],
       branchId: [this.data.respondent.branchId, Validators.required]

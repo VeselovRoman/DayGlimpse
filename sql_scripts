@@ -24,8 +24,10 @@ INSERT INTO public."Agents" VALUES (9, 'roman', '\xe6d1f33ebacf51b5afe31dfa82fd5
 INSERT INTO public."Agents" VALUES (10, 'alex', '\xfb42057d3b96fc890e91453d3a2719023c07f4a5baa5a301c8934d0b347675556cb76263640de92905f35f5071c96d8776b2d14c88c3339a104081783cf8bd6b', '\x6ed217e5e2bb4de065d7b7812b9ab9ea93dc3cd3b764baa45c6ec41ebc64edb05970d0bef7d2cb6a8a627d4b62d5fb741341740d075172a4f36e8044b227f69881bd005741f0ab9f6a34052c574a616b842f3b9f9d0dcf23ffe27609b77576fa03cea76b769025971ff97038988d10265fc4d100f83bfd4009918594bd75d637', '2024-07-03 14:30:07.002489+00', 'Ярославль', 3, NULL);
 INSERT INTO public."Agents" VALUES (11, 'alex', '\x6f634d0b62cbfad34539a40201f35c82acc3d6b0a934cc4a4762b1d0f4f1079cc431a86f821ad8622549460a399b130d693b964bd8dd952979b3d9a8aa035654', '\x2ad991fbb32ce1af58793f4c393b63336199da4e9d1b047e0a2aa793a9154e6051ffb3c85253dff05452fe85771dd991f78290b5e735d1fa73fdde60aa1621291b2c5b2d316a307b7b420c254d281f276776a124f7d02f4697f2d986c0e2adffc9c5db48b165674a7bbbc6c4e1f4e72b8e39dc3439295a1eb34312cb55e1612c', '2024-07-03 14:30:07.002483+00', 'Ярославль', 3, NULL);
 
-INSERT INTO public."Procedures" VALUES (0, 'Создание заказа', 10);
-INSERT INTO public."Procedures" VALUES (1, 'Создание накладной', 10);
+INSERT INTO public."Procedures" ("Name", "StandardTime") VALUES ('Создание заказа', 10);
+INSERT INTO public."Procedures" ("Name", "StandardTime") VALUES ('Создание накладной', 10);
+INSERT INTO public."Procedures" ("Name", "StandardTime") VALUES ('Создание ГУ-12', 10);
+INSERT INTO public."Procedures" ("Name", "StandardTime") VALUES ('Подготовка рабочего места', 10);
 
 INSERT INTO public."ReportEntries" VALUES (2, '2023-07-01 10:00:00+00', '2023-07-01 11:00:00+00', 'Some comment', 1, 9, 1, 0, false);
 INSERT INTO public."ReportEntries" VALUES (3, '2023-07-01 13:00:00+00', '2023-07-01 14:00:00+00', 'Some comment', 1, 9, 1, 1, false);
@@ -71,3 +73,13 @@ INSERT INTO public."Reports" VALUES (9, 9, 2, '2024-07-07 11:09:26.79567+00', tr
 INSERT INTO public."Respondents" VALUES (1, 'Петров Иван Иванович', '2024-07-04 09:03:59.718671+00', 'Москва', 1, NULL);
 INSERT INTO public."Respondents" VALUES (2, 'Новикова Татьяна Анатольевна', '2024-07-04 09:16:28.513095+00', 'Москва', 1, NULL);
 INSERT INTO public."Respondents" VALUES (3, 'Ольга', '2024-07-05 07:18:05.780334+00', 'Москва', 1, '');
+
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время работы (Р)','Продуктивное время (РЗ)','Подготовительно-заключительное время','ПЗ','Получение и сдача работы, инструктаж и др.');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время работы (Р)','Продуктивное время (РЗ)','Оперативное','ОП','Основное и вспомогательное время (ручное и машинное)');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время работы (Р)','Продуктивное время (РЗ)','Обслуживание рабочего места','Об','Подготовка и уборка рабочего места, прием и сдача, регулировка и настройка оборудования, приспособлений в процессе работы');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время работы (Р)','Непродуктивное время (СР+НР)','Время случайной работы','СР','Излишние совещания (по вопросам: нс относящимся к функциональным обязанностям» обсуждаемым повторно, без принятия решений), проход за получением заданий, излишние проходы, связанные с работой, испровление документов, происшедшего по вине исполнителя и др.');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время работы (Р)','Непродуктивное время (СР+НР)','Время лишней непроизводственной работы','HP','Излишние действия, работа не вызванная производственной необходимостью и др.');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время перерывов (П)','Время регламентированных перерывов (ПР)','Перерывы, связанные с установленной технологией и организацией производсвенного процесса','ПТ','Бездействие в ожидании нагрева и др. и /или ожидание выполнения других операций, входящих в данный процесс');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время перерывов (П)','Время регламентированных перерывов (ПР)','Перерывы, связанные с физиологическими потребностями','Потл','Отдых в процессе работы и /или личные надобности');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время перерывов (П)','Время нерегламентированных перерывов (ПН)','Перерывы, вызванные нарушением нормального течения производственного процесса','ПНТ','Ожидание работы');
+INSERT INTO public."Categories" ("MainGroup", "CostGroup", "CostCategory", "CostIndex", "CostName") VALUES('Время перерывов (П)','Время нерегламентированных перерывов (ПН)','Перерывы, вызванные нарушением трудовой дисциплины','ПНД','Хождение и разговор по личным делам (позднее начало и ранее окончание работ и др.)');

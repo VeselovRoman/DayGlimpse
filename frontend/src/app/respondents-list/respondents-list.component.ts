@@ -7,6 +7,7 @@ import { Respondent } from '../_models/respondent';
 import { Branch } from '../_models/branch';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-respondent-list',
@@ -28,39 +29,38 @@ export class RespondentListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadRespondents();
-    this.loadBranches();
+    this.loadData();
   }
 
-  loadRespondents() {
-    this.respondentService.getRespondents().subscribe(data => {
-      this.respondents = data.sort((a, b) => a.id - b.id);
-
-      this.respondents.forEach(respondent => {
-        const branch = this.branches.find(b => b.id === respondent.branchId);
-        if (branch) {
-          respondent.branchName = branch.name;
+  loadData() {
+    forkJoin({
+      respondents: this.respondentService.getRespondents(),
+      branches: this.branchService.getBranches()
+    }).subscribe({
+      next: ({ respondents, branches }) => {
+        this.branches = branches;
+        this.respondents = respondents.sort((a, b) => a.id - b.id);
+        this.respondents.forEach(respondent => {
+          const branch = this.branches.find(b => b.id === respondent.branchId);
+          if (branch) {
+            respondent.branchName = branch.name;
+          }
+        });
+  
+        this.dataSource = new MatTableDataSource(this.respondents);
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
         }
-      });
-
-      // Создаем новый MatTableDataSource и устанавливаем пагинатор
-      this.dataSource = new MatTableDataSource(this.respondents);
-      if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
+      },
+      error: error => {
+        console.error('Error loading data', error);
       }
-      console.log('Paginator:', this.paginator);
-    });
-  }
-
-  loadBranches() {
-    this.branchService.getBranches().subscribe(data => {
-      this.branches = data;
     });
   }
 
   openDialog(respondent?: Respondent): void {
     const dialogRef = this.dialog.open(RespondentDialogComponent, {
-      width: '400px',
+      width: '500px',
       data: {
         respondent: respondent ? { ...respondent } : { id: 0, name: '', registrationDate: new Date(), city: '', branchId: 0 },
         branches: this.branches
@@ -69,13 +69,15 @@ export class RespondentListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log(result);
         if (result.id) {
           this.respondentService.updateRespondent(result.id, result).subscribe(() => {
-            this.loadRespondents();
+            this.loadData();
           });
         } else {
           this.respondentService.createRespondent(result).subscribe(() => {
-            this.loadRespondents();
+            console.log('Создаю нового респондента');
+            this.loadData();
           });
         }
       }
@@ -84,7 +86,7 @@ export class RespondentListComponent implements OnInit {
 
   deleteRespondent(id: number) {
     this.respondentService.deleteRespondent(id).subscribe(() => {
-      this.loadRespondents();
+      this.loadData();
     });
   }
 }

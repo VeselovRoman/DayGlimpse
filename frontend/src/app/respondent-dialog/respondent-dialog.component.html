@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data.respondent.id ? 'Редактировать респондента' : 'Добавить респондента' }}</h2>
+<h2 mat-dialog-title>{{ data.respondent.id ? 'Редактировать респондента: ' + data.respondent.id : 'Добавить респондента' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="respondentForm">
     <div class="mb-3">
