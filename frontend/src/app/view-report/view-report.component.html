@@ -123,7 +123,7 @@
         <mat-card-actions>
           <button mat-flat-button type="submit" class="me-2"
             [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
-          <button class="me-2" mat-button type="button" (click)="saveReport()"
+          <button class="me-2" mat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
             [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
         </mat-card-actions>
       </mat-card>
