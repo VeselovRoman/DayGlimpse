@@ -278,6 +278,18 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
+  setupProcedureValueChange(index: number): void {
+    const control = this.entries.at(index).get('procedure');
+    control?.valueChanges.subscribe(selectedProcedure => {
+      if (selectedProcedure && selectedProcedure.name !== 'Прочее') {
+        this.entries.at(index).get('costCategoryId')?.setValue(2);
+      } else {
+        this.entries.at(index).get('costCategoryId')?.setValue(0); // Или любое другое значение по умолчанию
+      }
+    });
+  }
+  
+  
   addProcedureEntry(): void {
     this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
@@ -312,6 +324,7 @@ export class ViewReportComponent implements OnInit {
         newEntry.patchValue({ id: createdEntry.id });
         entriesFormArray.push(newEntry);
         this.setupProcedureFilter(entriesFormArray.length - 1);
+        this.setupProcedureValueChange(entriesFormArray.length - 1);
         this.expandedStates.push(true);
         this.toastr.info('Запись успешно добавлена');
         this.isCreating = false;
