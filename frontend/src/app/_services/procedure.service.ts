@@ -15,7 +15,6 @@ export class ProcedureService {
 
   //Получает список всех процедур.
   getProcedures(): Observable<Procedure[]> {
-    
     return this.http.get<Procedure[]>(this.baseUrl + 'procedures');
   }
 }

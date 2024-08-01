@@ -4,7 +4,7 @@ namespace server.DTOs
     {
         public int AgentId { get; set; }
         public int RespondentId { get; set; }
-        public int ProcedureId { get; set; }
+        public int? ProcedureId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string Comment { get; set; }

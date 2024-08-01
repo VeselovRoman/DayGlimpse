@@ -18,7 +18,7 @@ namespace server.Entities
         public int ReportId { get; set; }
         public int AgentId { get; set; }
         public int RespondentId { get; set; }
-        public int ProcedureId { get; set; } // Foreign key to Procedure
+        public int? ProcedureId { get; set; } // Foreign key to Procedure
         public int? CategoryId { get; set; } // Сделали ключ nullable
         
         // Navigation properties

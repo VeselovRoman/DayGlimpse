@@ -11,7 +11,7 @@ export interface Report {
 
 export interface Entry {
   id: number;
-  procedureId: number;
+  procedureId?: number;
   procedureName: string;
   startTime: Date;
   endTime: Date;

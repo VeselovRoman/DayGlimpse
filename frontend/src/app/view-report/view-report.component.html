@@ -13,7 +13,7 @@
     <mat-divider class="mb-3 mt-2"></mat-divider>
 
     <!-- Заполнение шапки отчета -->
-    <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="submitReport()">
+    <form *ngIf="reportForm" [formGroup]="reportForm" (ngSubmit)="openSubmitDialog()">
       <mat-card>
         <mat-label class="ms-3 mb-2">Редактирование отчета</mat-label>
 
@@ -51,10 +51,10 @@
                 <mat-form-field appearance="fill" class="full-width mb-2">
                   <mat-label>Наименование</mat-label>
                   <input matInput formControlName="procedure" (focus)="focusProcedureInput(i)" [matAutocomplete]="auto"
-                    matTooltip="{{ entry.value.procedure.name }}">
+                    [matTooltip]="entry.value.procedure?.name ? entry.value.procedure.name : 'Нет наименования'">
                   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProcedure">
                     <mat-option *ngFor="let procedure of filteredProcedures[i] | async" [value]="procedure">
-                      {{ procedure.name }}
+                      {{ procedure?.name ? procedure.name : 'Без наименования' }}
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>

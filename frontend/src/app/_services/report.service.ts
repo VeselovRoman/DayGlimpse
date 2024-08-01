@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CreateReportDto, CreateReportEntryDto, ReportDto } from '../_dto/report.dto';
+import { CreateReportDto, CreateReportEntryDto, ReportDto, UpdateReportEntryDto } from '../_dto/report.dto';
 import { Report } from '../_models/report';
 import { Entry } from '../_models/report';
 
@@ -32,6 +32,7 @@ export class ReportService {
   //Создает запись в отчете по указанному reportId.
   createReportEntry(reportId: number, createReportEntryDto: CreateReportEntryDto): Observable<CreateReportEntryDto> {
     console.log(`${this.baseUrl}${reportId}/entries`);
+    console.log('reportId: ', reportId, 'createReportEntryDto', createReportEntryDto)
     return this.http.post<CreateReportEntryDto>(`${this.baseUrl}${reportId}/entries`, createReportEntryDto).pipe(
       catchError((error: any) => {
         console.error('Error creating report entry:', error);
@@ -109,9 +110,9 @@ export class ReportService {
   }
 
   // Обновляет запись отчета
-  updateReportEntry(reportId: number, entryId: number, updateData: Partial<CreateReportEntryDto>): Observable<CreateReportEntryDto> {
+  updateReportEntry(reportId: number, entryId: number, updateData: Partial<UpdateReportEntryDto>): Observable<UpdateReportEntryDto> {
     const url = `${this.baseUrl}${reportId}/entries/${entryId}`;
-    return this.http.put<CreateReportEntryDto>(url, updateData).pipe(
+    return this.http.put<UpdateReportEntryDto>(url, updateData).pipe(
       catchError((error: any) => {
         console.error('Error updating report entry:', error);
         return throwError(() => new Error('Error updating report entry'));

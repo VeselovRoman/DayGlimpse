@@ -18,7 +18,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.agentId = response.agentId;
-          localStorage.setItem('id', response.agentId);
+          localStorage.setItem('agent_id', response.agentId);
           localStorage.setItem('username', username);
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user_firstName', response.firstName);

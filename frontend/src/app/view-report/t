@@ -246,8 +246,10 @@ export class ViewReportComponent implements OnInit {
 
     if (this.report && this.report.reportEntries) {
       this.report.reportEntries.forEach((entry, index) => {
-        entriesFormArray.push(this.createProcedureEntry(entry));
+        const entryGroup = this.createProcedureEntry(entry);
         this.setupProcedureFilter(index);
+        this.setupProcedureValueChange(index);
+        entriesFormArray.push(entryGroup);
         this.isDeleting.push(false);
         this.expandedStates = this.entries.value.map(() => false);
       });
@@ -312,6 +314,7 @@ export class ViewReportComponent implements OnInit {
         newEntry.patchValue({ id: createdEntry.id });
         entriesFormArray.push(newEntry);
         this.setupProcedureFilter(entriesFormArray.length - 1);
+        this.setupProcedureValueChange(entriesFormArray.length - 1);
         this.expandedStates.push(true);
         this.toastr.info('Запись успешно добавлена');
         this.isCreating = false;
@@ -351,7 +354,7 @@ export class ViewReportComponent implements OnInit {
     const now = new Date();
     const tenMinutesLater = new Date(now.getTime() + 10 * 60000); // добавляем 10 минут
 
-    return this.formBuilder.group({
+    const formGroup = this.formBuilder.group({
       id: [{ value: entry?.id || null, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
       procedure: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
@@ -360,6 +363,19 @@ export class ViewReportComponent implements OnInit {
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
       costCategoryId: [entry?.categoryId]
+    });
+
+    // Установите значение категории по умолчанию, если процедура не равна "Прочее"
+    this.setupProcedureValueChange(this.entries.controls.length);
+
+    return formGroup;
+  }
+
+  setupProcedureValueChange(index: number): void {
+    this.entries.at(index).get('procedure')?.valueChanges.subscribe(selectedProcedure => {
+      if (selectedProcedure && selectedProcedure.name !== 'Прочее') {
+        this.entries.at(index).get('costCategoryId')?.setValue(2);
+      }
     });
   }
 
@@ -412,8 +428,6 @@ export class ViewReportComponent implements OnInit {
       }
     });
   }
-
-
 
   saveReport(): void {
     if (this.reportForm.invalid) {

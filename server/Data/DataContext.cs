@@ -37,7 +37,8 @@ namespace server.Data
             modelBuilder.Entity<ReportEntry>()
                 .HasOne(re => re.Procedure)
                 .WithMany()
-                .HasForeignKey(re => re.ProcedureId);
+                .HasForeignKey(re => re.ProcedureId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Agent>()
                 .HasOne(a => a.Branch)

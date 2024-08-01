@@ -121,31 +121,6 @@ namespace server.Controllers
         {
             try
             {
-                /*var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (nameIdClaim == null)
-                {
-                    // Обработка случая, когда поле nameid отсутствует в токене
-                    return Unauthorized("Claim 'nameid' not found in the user token.");
-                }
-
-                // Ищем агента по имени пользователя в базе данных
-                var agent = await _context.Agents.SingleOrDefaultAsync(a => a.AgentName == nameIdClaim);
-
-                if (agent == null)
-                {
-                    // Обработка случая, когда агент не найден
-                    return NotFound("Agent not found.");
-                }
-
-                // Ищем отчет вместе с респондентом
-                var report = await _context.Reports.Include(r => r.Respondent).FirstOrDefaultAsync(r => r.Id == reportId);
-
-                if (report == null)
-                {
-                    // Обработка случая, когда отчет не найден
-                    return NotFound("Report not found.");
-                }*/
-
                 var reportEntry = new ReportEntry
                 {
                     AgentId = createReportEntryDto.AgentId,
@@ -201,21 +176,20 @@ namespace server.Controllers
                 var agentName = report.Agent.FirstName;
                 var respondentName = report.Respondent.Name;
 
-                return new ReportDto
+                var reportDto = new ReportDto
                 {
                     Id = report.Id,
                     ReportDate = report.ReportDate,
-                    AgentId = report.Agent.Id,
-                    AgentName = agentName, // Возвращаем имя агента
+                    AgentId = report.Agent?.Id ?? 0,
+                    AgentName = agentName,
                     RespondentId = report.RespondentId,
-                    RespondentName = respondentName, // Возвращаем имя респондента
+                    RespondentName = respondentName,
                     isConfirmed = report.IsConfirmed,
                     ReportEntries = report.ReportEntries.Select(re => new ReportEntryDto
-
                     {
                         Id = re.Id,
                         ProcedureId = re.ProcedureId,
-                        ProcedureName = re.Procedure.Name, // Возвращаем имя процедуры
+                        ProcedureName = re.Procedure?.Name ?? "Неизвестная процедура",
                         StartTime = re.StartTime,
                         EndTime = re.EndTime,
                         Comment = re.Comment,
@@ -224,6 +198,7 @@ namespace server.Controllers
                         CategoryId = re.CategoryId
                     }).ToList()
                 };
+                return Ok(reportDto);
             }
             catch (Exception ex)
             {

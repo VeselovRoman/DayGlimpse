@@ -5,7 +5,7 @@ namespace server.DTOs
         public class ReportEntryDto
         {
             public int Id { get; set; }
-            public int ProcedureId { get; set; }
+            public int? ProcedureId { get; set; }
             public string ProcedureName { get; set; } // Добавляем имя процедуры
             public DateTime StartTime { get; set; }
             public DateTime EndTime { get; set; }
