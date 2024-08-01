@@ -78,9 +78,14 @@
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Категория затрат</mat-label>
                       <mat-select formControlName="costCategoryId">
-                        <mat-option *ngFor="let category of costCategories" [value]="category.id">
+                        <ng-container *ngFor="let category of costCategories; let idx = index">
+                          <mat-option [value]="category.id">
                           {{ category.costCategory }}
                         </mat-option>
+                        <ng-container *ngIf="idx < costCategories.length - 1">
+                          <mat-divider class="custom-divider"></mat-divider>
+                        </ng-container>
+                      </ng-container>
                       </mat-select>
                       <mat-error *ngIf="entries.at(i)?.get('costCategoryId')?.hasError('required') ?? false">
                         Категория затрат обязательна

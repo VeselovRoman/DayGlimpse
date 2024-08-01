@@ -160,3 +160,9 @@ mat-card-header {
   font-size: 0.8rem;
   /* Или любой другой размер, который вам подходит */
 }
+
+.custom-divider {
+  height: 1px;
+  background-color: rgba(129, 116, 116, 0.12); /* Цвет разделителя */
+  margin: 4px 0; /* Отступы для разделителя */
+}
