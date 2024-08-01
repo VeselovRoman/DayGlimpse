@@ -73,23 +73,30 @@
                     </mat-form-field>
                   </div>
                   
-                    <div class="col-md-3">
-                      <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Категория затрат</mat-label>
-                        <mat-select formControlName="costCategoryId">
-                          <mat-option *ngFor="let category of costCategories" [value]="category.id">
-                            {{ category.costCategory }}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                    </div>
+                  <div class="col-md-3">
+                    <mat-form-field appearance="fill" class="full-width">
+                      <mat-label>Категория затрат</mat-label>
+                      <mat-select formControlName="costCategoryId">
+                        <mat-option *ngFor="let category of costCategories" [value]="category.id">
+                          {{ category.costCategory }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="entries.at(i)?.get('costCategoryId')?.hasError('required') ?? false">
+                        Категория затрат обязательна
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
 
                   <div class="col-md-3">
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Комментарий</mat-label>
                       <input matInput formControlName="comment">
+                      <mat-error *ngIf="entries.at(i)?.get('comment')?.hasError('required') ?? false">
+                        Комментарий обязателен для 'Прочее'
+                      </mat-error>
                     </mat-form-field>
                   </div>
+
                 </div>
               </mat-card-content>
 
@@ -121,10 +128,10 @@
           </div>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-flat-button type="submit" class="me-2"
-            [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
-          <button class="me-2" mat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
+          <button class="me-2" mat-flat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
             [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
+            <button mat-button type="submit" class="me-2"
+            [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
         </mat-card-actions>
       </mat-card>
     </form>

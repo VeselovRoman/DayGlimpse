@@ -279,14 +279,25 @@ export class ViewReportComponent implements OnInit {
   }
 
   setupProcedureValueChange(index: number): void {
-    const control = this.entries.at(index).get('procedure');
-    control?.valueChanges.subscribe(selectedProcedure => {
-      if (selectedProcedure && selectedProcedure.name !== 'Прочее') {
-        this.entries.at(index).get('costCategoryId')?.setValue(2);
-      } else {
-        this.entries.at(index).get('costCategoryId')?.setValue(0); // Или любое другое значение по умолчанию
-      }
-    });
+    const control = this.entries.at(index)?.get('procedure');
+    const commentControl = this.entries.at(index)?.get('comment');
+    const categoryControl = this.entries.at(index)?.get('costCategoryId');
+  
+    if (control && commentControl && categoryControl) {
+      control.valueChanges.subscribe(selectedProcedure => {
+        if (selectedProcedure && selectedProcedure.name === 'Прочее') {
+          categoryControl.setValidators([Validators.required]);
+          commentControl.setValidators([Validators.required]);
+          categoryControl.setValue(0); // Или другое значение для категории "Прочее"
+        } else {
+          categoryControl.setValidators([Validators.required]);
+          commentControl.clearValidators();
+          categoryControl.setValue(2); // Устанавливаем значение для не "Прочее"
+        }
+        categoryControl.updateValueAndValidity();
+        commentControl.updateValueAndValidity();
+      });
+    }
   }
   
   
@@ -372,7 +383,7 @@ export class ViewReportComponent implements OnInit {
       endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
-      costCategoryId: [entry?.categoryId]
+      costCategoryId: [entry?.categoryId, Validators.required]
     });
   }
 
