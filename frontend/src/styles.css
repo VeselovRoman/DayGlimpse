@@ -241,3 +241,8 @@ body {
   color: #fff;
   background-color: #D32F2F;
 }
+
+.transparent-dialog .mat-dialog-container {
+  background: transparent;
+  box-shadow: none;
+}

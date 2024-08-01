@@ -288,19 +288,26 @@ export class ViewReportComponent implements OnInit {
         if (selectedProcedure && selectedProcedure.name === 'Прочее') {
           categoryControl.setValidators([Validators.required]);
           commentControl.setValidators([Validators.required]);
-          categoryControl.setValue(0); // Или другое значение для категории "Прочее"
+          categoryControl.setValue(null); // Очищаем значение для принудительной валидации
         } else {
           categoryControl.setValidators([Validators.required]);
           commentControl.clearValidators();
           categoryControl.setValue(2); // Устанавливаем значение для не "Прочее"
         }
+  
         categoryControl.updateValueAndValidity();
         commentControl.updateValueAndValidity();
+  
+        // Важная часть - затрагиваем контролы для обновления состояния формы
+        categoryControl.markAsTouched();
+        categoryControl.markAsDirty();
+        commentControl.markAsTouched();
+        commentControl.markAsDirty();
       });
     }
   }
   
-  
+    
   addProcedureEntry(): void {
     this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;

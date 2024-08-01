@@ -1,5 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { BusyComponent } from '../busy-component/busy-component.component'; // Убедитесь, что путь правильный
 
 @Injectable({
   providedIn: 'root'
@@ -7,22 +8,23 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class BusyService {
   busyRequestCount = 0;
 
-  private spinnerService = inject(NgxSpinnerService);
+  constructor(private dialog: MatDialog) {}
 
-  busy(){
+  busy() {
     this.busyRequestCount++;
-    this.spinnerService.show(undefined, {
-      type: 'ball-atom',
-      bdColor: 'rgba(255,255,255,0)',
-      color: '#333333'
-    })
+    if (this.busyRequestCount === 1) {
+      this.dialog.open(BusyComponent, {
+        disableClose: true,
+        panelClass: 'transparent-dialog'
+      });
+    }
   }
 
   idle() {
     this.busyRequestCount--;
     if (this.busyRequestCount <= 0) {
       this.busyRequestCount = 0;
-      this.spinnerService.hide();
+      this.dialog.closeAll();
     }
   }
 }

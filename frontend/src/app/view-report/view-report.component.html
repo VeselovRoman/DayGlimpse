@@ -44,6 +44,7 @@
                 <mat-card-title class="ms-2 mb-1 small-title">
                   Процедура {{ i + 1 }} (ID: {{ entry.value.id }}) ({{ entry.value.startTime | date:'shortTime' }} - {{ entry.value.endTime | date:'shortTime' }})
                   <mat-icon>{{ expandedStates[i] ? 'expand_less' : 'expand_more' }}</mat-icon>
+                  <mat-label *ngIf="entry.dirty" class="text-danger ms-2 small-icon">Изменено</mat-label>
                 </mat-card-title>
               </mat-card-header>
 
@@ -101,7 +102,6 @@
               </mat-card-content>
 
               <mat-card-actions class="justify-content-end">
-                  <mat-label *ngIf="entry.dirty" class="text-danger ms-2 small-icon">Изменено</mat-label>
                 <button mat-button color="warn" type="button" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
                   <ng-container *ngIf="!isDeleting[i]">Удалить</ng-container>
                   <mat-progress-spinner *ngIf="isDeleting[i]" mode="indeterminate" diameter="20"></mat-progress-spinner>

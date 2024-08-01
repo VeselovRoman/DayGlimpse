@@ -29,7 +29,15 @@ export class NavComponent implements OnInit {
         this.model = response;
         this.router.navigate(['/']);
       },
-      error: error => this.toasterService.error('Неверный логин или пароль')
+      error: error => {
+        if (error.status === 401) {
+          this.toasterService.error('Неверный логин или пароль');
+        } else if (error.status === 0) {
+          this.toasterService.error('Ошибка сети. Проверьте подключение к интернету.');
+        } else {
+          this.toasterService.error('Произошла ошибка. Попробуйте еще раз.');
+        }
+      }
     });
   }
 

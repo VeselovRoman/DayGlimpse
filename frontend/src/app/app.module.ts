@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NavComponent } from './nav/nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -48,8 +48,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
-import { LoginComponent } from './login-component/login-component.component';
 import { AuthService } from './_services/auth.service';
+import { errorInterceptor } from './_interceptors/error.Interceptor';
+import { BusyComponent } from './busy-component/busy-component.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,7 @@ import { AuthService } from './_services/auth.service';
     AgentDialogComponent,
     ConfirmDialogComponent,
     CategoryEditorComponent,
-    LoginComponent
+    BusyComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -107,7 +108,7 @@ import { AuthService } from './_services/auth.service';
   providers: [
     AuthService,
     provideHttpClient(
-      withInterceptors([jwtInterceptor, loadingInterceptor])),
+      withInterceptors([jwtInterceptor, loadingInterceptor, errorInterceptor])),
     provideAnimations(),
     importProvidersFrom(NgxSpinnerModule),
     provideAnimationsAsync()
