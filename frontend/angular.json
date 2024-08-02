@@ -30,7 +30,6 @@
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/font-awesome/css/font-awesome.min.css",
               "./node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "./node_modules/ngx-spinner/animations/ball-atom.css",
               "./node_modules/bootswatch/dist/lumen/bootstrap.min.css",
               "./node_modules/ngx-toastr/toastr.css",
               "src/styles.css"
@@ -85,10 +84,16 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "client:build:production"
+              "buildTarget": "client:build:production",
+              "ssl": true,
+              "sslCert": "./ssl/trcont.ru.crt",
+              "sslKey": "./ssl/trcont.ru.key"
             },
             "development": {
-              "buildTarget": "client:build:development"
+              "buildTarget": "client:build:development",
+              "ssl": true,
+              "sslCert": "./ssl/localhost.pem",
+              "sslKey": "./ssl/localhost-key.pem"
             }
           },
           "defaultConfiguration": "development"

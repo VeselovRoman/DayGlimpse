@@ -177,7 +177,7 @@ nano ~/.ssh/config
 
 ;Добавьте следующую конфигурацию:
 Host myserver
-    HostName 51.250.8.212
+    HostName 192.168.118.20
     User admin
     IdentityFile ~/.ssh/id_ed25519
 
@@ -187,9 +187,8 @@ ssh myserver
 ;конфигурация Linux сервера
 Admin Password14
 ;подключение
- ssh -i "/Users/romanveselov/Documents/GitHub/DayGlimpse/.ssh/id_ed25519" admin@51.250.8.212
- ssh -i "C:\Users\Roman\.ssh\id_ed25519" admin@51.250.8.212
- 
+ ssh -i "/Users/romanveselov/.ssh/id_ed25519" admin@192.168.118.20
+ ssh -i "C:\Users\Roman\.ssh\id_ed25519" admin@192.168.118.20
  
  ;build
  ng build --configuration production
@@ -197,12 +196,12 @@ Admin Password14
 
 ;копируем web-сервер
 ;Windows
-scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@51.250.8.212:/var/www/html
+scp -r D:\GitHub\DayGlimpse\frontend\dist\client\* admin@192.168.118.20:/var/www/html
 ;mac
-scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* admin@51.250.8.212:/var/www/html
-
+scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* admin@192.168.118.20:/var/www/html
 ;копируем dotnet
-scp -r D:/var/www/server/* admin@51.250.8.212:/var/www/server
+scp -r /var/www/server/* admin@192.168.118.20:/var/www/server
+
 ;сконфигурировать службу
 sudo nano /etc/systemd/system/server.service
 [Unit]
@@ -231,7 +230,7 @@ sudo systemctl enable server.service
 sudo systemctl status server.service
 
 ;скопируем сертификат и ключ на сервер
-scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@51.250.8.212:/etc/nginx/ssl/
+scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@192.168.118.20:/etc/nginx/ssl/
 
 ;перезапустить сервер nginx
 sudo systemctl restart nginx
@@ -314,3 +313,8 @@ server {
         try_files $uri $uri/ /index.html;
     }
 }
+
+
+-------------------- SSL ----------------
+openssl pkcs12 -export -out /etc/nginx/ssl/trcont.ru.pfx -inkey /etc/nginx/ssl/trcont.ru.key -in /etc/nginx/ssl/trcont.ru.crt -certfile /etc/nginx/ssl/trcont.ru.crt
+Enter Export Password: dayglimpse
