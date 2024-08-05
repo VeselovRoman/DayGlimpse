@@ -4,6 +4,7 @@ import { AgentService } from '../_services/agent.service';
 import { BranchService } from '../_services/branch.service';
 import { Agent } from '../_models/agent';
 import { Branch } from '../_models/branch';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-agent-dialog',
@@ -19,9 +20,13 @@ export class AgentDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AgentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private agentService: AgentService,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private toastr: ToastrService
   ) {
     this.agent = data.agent;
+    if (!this.agent.city) {
+      this.agent.city = ''; // Инициализация пустым значением вместо null
+    }
   }
 
   ngOnInit(): void {
@@ -29,16 +34,27 @@ export class AgentDialogComponent implements OnInit {
   }
 
   loadBranches() {
-    this.branchService.getBranches().subscribe(branches => {
-      this.branches = branches;
-      this.selectedBranchName = this.branches.find(branch => branch.id === this.agent.branchId)?.name || '';
+    this.branchService.getBranches().subscribe({
+      next: (branches) => {
+        this.branches = branches;
+        this.selectedBranchName = this.branches.find(branch => branch.id === this.agent.branchId)?.name || '';
+      },
+      error: (error) => {
+        this.toastr.error('Не удалось загрузить филиалы');
+      }
     });
   }
 
   saveAgent() {
     if (this.agent.id) {
-      this.agentService.updateAgent(this.agent).subscribe(() => {
-        this.dialogRef.close(true);
+      this.agentService.updateAgent(this.agent).subscribe({
+        next: () => {
+          this.toastr.success('Данные пользователя успешно обновлены');
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('Не удалось обновить данные пользователя', error);
+        }
       });
     }
   }

@@ -2,16 +2,24 @@
 <div mat-dialog-content>
   <form>
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Имя агента</mat-label>
-      <input matInput [(ngModel)]="agent.login" name="agentName" disabled>
+      <mat-label for="login">Логин агента</mat-label>
+      <input matInput [(ngModel)]="agent.login" name="login" id="login" disabled>
     </mat-form-field>
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Город</mat-label>
-      <input matInput [(ngModel)]="agent.city" name="city">
+      <mat-label for="firstName">Имя</mat-label>
+      <input matInput [(ngModel)]="agent.firstName" name="firstName" id="firstName" disabled>
     </mat-form-field>
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Филиал</mat-label>
-      <mat-select [(ngModel)]="agent.branchId" name="branchId">
+      <mat-label for="lastName">Фамилия</mat-label>
+      <input matInput [(ngModel)]="agent.lastName" name="lastName" id="lastName" disabled>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label for="city">Город</mat-label>
+      <input matInput [(ngModel)]="agent.city" name="city" id="city">
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label for="branchId">Филиал</mat-label>
+      <mat-select [(ngModel)]="agent.branchId" name="branchId" id="branchId">
         <mat-option *ngFor="let branch of branches" [value]="branch.id">
           {{ branch.name }}
         </mat-option>
