@@ -7,8 +7,9 @@ import { ViewReportComponent } from './view-report/view-report.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
-import { NewReportComponent } from './new-report/new-report.component';
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NewReportPageComponent } from './new-report-page/new-report-page.component';
 
 const routes: Routes = [
   
@@ -16,9 +17,10 @@ const routes: Routes = [
   { path: 'respondents', component: RespondentListComponent, canActivate: [AuthGuard] },
   { path: 'reports', component: ReportListComponent, canActivate: [AuthGuard] },
   { path: 'branches', component: BranchListComponent, canActivate: [AuthGuard] },
-  { path: 'reports/new', component: NewReportComponent },
+  { path: 'reports/new', component: NewReportPageComponent },
   { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoryEditorComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard] },
   { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
 ];

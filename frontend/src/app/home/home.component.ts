@@ -9,13 +9,14 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  http = inject(HttpClient);
-  authService = inject(AuthService);
-  users: any;
+  isLoggedIn: boolean = false;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.authService.getAuthStatus().subscribe(status => {
+      this.isLoggedIn = status;
+    });
   }
 
 }

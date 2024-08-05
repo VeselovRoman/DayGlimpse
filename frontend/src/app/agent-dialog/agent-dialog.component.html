@@ -1,17 +1,25 @@
-<h1 mat-dialog-title>Редактирование агента: {{ agent.id }}</h1>
+<h1 mat-dialog-title>Редактирование агента: {{ agentForm.get('id')?.value }}</h1>
 <div mat-dialog-content>
-  <form>
+  <form [formGroup]="agentForm">
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Имя агента</mat-label>
-      <input matInput [(ngModel)]="agent.login" name="agentName" disabled>
+      <mat-label for="login">Логин агента</mat-label>
+      <input matInput formControlName="login" id="login">
     </mat-form-field>
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Город</mat-label>
-      <input matInput [(ngModel)]="agent.city" name="city">
+      <mat-label for="firstName">Имя</mat-label>
+      <input matInput formControlName="firstName" id="firstName">
     </mat-form-field>
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Филиал</mat-label>
-      <mat-select [(ngModel)]="agent.branchId" name="branchId">
+      <mat-label for="lastName">Фамилия</mat-label>
+      <input matInput formControlName="lastName" id="lastName">
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label for="city">Город</mat-label>
+      <input matInput formControlName="city" id="city">
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label for="branchId">Филиал</mat-label>
+      <mat-select formControlName="branchId" id="branchId">
         <mat-option *ngFor="let branch of branches" [value]="branch.id">
           {{ branch.name }}
         </mat-option>

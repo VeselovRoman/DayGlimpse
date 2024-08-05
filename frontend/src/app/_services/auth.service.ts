@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { environment } from 'src/environments/environment';
 export class AuthService {
   private baseUrl = environment.apiUrl;
   private agentId: number;
+  private authStatus = new BehaviorSubject<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) { }
 
@@ -18,11 +20,17 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.agentId = response.agentId;
-          localStorage.setItem('agent_id', response.agentId);
+          localStorage.setItem('agent_id', response.agentId.toString());
           localStorage.setItem('username', username);
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user_firstName', response.firstName);
           localStorage.setItem('user_lastName', response.lastName);
+          this.authStatus.next(true);  // Update the authentication status
+        }),
+        catchError(error => {
+          // Handle login error
+          console.error('Ошибка входа', error);
+          return of(null);
         })
       );
   }
@@ -33,6 +41,7 @@ export class AuthService {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_firstName');
     localStorage.removeItem('user_lastName');
+    this.authStatus.next(false);
   }
 
   getToken(): string {
@@ -43,6 +52,11 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+  
+  // Provide an observable for the authentication status
+    getAuthStatus(): Observable<boolean> {
+      return this.authStatus.asObservable();
+    }
 
   getAgentId(): number {
     return this.agentId || +localStorage.getItem('agent_id')!;
@@ -66,4 +80,7 @@ export class AuthService {
     return `${firstName} ${lastName}`;
   }
 
+  private hasToken(): boolean {
+    return !!localStorage.getItem('auth_token');
+  }
 }
