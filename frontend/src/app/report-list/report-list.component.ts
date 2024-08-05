@@ -73,17 +73,8 @@ export class ReportListComponent implements OnInit {
     this.router.navigate(['/reports', report.id, 'edit']);
   }
 
-  openNewReportDialog(): void {
-    const dialogRef = this.dialog.open(NewReportComponent, {
-      width: '600px',
-      data: { /* данные, если необходимы */ }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.router.navigate(['/reports', result, 'edit']); // Переход к редактированию созданного отчёта
-      }
-    });
+  openNewReportPage(): void {
+    this.router.navigate(['/reports/new']);
   }
 
   closeViewReport() {

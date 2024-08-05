@@ -1,0 +1,24 @@
+<div class="container mt-4">
+    <h2 class="text-center">Создание нового отчета</h2>
+    <form [formGroup]="newReportForm" class="mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label  class="me-2" for="agentName">Агент:</label>
+        <input matInput type="text" formControlName="agentName" id="agentName">
+      </div>
+      <div class="mb-3">
+        <label class="me-2" for="reportDate">Дата отчета:</label>
+        <input matInput type="datetime-local" formControlName="reportDate" id="reportDate">
+      </div>
+      <div class="mb-3">
+        <label for="respondentName">Выберите респондента:</label>
+        <mat-form-field appearance="fill" class="w-100 mb-3">
+          <mat-select id="respondentName" formControlName="respondentName">
+            <mat-option *ngFor="let respondent of respondents" [value]="respondent.id">{{ respondent.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <button mat-flat-button class="me-2" color="primary" (click)="submitForm()" [disabled]="newReportForm.invalid">Создать отчет</button>
+      <button mat-button (click)="onCancel()">Отмена</button>
+    </form>
+  </div>
+  

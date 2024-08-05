@@ -1,0 +1,33 @@
+<div class="container mt-4">
+    <h2>Профиль пользователя</h2>
+    <form [formGroup]="userProfileForm" (ngSubmit)="saveUserProfile()">
+      <div class="form-group">
+        <label for="login">Логин</label>
+        <input matInput formControlName="login" id="login" readonly>
+      </div>
+      <div class="form-group">
+        <label for="firstName">Имя</label>
+        <input matInput formControlName="firstName" id="firstName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="lastName">Фамилия</label>
+        <input matInput formControlName="lastName" id="lastName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="city">Город</label>
+        <input matInput formControlName="city" id="city">
+      </div>
+      <div class="form-group">
+        <label for="branchId">Филиал</label>
+        <mat-select formControlName="branchId" id="branchId" class="full-width">
+          <mat-option *ngFor="let branch of branches" [value]="branch.id">
+            {{ branch.name }}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="form-group">
+        <button mat-flat-button color="primary" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </div>
+  

@@ -52,6 +52,8 @@ import { CategoryEditorComponent } from './category-editor/category-editor.compo
 import { AuthService } from './_services/auth.service';
 import { errorInterceptor } from './_interceptors/error.Interceptor';
 import { BusyComponent } from './busy-component/busy-component.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NewReportPageComponent } from './new-report-page/new-report-page.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,9 @@ import { BusyComponent } from './busy-component/busy-component.component';
     AgentDialogComponent,
     ConfirmDialogComponent,
     CategoryEditorComponent,
-    BusyComponent
+    BusyComponent,
+    UserProfileComponent,
+    NewReportPageComponent
   ],
   imports: [
     BrowserAnimationsModule,
