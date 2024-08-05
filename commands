@@ -202,6 +202,9 @@ scp -r /Users/romanveselov/documents/GitHub/DayGlimpse/frontend/dist/client/* ad
 ;копируем dotnet
 scp -r /var/www/server/* admin@192.168.118.20:/var/www/server
 
+;закинуть конфиг
+scp -r /Users/romanveselov/Documents/GitHub/DayGlimpse/server/appsettings.json admin@192.168.118.20:/var/www/server 
+
 ;сконфигурировать службу
 sudo nano /etc/systemd/system/server.service
 [Unit]
@@ -210,7 +213,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/var/www/server
-ExecStart=/usr/bin/dotnet /var/www/server/server.dll
+ExecStart=/usr/bin/dotnet /var/www/server/server.dll --urls=http://0.0.0.0:5000
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
@@ -226,11 +229,14 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 sudo systemctl start server.service
 sudo systemctl stop server.service
+sudo systemctl restart server.service
 sudo systemctl enable server.service
 sudo systemctl status server.service
 
 ;скопируем сертификат и ключ на сервер
 scp "D:\GitHub\DayGlimpse\frontend\ssl\*" admin@192.168.118.20:/etc/nginx/ssl/
+scp "/Users/romanveselov/.postgresql/root.crt" admin@192.168.118.20:/etc/ssl/certs/
+
 
 ;перезапустить сервер nginx
 sudo systemctl restart nginx
@@ -250,24 +256,11 @@ sudo ln -s /etc/nginx/sites-available/dayglimpse /etc/nginx/sites-enabled/
 sudo nano /etc/systemd/system/myapp.service
 ;Обновите список служб системных демонов, чтобы система узнала о вашей новой службе:
 sudo systemctl daemon-reload
-;Запуск службы:
-sudo systemctl start myapp
-;остановка
-sudo systemctl stop myapp
-;перезапуск
-sudo systemctl restart myapp
 
 ;Перезапустите службу:
 После внесения изменений в файл службы перезапустите службу, чтобы изменения вступили в силу:
 sudo systemctl daemon-reload  # Перезагрузка конфигурации systemd
-sudo systemctl restart myapp   # Перезапуск службы вашего приложения
 
-;Автозапуск службы при загрузке системы:
-sudo systemctl enable myapp
-;Отключение автозапуска службы при загрузке системы:
-sudo systemctl disable myapp
-;Просмотр статуса службы:
-sudo systemctl status myapp
 ;логи службы
 sudo journalctl -u myapp
 
@@ -292,14 +285,7 @@ sudo journalctl -u myapp
     }
 }
 
-
-
 scp "D:\GitHub\DayGlimpse\frontend\ssl\localhost.pem" admin@51.250.8.212:/etc/nginx/ssl/ca_certificate.pem
-
-
-
-
-
 
 server {
     listen 80;

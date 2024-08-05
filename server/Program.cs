@@ -1,32 +1,48 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using server.Data;
 using server.Extensions;
 using server.Helpers;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Получаем конфигурацию
+var config = builder.Configuration;
+
+// Переменные из конфигурации
+var host = config["DatabaseSettings:Host"];
+var port = config["DatabaseSettings:Port"];
+var db = config["DatabaseSettings:Database"];
+var username = config["DatabaseSettings:Username"];
+var password = config["DatabaseSettings:Password"];
+var sslMode = config["DatabaseSettings:SslMode"] ?? "Disable";
+
+// Собираем строку подключения из переменных
+var connString = $"Host={host};Port={port};Database={db};Username={username};Password={password};Ssl Mode={sslMode};";
+
+// Добавление строки подключения в конфигурацию
+var memoryConfig = new Dictionary<string, string>
+{
+    { "ConnectionStrings:DefaultConnection", connString }
+};
+builder.Configuration.AddInMemoryCollection(memoryConfig);
 
 builder.Services.AddIdentityService(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 
-// Настройка конфигурации базы данных
-DatabaseConfig.ConfigureDatabase(builder.Configuration);
-ActiveDirectoryConfig.ConfigureActiveDirectoryService(builder.Services, builder.Configuration); // Настройка службы Active Directory
+ActiveDirectoryConfig.ConfigureActiveDirectoryService(builder.Services, builder.Configuration);
 
 builder.Services.AddControllers();
 
-// Add CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowAnyOrigin(); // Разрешить любые источники 
-              //.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://158.160.134.124");
+              .AllowAnyOrigin();
     });
 });
-
-builder.WebHost.ConfigureKestrel(KestrelConfiguration.ConfigureKestrel);
 
 var app = builder.Build();
 
