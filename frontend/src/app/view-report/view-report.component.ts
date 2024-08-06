@@ -216,11 +216,12 @@ export class ViewReportComponent implements OnInit {
     if (typeof value !== 'string') {
       return [];
     }
-    const filterValue = value.toLowerCase();
+    const searchTerms = value.toLowerCase().split(' ').map(term => term.trim());
     return this.procedures.filter(procedure =>
-      typeof procedure.name === 'string' && procedure.name.toLowerCase().includes(filterValue)
+      searchTerms.every(term => procedure.name.toLowerCase().includes(term))
     );
   }
+  
 
   fillReportForm(): void {
     if (!this.report) {
@@ -306,7 +307,6 @@ export class ViewReportComponent implements OnInit {
       });
     }
   }
-  
     
   addProcedureEntry(): void {
     this.isCreating = true;
