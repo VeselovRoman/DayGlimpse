@@ -62,9 +62,11 @@ export class ReportListComponent implements OnInit {
 
         // Переопределение метода фильтрации, чтобы исключить startTime и endTime
         this.dataSource.filterPredicate = (data: Report, filter: string) => {
-          const transformedFilter = filter.trim().toLowerCase();
+          const transformedFilter = filter.trim().toLowerCase().split(' ');
           const dataStr = (data.id + ' ' + data.agentName + ' ' + data.respondentName + ' ' + data.isConfirmed).toLowerCase();
-          return dataStr.includes(transformedFilter);
+          
+          // Проверка, что каждое слово содержится в строке данных
+          return transformedFilter.every(word => dataStr.includes(word));
         };
 
         this.isLoading = false;
