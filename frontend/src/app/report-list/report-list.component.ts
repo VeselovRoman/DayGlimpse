@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { NewReportComponent } from '../new-report/new-report.component';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-report-list',
@@ -20,12 +21,17 @@ export class ReportListComponent implements OnInit {
   dataSource = new MatTableDataSource<Report>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  currentAgentId: number; //текущий agentId для нередактирования чужих отчетов 
 
   constructor(
     private reportService: ReportService,
     private router: Router,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private authService: AuthService
+  ) {
+    this.currentAgentId = this.authService.getAgentId();
+    console.log(this.currentAgentId)
+  }
 
   ngOnInit(): void {
     this.loadReports();

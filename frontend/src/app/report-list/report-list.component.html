@@ -62,12 +62,19 @@
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Действия </mat-header-cell>
       <mat-cell *matCellDef="let report">
-        <button *ngIf="!report.isConfirmed" mat-icon-button color="primary" (click)="editReport(report)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button *ngIf="report.isConfirmed" mat-icon-button color="accent" (click)="viewEntries(report)">
-          <mat-icon>visibility</mat-icon>
-        </button>
+        <ng-container *ngIf="!report.isConfirmed">
+          <button *ngIf="report.agentId === currentAgentId" mat-icon-button color="primary" (click)="editReport(report)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button *ngIf="report.agentId !== currentAgentId" mat-icon-button color="accent" (click)="viewEntries(report)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="report.isConfirmed">
+          <button mat-icon-button color="accent" (click)="viewEntries(report)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </ng-container>
       </mat-cell>
     </ng-container>
 
@@ -85,7 +92,7 @@
 
 <!-- Modal для отображения записей отчета -->
 <div *ngIf="selectedReport" class="modal" tabindex="-1"
-  [ngClass]="{'show': selectedReport && selectedReport.isConfirmed}">
+  [ngClass]="{'show': selectedReport}">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
