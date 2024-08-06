@@ -7,18 +7,27 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { NewReportComponent } from '../new-report/new-report.component';
 import { AuthService } from '../_services/auth.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-report-list',
   templateUrl: './report-list.component.html',
-  styleUrls: ['./report-list.component.css']
+  styleUrls: ['./report-list.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class ReportListComponent implements OnInit {
   reports: Report[] = [];
-  selectedReport: Report | null = null;
+  expandedElement: Report | null;
   isLoading: boolean = true;
-  displayedColumns: string[] = ['id', 'reportEntries', 'reportDate', 'agentName', 'respondentName', 'status', 'actions'];
+  displayedColumns: string[] = ['index', 'id', 'reportEntries', 'reportDate', 'agentName', 'respondentName', 'status', 'actions'];
   dataSource = new MatTableDataSource<Report>();
+  renderedData: Report[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   currentAgentId: number; //текущий agentId для нередактирования чужих отчетов 
@@ -30,7 +39,6 @@ export class ReportListComponent implements OnInit {
     private authService: AuthService
   ) {
     this.currentAgentId = this.authService.getAgentId();
-    console.log(this.currentAgentId)
   }
 
   ngOnInit(): void {
@@ -45,9 +53,12 @@ export class ReportListComponent implements OnInit {
 
         // Создаем новый MatTableDataSource и устанавливаем пагинатор
         this.dataSource = new MatTableDataSource(this.reports);
+
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
         }
+        this.renderedData = this.dataSource.connect().value;
+
 
         // Переопределение метода фильтрации, чтобы исключить startTime и endTime
         this.dataSource.filterPredicate = (data: Report, filter: string) => {
@@ -57,7 +68,6 @@ export class ReportListComponent implements OnInit {
         };
 
         this.isLoading = false;
-        console.log('Загруженные отчеты:', this.reports);
       },
       error: (error: any) => {
         console.error('Error fetching reports:', error);
@@ -71,10 +81,6 @@ export class ReportListComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  viewEntries(report: Report) {
-    this.selectedReport = report;
-  }
-
   editReport(report: Report) {
     this.router.navigate(['/reports', report.id, 'edit']);
   }
@@ -83,8 +89,9 @@ export class ReportListComponent implements OnInit {
     this.router.navigate(['/reports/new']);
   }
 
-  closeViewReport() {
-    this.selectedReport = null;
-    this.loadReports(); // Перезагрузка списка отчетов
+  getRecordIndex(report: Report): number {
+    return this.renderedData.indexOf(report) + 1;
   }
+  
+  
 }
