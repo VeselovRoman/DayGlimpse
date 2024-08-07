@@ -1,15 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using server.Data;
 using server.DTOs;
 using server.DTOs.server.DTOs;
 using server.Entities;
 using server.Interfaces;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -33,6 +29,8 @@ namespace server.Controllers
                 .Include(r => r.Respondent)
                 .Include(r => r.ReportEntries)
                     .ThenInclude(re => re.Procedure)
+                .Include(r => r.ReportEntries)
+                .ThenInclude(re => re.Category)
                     .OrderByDescending(r => r.Id)
                 .Select(report => new ReportDto
                 {
@@ -56,7 +54,8 @@ namespace server.Controllers
                         RespondentId = entry.RespondentId,
                         RespondentName = entry.Respondent.Name,
                         isConfirmed = entry.IsConfirmed,
-                        CategoryId = entry.CategoryId
+                        CategoryId = entry.CategoryId,
+                        CategoryName = entry.Category.CostCategory
                     }).ToList()
                 })
                 .ToListAsync();
@@ -166,9 +165,9 @@ namespace server.Controllers
             {
                 var report = await _context.Reports
                     .Include(r => r.ReportEntries)
-                        .ThenInclude(re => re.Procedure) // Включаем данные о процедуре
+                        .ThenInclude(re => re.Procedure)
                     .Include(r => r.Agent)
-                    .Include(r => r.Respondent) // Включаем данные о респонденте
+                    .Include(r => r.Respondent)
                     .FirstOrDefaultAsync(r => r.Id == id);
 
                 if (report == null) return NotFound();

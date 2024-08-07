@@ -53,6 +53,7 @@ export class ReportListComponent implements OnInit {
 
         // Создаем новый MatTableDataSource и устанавливаем пагинатор
         this.dataSource = new MatTableDataSource(this.reports);
+        console.log(this.dataSource);
 
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;

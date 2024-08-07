@@ -92,6 +92,8 @@
 
 table {
   width: 100%;
+  table-layout: fixed; /* Используем фиксированную раскладку таблицы */
+  word-wrap: break-word; /* Автоматический перенос слов */
 }
 
 tr.example-detail-row {
@@ -142,4 +144,16 @@ tr.example-element-row:not(.example-expanded-row):active {
 .inner-table td {
   padding: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* фиксирование цвета разделителя */
+}
+
+.table-responsive {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto; /* Горизонтальная прокрутка */
+}
+
+.mat-header-cell, .mat-cell {
+  overflow: hidden; /* Обрезка содержимого */
+  text-overflow: ellipsis; /* Троеточие для длинного текста */
+  white-space: nowrap; /* Запрет на перенос текста */
 }

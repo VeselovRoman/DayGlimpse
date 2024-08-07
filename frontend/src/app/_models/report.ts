@@ -23,4 +23,5 @@ export interface Entry {
   reportId: number;
   isConfirmed: boolean;
   categoryId?: number;
+  categoryName: string;
 }
