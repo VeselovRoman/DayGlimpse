@@ -54,6 +54,7 @@ import { errorInterceptor } from './_interceptors/error.Interceptor';
 import { BusyComponent } from './busy-component/busy-component.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { NewReportPageComponent } from './new-report-page/new-report-page.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { NewReportPageComponent } from './new-report-page/new-report-page.compon
     MatToolbarModule,
     MatMenuModule,
     MatSnackBarModule,
+    DragDropModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

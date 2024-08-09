@@ -18,7 +18,7 @@ namespace server.DTOs
             public bool isConfirmed { get; set; }
             public int? CategoryId { get; set; }
             public string CategoryName { get; set; }
-
+            public int Order { get; set; }
         }
     }
 }

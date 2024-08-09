@@ -41,7 +41,9 @@ namespace server.Controllers
                     RespondentId = report.RespondentId,
                     RespondentName = report.Respondent.Name,
                     isConfirmed = report.IsConfirmed,
-                    ReportEntries = report.ReportEntries.Select(entry => new ReportEntryDto
+                    ReportEntries = report.ReportEntries
+                        .OrderBy(entry => entry.Order)
+                        .Select(entry => new ReportEntryDto
                     {
                         Id = entry.Id,
                         ProcedureId = entry.ProcedureId,
@@ -55,7 +57,8 @@ namespace server.Controllers
                         RespondentName = entry.Respondent.Name,
                         isConfirmed = entry.IsConfirmed,
                         CategoryId = entry.CategoryId,
-                        CategoryName = entry.Category.CostCategory
+                        CategoryName = entry.Category.CostCategory,
+                        Order = entry.Order
                     }).ToList()
                 })
                 .ToListAsync();
@@ -309,6 +312,7 @@ namespace server.Controllers
                 entry.EndTime = DateTime.SpecifyKind(updateReportEntryDto.EndTime, DateTimeKind.Utc);
                 entry.Comment = updateReportEntryDto.Comment;
                 entry.CategoryId = updateReportEntryDto.CategoryId;
+                entry.Order = updateReportEntryDto.Order;
 
                 await _context.SaveChangesAsync();
 

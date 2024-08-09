@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Category } from '../_models/category';
 import { CategoryService } from '../_services/category.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-view-report',
@@ -54,6 +55,7 @@ export class ViewReportComponent implements OnInit {
   isCreating: boolean = false;
   isSaving: boolean = false;
   isDeleting: boolean[] = [];
+  orderChanged: boolean = false; //флаг, если пользователь меня порядок записей
 
   constructor(
     private formBuilder: FormBuilder,
@@ -172,7 +174,7 @@ export class ViewReportComponent implements OnInit {
         cancelButtonText: 'Отмена'
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.submitReport();
@@ -221,7 +223,7 @@ export class ViewReportComponent implements OnInit {
       searchTerms.every(term => procedure.name.toLowerCase().includes(term))
     );
   }
-  
+
 
   fillReportForm(): void {
     if (!this.report) {
@@ -242,11 +244,15 @@ export class ViewReportComponent implements OnInit {
 
   loadReportEntries(): void {
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
+    console.log('entriesFormArray', entriesFormArray);
     entriesFormArray.clear();
     this.isDeleting = [];
 
     if (this.report && this.report.reportEntries) {
-      this.report.reportEntries.forEach((entry, index) => {
+      
+      const sortedEntries = this.report.reportEntries.sort((a, b) => a.order - b.order);
+      console.log('Отсортированные записи: ', sortedEntries)
+      sortedEntries.forEach((entry, index) => {
         entriesFormArray.push(this.createProcedureEntry(entry));
         this.setupProcedureFilter(index);
         this.isDeleting.push(false);
@@ -283,7 +289,7 @@ export class ViewReportComponent implements OnInit {
     const control = this.entries.at(index)?.get('procedure');
     const commentControl = this.entries.at(index)?.get('comment');
     const categoryControl = this.entries.at(index)?.get('costCategoryId');
-  
+
     if (control && commentControl && categoryControl) {
       control.valueChanges.subscribe(selectedProcedure => {
         if (selectedProcedure && selectedProcedure.name === 'Прочее') {
@@ -295,10 +301,10 @@ export class ViewReportComponent implements OnInit {
           commentControl.clearValidators();
           categoryControl.setValue(2); // Устанавливаем значение для не "Прочее"
         }
-  
+
         categoryControl.updateValueAndValidity();
         commentControl.updateValueAndValidity();
-  
+
         // Важная часть - затрагиваем контролы для обновления состояния формы
         categoryControl.markAsTouched();
         categoryControl.markAsDirty();
@@ -307,7 +313,7 @@ export class ViewReportComponent implements OnInit {
       });
     }
   }
-    
+
   addProcedureEntry(): void {
     this.isCreating = true;
     const entriesFormArray = this.reportForm.get('entries') as FormArray;
@@ -453,10 +459,14 @@ export class ViewReportComponent implements OnInit {
     }
 
     this.isSaving = true;
+    
     console.log('this.reportForm.value.entries', this.reportForm.value.entries);
-    const updatedReportEntries: UpdateReportEntryDto[] = this.reportForm.value.entries
-      .filter((entry: any) => this.entries.at(this.reportForm.value.entries.indexOf(entry)).dirty)
-      .map((entry: any) => {
+
+    let entriesToSave: UpdateReportEntryDto[];
+
+    if (this.orderChanged) {
+      // Если порядок изменен, сохраняем все записи с новым порядком
+      entriesToSave = this.reportForm.value.entries.map((entry: any, index: number) => {
         const startTimeUTC = new Date(entry.startTime).toISOString();
         const endTimeUTC = new Date(entry.endTime).toISOString();
 
@@ -466,17 +476,39 @@ export class ViewReportComponent implements OnInit {
           startTime: startTimeUTC,
           endTime: endTimeUTC,
           comment: entry.comment,
-          CategoryId: entry.costCategoryId
-        }
+          CategoryId: entry.costCategoryId,
+          order: index // Обновляем порядок
+        };
       });
-    console.log('Updated Report Entries:', updatedReportEntries);
+    } else {
+      // Если порядок не изменен, сохраняем только dirty записи
+      entriesToSave = this.reportForm.value.entries
+        .filter((entry: any) => this.entries.at(this.reportForm.value.entries.indexOf(entry)).dirty)
+        .map((entry: any, index: number) => {
+          const startTimeUTC = new Date(entry.startTime).toISOString();
+          const endTimeUTC = new Date(entry.endTime).toISOString();
 
-    updatedReportEntries.forEach(entry => {
+          return {
+            id: entry.id,
+            procedureId: entry.procedure.id,
+            startTime: startTimeUTC,
+            endTime: endTimeUTC,
+            comment: entry.comment,
+            CategoryId: entry.costCategoryId,
+            order: index // Даже если порядок не менялся, порядок должен быть отправлен для consistency
+          };
+        });
+    }
+
+    
+    console.log('Updated Report Entries:', entriesToSave);
+
+    entriesToSave.forEach(entry => {
       if (entry.id) {
         this.reportService.updateReportEntry(this.report.id, entry.id, entry).subscribe({
           next: () => {
             this.toastr.info('Запись успешно обновлена'),
-            this.resetFormState();
+              this.resetFormState();
             this.isSaving = false
           },
           error: error => {
@@ -487,6 +519,8 @@ export class ViewReportComponent implements OnInit {
         });
       }
     });
+
+    this.orderChanged = false;
     this.isSaving = false;
     this.calculateTimeGaps();
     this.toastr.info('Отчет успешно сохранен');
@@ -618,5 +652,23 @@ export class ViewReportComponent implements OnInit {
 
   collapseAll(): void {
     this.expandedStates = this.entries.controls.map(() => false);
+  }
+
+  onDrop(event: CdkDragDrop<FormArray>): void {
+    // Меняем порядок элементов в массиве Angular формы
+    moveItemInArray(this.entries.controls, event.previousIndex, event.currentIndex);
+
+    // Обновляем поле 'order' у каждой записи
+    this.entries.controls.forEach((control, index) => {
+      control.get('order')?.setValue(index);
+    });
+
+    this.orderChanged = true; // Фиксируем изменение порядка
+  }
+
+  updateEntryOrder() {
+    this.entries.controls.forEach((control, index) => {
+      control.get('order')?.setValue(index + 1); // Обновляем порядок
+    });
   }
 }

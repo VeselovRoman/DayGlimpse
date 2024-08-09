@@ -26,6 +26,7 @@ export interface UpdateReportEntryDto {
   endTime: string;
   comment: string;
   CategoryId: number;
+  order: number;
 }
 
 // report.dto.ts
@@ -54,4 +55,5 @@ export interface ReportEntryDto {
   respondentName: string;
   isConfirmed: boolean;
   CategoryId: number;
+  order: number
 }

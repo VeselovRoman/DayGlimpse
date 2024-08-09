@@ -36,8 +36,8 @@
             <button mat-raised-button color="warn" type="button" (click)="collapseAll()">Свернуть все</button>
           </div>
           
-          <div formArrayName="entries">
-            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="mb-2"
+          <div cdkDropList formArrayName="entries" (cdkDropListDropped)="onDrop($event)">
+            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" cdkDrag class="mb-2" 
             [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}">
               
               <mat-card-header (click)="toggleCard(i)">
