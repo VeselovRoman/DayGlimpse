@@ -23,14 +23,16 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        if (_adService.AuthenticateUser(model.Username, model.Password, out var firstName, out var lastName))
+        var normalizedUsername = model.Username.ToLower();
+
+        if (_adService.AuthenticateUser(normalizedUsername, model.Password, out var firstName, out var lastName))
         {
-            var agent = await _context.Agents.SingleOrDefaultAsync(a => a.Login == model.Username);
+            var agent = await _context.Agents.SingleOrDefaultAsync(a => a.Login.ToLower() == normalizedUsername);
             if (agent == null)
             {
                 agent = new Agent
                 {
-                    Login = model.Username,
+                    Login = normalizedUsername,
                     FirstName = firstName,
                     LastName = lastName,
                 };
@@ -38,7 +40,7 @@ public class AuthController : ControllerBase
                 await _context.SaveChangesAsync();
             }
             
-            var token = _adService.GenerateJwtToken(agent.Id, model.Username, firstName, lastName);
+            var token = _adService.GenerateJwtToken(agent.Id, normalizedUsername, firstName, lastName);
             return Ok(new
             {
                 agentId = agent.Id,

@@ -45,12 +45,20 @@ export class ReportListComponent implements OnInit {
     this.loadReports();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   loadReports() {
     this.isLoading = true;
     this.reportService.getReports().subscribe({
       next: (reports: Report[]) => {
         this.reports = reports;
 
+        this.reports.forEach((report, index) => {
+          report.index = index + 1 + (this.paginator.pageIndex * this.paginator.pageSize);
+        });
+        
         // Создаем новый MatTableDataSource и устанавливаем пагинатор
         this.dataSource = new MatTableDataSource(this.reports);
         console.log(this.dataSource);
@@ -92,9 +100,12 @@ export class ReportListComponent implements OnInit {
     this.router.navigate(['/reports/new']);
   }
 
-  getRecordIndex(report: Report): number {
-    return this.renderedData.indexOf(report) + 1;
+  getRecordIndex(index: number): number {
+    const pageIndex = this.paginator ? this.paginator.pageIndex : 0;
+    const pageSize = this.paginator ? this.paginator.pageSize : 10;
+    return index + 1 + pageIndex * pageSize;
   }
   
+
   
 }

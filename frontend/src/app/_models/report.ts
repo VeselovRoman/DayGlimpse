@@ -7,6 +7,7 @@ export interface Report {
   respondentName: string;
   reportEntries: Entry[];  // Добавляем свойство для записей отчета
   isConfirmed: boolean;
+  index?: number; 
 }
 
 export interface Entry {

@@ -16,12 +16,14 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}Auth/login`, { username, password })
+    const normalizedUsername = username.toLowerCase();
+
+    return this.http.post<any>(`${this.baseUrl}Auth/login`, { username: normalizedUsername, password })
       .pipe(
         tap(response => {
           this.agentId = response.agentId;
           localStorage.setItem('agent_id', response.agentId.toString());
-          localStorage.setItem('username', username);
+          localStorage.setItem('username', normalizedUsername);
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user_firstName', response.firstName);
           localStorage.setItem('user_lastName', response.lastName);

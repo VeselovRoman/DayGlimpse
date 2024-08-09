@@ -10,6 +10,10 @@ REMOTE_HTML_PATH="/var/www/html"
 REMOTE_SERVER_PATH="/var/www/server"
 SERVICE_NAME="server.service"
 
+# Изменяем права доступа к директориям
+echo "Changing permissions for .NET project directory..."
+sudo chown -R $USER $DOTNET_PROJECT_PATH/obj/Release/net8.0/
+
 # Собираем Angular клиент
 echo "Building Angular client..."
 cd $ANGULAR_PROJECT_PATH
@@ -18,7 +22,8 @@ ng build --configuration production
 # Собираем .NET сервер
 echo "Building .NET server..."
 cd $DOTNET_PROJECT_PATH
-sudo dotnet publish --configuration Release
+dotnet clean
+dotnet publish --configuration Release
 
 # Копируем клиент на удаленный сервер
 echo "Copying client files to remote server..."
