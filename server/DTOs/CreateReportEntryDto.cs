@@ -11,7 +11,7 @@ namespace server.DTOs
         public int ReportId { get; set; }
         public bool isConfirmed { get; set; }
         public int? CategoryId { get; set; }
-        
+        public int Order { get; set; }
         
         public CreateReportEntryDto()
         {

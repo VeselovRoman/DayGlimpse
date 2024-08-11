@@ -12,6 +12,7 @@ namespace server.Entities
         public DateTime EndTime { get; set; }
         public string Comment { get; set; }
         public bool IsConfirmed { get; set; }  // Флаг подтверждения записи
+        public int Order { get; set; } // Поле для хранения порядка
 
         // Foreign keys
         public int ReportId { get; set; }

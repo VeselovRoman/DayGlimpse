@@ -25,4 +25,5 @@ export interface Entry {
   isConfirmed: boolean;
   categoryId?: number;
   categoryName: string;
+  order: number;
 }

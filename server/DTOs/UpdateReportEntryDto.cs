@@ -7,6 +7,7 @@ namespace server.DTOs
         public DateTime EndTime { get; set; }
         public string Comment { get; set; }
         public int? CategoryId { get; set; }
+        public int Order { get; set; }
         
     }
 }
