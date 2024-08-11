@@ -43,6 +43,7 @@ namespace server.Controllers
                     isConfirmed = report.IsConfirmed,
                     ReportEntries = report.ReportEntries
                         .OrderBy(entry => entry.Order)
+                        .ThenBy(re => re.Id)
                         .Select(entry => new ReportEntryDto
                     {
                         Id = entry.Id,
@@ -187,7 +188,10 @@ namespace server.Controllers
                     RespondentId = report.RespondentId,
                     RespondentName = respondentName,
                     isConfirmed = report.IsConfirmed,
-                    ReportEntries = report.ReportEntries.Select(re => new ReportEntryDto
+                    ReportEntries = report.ReportEntries
+                        .OrderBy(re => re.Order)
+                        .ThenBy(re => re.Id)
+                        .Select(re => new ReportEntryDto
                     {
                         Id = re.Id,
                         ProcedureId = re.ProcedureId,
@@ -197,7 +201,8 @@ namespace server.Controllers
                         Comment = re.Comment,
                         AgentId = re.AgentId,
                         RespondentId = re.RespondentId,
-                        CategoryId = re.CategoryId
+                        CategoryId = re.CategoryId,
+                        Order = re.Order
                     }).ToList()
                 };
                 return Ok(reportDto);
