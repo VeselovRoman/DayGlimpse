@@ -5,7 +5,6 @@ using server.Data;
 using server.DTOs;
 using server.DTOs.server.DTOs;
 using server.Entities;
-using server.Interfaces;
 
 namespace server.Controllers
 {
@@ -13,12 +12,10 @@ namespace server.Controllers
     public class ReportsController : BaseApiController
     {
         private readonly DataContext _context;
-        private readonly ITokenService _tokenService;
 
-        public ReportsController(DataContext context, ITokenService tokenService)
+        public ReportsController(DataContext context)
         {
             _context = context;
-            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -72,23 +69,6 @@ namespace server.Controllers
         {
             try
             {
-                /*var nameIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (nameIdClaim == null)
-                {
-                    // Обработка случая, когда поле nameid отсутствует в токене
-                    return Unauthorized("Claim 'nameid' not found in the user token.");
-                }
-
-                // Ищем агента по имени пользователя в базе данных
-                var agent = await _context.Agents.SingleOrDefaultAsync(a => a.AgentName == nameIdClaim);
-
-                if (agent == null)
-                {
-                    // Обработка случая, когда агент не найден
-                    return NotFound("Agent not found.");
-                }*/
-
-                // Используем agent.Id для сохранения в качестве AgentId в другой сущности
                 var report = new Report
                 {
                     ReportDate = DateTime.UtcNow,

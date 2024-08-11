@@ -91,7 +91,7 @@ public class ActiveDirectoryService
                 new Claim(ClaimTypes.Surname, lastName),
                 new Claim("agentId", agentId.ToString())
             }),
-            Expires = DateTime.UtcNow.AddHours(1),
+            Expires = DateTime.UtcNow.AddDays(30),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

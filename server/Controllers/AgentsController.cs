@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.DTOs;
 using server.Entities;
-using server.Interfaces;
 
 namespace server.Controllers;
 
@@ -14,13 +13,11 @@ namespace server.Controllers;
 public class AgentsController : BaseApiController
 {
     private readonly DataContext _context;
-    private readonly ITokenService _tokenService;
     private readonly ILogger<AgentsController> _logger;
 
-    public AgentsController(DataContext context, ITokenService tokenService, ILogger<AgentsController> logger)
+    public AgentsController(DataContext context, ILogger<AgentsController> logger)
     {
         _context = context;
-        _tokenService = tokenService ;
         _logger = logger;
     }
 

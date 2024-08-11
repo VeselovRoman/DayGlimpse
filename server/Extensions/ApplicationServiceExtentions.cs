@@ -18,7 +18,6 @@ public static class ApplicationServiceExtentions
         });
         services.AddCors();
         services.AddScoped<IProcedureService, ProcedureService>();
-        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }
