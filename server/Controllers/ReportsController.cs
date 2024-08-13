@@ -311,7 +311,8 @@ namespace server.Controllers
                     AgentId = entry.AgentId,
                     RespondentId = entry.RespondentId,
                     isConfirmed = entry.IsConfirmed,
-                    CategoryId = entry.CategoryId
+                    CategoryId = entry.CategoryId,
+                    Order = entry.Order
                 };
             }
             catch (Exception ex)

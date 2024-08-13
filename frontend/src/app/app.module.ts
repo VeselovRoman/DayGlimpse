@@ -54,6 +54,7 @@ import { BusyComponent } from './busy-component/busy-component.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { NewReportPageComponent } from './new-report-page/new-report-page.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CommentEditorDialogComponent } from './comment-editor-dialog/comment-editor-dialog.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     CategoryEditorComponent,
     BusyComponent,
     UserProfileComponent,
-    NewReportPageComponent
+    NewReportPageComponent,
+    CommentEditorDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -20,6 +20,7 @@ import { Category } from '../_models/category';
 import { CategoryService } from '../_services/category.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CommentEditorDialogComponent } from '../comment-editor-dialog/comment-editor-dialog.component';
 
 @Component({
   selector: 'app-view-report',
@@ -334,8 +335,8 @@ export class ViewReportComponent implements OnInit {
       id: 0,
       agentId: this.report.agentId,
       respondentId: this.report.respondentId,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
+      startTime: startTime.toLocaleString(),
+      endTime: endTime.toLocaleString(),
       comment: '',
       reportId: this.report.id,
       CategoryId: 2
@@ -648,5 +649,20 @@ export class ViewReportComponent implements OnInit {
     });
   
     console.log('Новый порядок записей:', this.entries.value);
+  }
+
+  openCommentEditorDialog(index: number): void {
+    const currentComment = this.entries.at(index)?.get('comment')?.value || '';
+    
+    const dialogRef = this.dialog.open(CommentEditorDialogComponent, {
+      width: '600px',
+      data: { comment: currentComment }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.entries.at(index)?.get('comment')?.setValue(result);
+      }
+    });
   }
 }

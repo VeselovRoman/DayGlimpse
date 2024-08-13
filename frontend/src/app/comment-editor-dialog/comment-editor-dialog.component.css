@@ -1,0 +1,19 @@
+.dialog-content {
+    width: 100%; /* Делаем ширину диалогового контента 100% */
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  textarea {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  

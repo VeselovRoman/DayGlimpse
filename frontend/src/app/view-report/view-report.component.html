@@ -32,17 +32,19 @@
           <mat-divider class="mb-2"></mat-divider>
 
           <div class="button-group mb-2">
-            <button mat-raised-button color="primary" type="button" class="me-2" (click)="expandAll()">Раскрыть все</button>
+            <button mat-raised-button color="primary" type="button" class="me-2" (click)="expandAll()">Раскрыть
+              все</button>
             <button mat-raised-button color="warn" type="button" (click)="collapseAll()">Свернуть все</button>
           </div>
-          
+
           <div cdkDropList formArrayName="entries" (cdkDropListDropped)="onDrop($event)">
-            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" cdkDrag class="mb-2" 
-            [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}">
-              
+            <mat-card *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" cdkDrag class="mb-2"
+              [ngClass]="{'card-collapsed': !expandedStates[i], 'card-expanded': expandedStates[i]}">
+
               <mat-card-header (click)="toggleCard(i)">
                 <mat-card-title class="ms-2 mb-1 small-title">
-                  Процедура {{ i + 1 }} (ID: {{ entry.value.id }}) ({{ entry.value.startTime | date:'shortTime' }} - {{ entry.value.endTime | date:'shortTime' }})
+                  Процедура {{ i + 1 }} (ID: {{ entry.value.id }}) ({{ entry.value.startTime | date:'shortTime' }} - {{
+                  entry.value.endTime | date:'shortTime' }})
                   <mat-icon>{{ expandedStates[i] ? 'expand_less' : 'expand_more' }}</mat-icon>
                   <mat-label *ngIf="entry.dirty" class="text-danger ms-2 small-icon">Изменено</mat-label>
                 </mat-card-title>
@@ -73,19 +75,19 @@
                       <input matInput type="datetime-local" formControlName="endTime">
                     </mat-form-field>
                   </div>
-                  
+
                   <div class="col-md-3">
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Категория затрат</mat-label>
                       <mat-select formControlName="costCategoryId">
                         <ng-container *ngFor="let category of costCategories; let idx = index">
                           <mat-option [value]="category.id">
-                          {{ category.costCategory }}
-                        </mat-option>
-                        <ng-container *ngIf="idx < costCategories.length - 1">
-                          <mat-divider class="custom-divider"></mat-divider>
+                            {{ category.costCategory }}
+                          </mat-option>
+                          <ng-container *ngIf="idx < costCategories.length - 1">
+                            <mat-divider class="custom-divider"></mat-divider>
+                          </ng-container>
                         </ng-container>
-                      </ng-container>
                       </mat-select>
                       <mat-error *ngIf="entries.at(i)?.get('costCategoryId')?.hasError('required') ?? false">
                         Категория затрат обязательна
@@ -93,21 +95,25 @@
                     </mat-form-field>
                   </div>
 
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Комментарий</mat-label>
-                      <input matInput formControlName="comment">
+                      <input matInput formControlName="comment"
+                        [matTooltip]="entry.value.comment ? entry.value.comment : 'Пусто'">
                       <mat-error *ngIf="entries.at(i)?.get('comment')?.hasError('required') ?? false">
                         Комментарий обязателен для 'Прочее'
                       </mat-error>
                     </mat-form-field>
                   </div>
-
+                  <button mat-icon-button type="button" (click)="openCommentEditorDialog(i)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
                 </div>
               </mat-card-content>
 
               <mat-card-actions class="justify-content-end">
-                <button mat-button color="warn" type="button" (click)="openConfirmDeleteDialog(i)" [disabled]="isDeleting[i]">
+                <button mat-button color="warn" type="button" (click)="openConfirmDeleteDialog(i)"
+                  [disabled]="isDeleting[i]">
                   <ng-container *ngIf="!isDeleting[i]">Удалить</ng-container>
                   <mat-progress-spinner *ngIf="isDeleting[i]" mode="indeterminate" diameter="20"></mat-progress-spinner>
                 </button>
@@ -115,7 +121,8 @@
 
               <mat-card-footer *ngIf="hasTimeGapWarning(i) || !checkTimeGapWithinEntry(entry.value)"
                 class="text-warning">
-                <span>{{ !checkTimeGapWithinEntry(entry.value) ? 'Временной интервал некорректен' : 'Время начала и окончания не соответствует' }}</span>
+                <span>{{ !checkTimeGapWithinEntry(entry.value) ? 'Временной интервал некорректен' : 'Время начала и
+                  окончания не соответствует' }}</span>
               </mat-card-footer>
             </mat-card>
           </div>
@@ -135,10 +142,12 @@
         <mat-card-actions>
           <button class="me-2" mat-flat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
             [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
-            <button mat-button type="button" class="me-2" (click)="openSubmitDialog()"
+          <button mat-button type="button" class="me-2" (click)="openSubmitDialog()"
             [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
         </mat-card-actions>
       </mat-card>
     </form>
   </div>
+
+
 </div>
