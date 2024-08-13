@@ -7,8 +7,8 @@ namespace server.DTOs
             public int Id { get; set; }
             public int? ProcedureId { get; set; }
             public string ProcedureName { get; set; }
-            public DateTime StartTime { get; set; }
-            public DateTime EndTime { get; set; }
+            public string StartTime { get; set; }
+            public string EndTime { get; set; }
             public string Comment { get; set; }
             public int AgentId { get; set; }
             public string AgentName { get; set; }

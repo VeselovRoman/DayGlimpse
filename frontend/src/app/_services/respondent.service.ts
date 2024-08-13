@@ -24,6 +24,7 @@ export class RespondentService {
 
   // Создает нового респондента.
   createRespondent(respondent: Respondent): Observable<Respondent> {
+    console.log('Respondent', respondent);
     return this.http.post<Respondent>(this.apiUrl + '/createRespondent', respondent);
   }
 

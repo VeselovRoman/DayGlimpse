@@ -39,7 +39,7 @@ public class AgentsController : BaseApiController
                 City = a.City,
                 BranchId = a.BranchId,
                 BranchName = a.Branch != null ? a.Branch.Name : null,
-                RegistrationDate = a.RegistrationDate
+                RegistrationDate = a.RegistrationDate.ToString("yyyy-MM-ddTHH:mm:ss")
             }).ToList();
             
         return agentDtos;

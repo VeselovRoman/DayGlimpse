@@ -1,7 +1,7 @@
 export interface Respondent {
     id: number;
     name: string;
-    registrationDate: Date;
+    registrationDate: string;
     city: string;
     branchId: number;
     branchName?: string;

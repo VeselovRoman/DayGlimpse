@@ -46,8 +46,8 @@ namespace server.Controllers
                             Id = entry.Id,
                             ProcedureId = entry.ProcedureId,
                             ProcedureName = entry.Procedure.Name,
-                            StartTime = entry.StartTime,
-                            EndTime = entry.EndTime,
+                            StartTime = entry.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"), // Преобразуем DateTime в строку
+                            EndTime = entry.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                             Comment = entry.Comment,
                             AgentId = entry.AgentId,
                             AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
@@ -109,8 +109,8 @@ namespace server.Controllers
                     AgentId = createReportEntryDto.AgentId,
                     RespondentId = createReportEntryDto.RespondentId,
                     ProcedureId = createReportEntryDto.ProcedureId,
-                    StartTime = createReportEntryDto.StartTime,
-                    EndTime = createReportEntryDto.EndTime,
+                    StartTime = DateTime.Parse(createReportEntryDto.StartTime),
+                    EndTime = DateTime.Parse(createReportEntryDto.EndTime),
                     Comment = createReportEntryDto.Comment,
                     ReportId = reportId,
                     IsConfirmed = false,
@@ -126,8 +126,8 @@ namespace server.Controllers
                     AgentId = reportEntry.AgentId,
                     RespondentId = reportEntry.RespondentId,
                     ProcedureId = reportEntry.ProcedureId,
-                    StartTime = reportEntry.StartTime,
-                    EndTime = reportEntry.EndTime,
+                    StartTime = reportEntry.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    EndTime = reportEntry.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                     Comment = reportEntry.Comment,
                     ReportId = reportEntry.ReportId,
                     isConfirmed = reportEntry.IsConfirmed,
@@ -176,8 +176,8 @@ namespace server.Controllers
                             Id = re.Id,
                             ProcedureId = re.ProcedureId,
                             ProcedureName = re.Procedure?.Name ?? "Неизвестная процедура",
-                            StartTime = re.StartTime,
-                            EndTime = re.EndTime,
+                            StartTime = re.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                            EndTime = re.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                             Comment = re.Comment,
                             AgentId = re.AgentId,
                             RespondentId = re.RespondentId,
@@ -214,8 +214,8 @@ namespace server.Controllers
                     Id = reportEntry.Id,
                     ProcedureId = reportEntry.ProcedureId,
                     ProcedureName = reportEntry.Procedure?.Name, // Возвращаем имя процедуры
-                    StartTime = reportEntry.StartTime,
-                    EndTime = reportEntry.EndTime,
+                    StartTime = reportEntry.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    EndTime = reportEntry.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                     Comment = reportEntry.Comment,
                     AgentId = reportEntry.AgentId,
                     AgentName = reportEntry.Agent?.FirstName, // Возвращаем имя агента
@@ -293,8 +293,8 @@ namespace server.Controllers
 
                 // Update the entry with new data
                 entry.ProcedureId = updateReportEntryDto.ProcedureId;
-                entry.StartTime = DateTime.SpecifyKind(DateTime.Parse(updateReportEntryDto.StartTime), DateTimeKind.Unspecified);
-                entry.EndTime = DateTime.SpecifyKind(DateTime.Parse(updateReportEntryDto.EndTime), DateTimeKind.Unspecified);
+                entry.StartTime = DateTime.Parse(updateReportEntryDto.StartTime);
+                entry.EndTime = DateTime.Parse(updateReportEntryDto.EndTime);
                 entry.Comment = updateReportEntryDto.Comment;
                 entry.CategoryId = updateReportEntryDto.CategoryId;
                 entry.Order = updateReportEntryDto.Order;
@@ -305,8 +305,8 @@ namespace server.Controllers
                 {
                     Id = entry.Id,
                     ProcedureId = entry.ProcedureId,
-                    StartTime = entry.StartTime,
-                    EndTime = entry.EndTime,
+                     StartTime = entry.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    EndTime = entry.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
                     Comment = entry.Comment,
                     AgentId = entry.AgentId,
                     RespondentId = entry.RespondentId,

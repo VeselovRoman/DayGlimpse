@@ -20,20 +20,43 @@ namespace server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Respondent>>> GetRespondents()
         {
-            return await _context.Respondents
-                 .OrderBy(r => r.Id)
-                .ToListAsync();
+            var respondents = await _context.Respondents
+            .OrderByDescending(r => r.RegistrationDate)
+            .Select(r => new RespondentDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                RegistrationDate = r.RegistrationDate.ToString("yyyy-MM-ddTHH:mm:ss"),
+                City = r.City,
+                BranchId = r.BranchId
+            })
+            .ToListAsync();
+
+            return Ok(respondents);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Respondent>> GetRespondent(int id)
         {
-            var respondent = await _context.Respondents.FindAsync(id);
+            var respondent = await _context.Respondents
+         .FirstOrDefaultAsync(r => r.Id == id);
+
             if (respondent == null)
             {
                 return NotFound();
             }
-            return respondent;
+
+            // Преобразуем Respondent в RespondentDto
+            var respondentDto = new RespondentDto
+            {
+                Id = respondent.Id,
+                Name = respondent.Name,
+                RegistrationDate = respondent.RegistrationDate.ToString("yyyy-MM-ddTHH:mm:ss"), // Преобразуем DateTime в строку
+                City = respondent.City,
+                BranchId = respondent.BranchId,
+            };
+
+            return Ok(respondentDto);
         }
 
         [HttpPost("createRespondent")]
@@ -45,7 +68,7 @@ namespace server.Controllers
             var respondent = new Respondent
             {
                 Name = createDto.Name,
-                RegistrationDate = DateTime.Now,
+                RegistrationDate = DateTime.Parse(createDto.RegistrationDate),
                 City = createDto.City,
                 BranchId = createDto.BranchId,
             };
@@ -57,7 +80,7 @@ namespace server.Controllers
             {
                 Id = respondent.Id,
                 Name = respondent.Name,
-                RegistrationDate = respondent.RegistrationDate,
+                RegistrationDate = respondent.RegistrationDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                 City = respondent.City,
                 BranchId = respondent.BranchId
             };

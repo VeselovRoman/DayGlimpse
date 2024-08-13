@@ -46,7 +46,7 @@ export class RespondentListComponent implements OnInit {
             respondent.branchName = branch.name;
           }
         });
-  
+
         this.dataSource = new MatTableDataSource(this.respondents);
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
@@ -59,10 +59,11 @@ export class RespondentListComponent implements OnInit {
   }
 
   openDialog(respondent?: Respondent): void {
+    console.log('registrationDate', this.getCurrentDateString());
     const dialogRef = this.dialog.open(RespondentDialogComponent, {
       width: '500px',
       data: {
-        respondent: respondent ? { ...respondent } : { id: 0, name: '', registrationDate: new Date(), city: '', branchId: 0 },
+        respondent: respondent ? { ...respondent } : { id: 0, name: '', registrationDate: this.getCurrentDateString(), city: '', branchId: 0 },
         branches: this.branches
       }
     });
@@ -89,4 +90,12 @@ export class RespondentListComponent implements OnInit {
       this.loadData();
     });
   }
+
+  // Метод для получения текущей даты в формате строки (без учета часового пояса)
+  private getCurrentDateString(): string {
+    const now = new Date();
+    const formattedDate = now.toLocaleString('sv-SE', { hour12: false });
+    return formattedDate.replace(' ', 'T');
+  }
+
 }

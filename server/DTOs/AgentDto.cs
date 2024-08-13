@@ -9,5 +9,5 @@ public class AgentDto
     public int? BranchId { get; set; }
     public string BranchName { get; set; }
     public string City { get; set; }
-    public DateTime RegistrationDate { get; set; }
+    public string RegistrationDate { get; set; }
 }

@@ -327,16 +327,16 @@ export class ViewReportComponent implements OnInit {
     const endTime = new Date(startTime.getTime() + 10 * 60000);
 
     const newEntry = this.createProcedureEntry({
-      startTime: startTime,
-      endTime: endTime,
+      startTime: this.formatDateToString(startTime),
+      endTime: this.formatDateToString(endTime)
     });
 
     const entryData: CreateReportEntryDto = {
       id: 0,
       agentId: this.report.agentId,
       respondentId: this.report.respondentId,
-      startTime: startTime.toLocaleString(),
-      endTime: endTime.toLocaleString(),
+      startTime: this.formatDateToString(startTime), // Преобразуем дату в строку
+      endTime: this.formatDateToString(endTime), // Преобразуем дату в строку
       comment: '',
       reportId: this.report.id,
       CategoryId: 2
@@ -391,8 +391,8 @@ export class ViewReportComponent implements OnInit {
       id: [{ value: entry?.id || null, disabled: false }],
       procedureId: [{ value: entry?.procedureId, disabled: false }],
       procedure: [this.procedures.find(p => p.id === entry?.procedureId) || null, Validators.required],
-      startTime: [this.formatDate(entry?.startTime || now)],
-      endTime: [this.formatDate(entry?.endTime || tenMinutesLater)],
+      startTime: [entry?.startTime || this.formatDateToString(now)],
+      endTime: [entry?.endTime || this.formatDateToString(tenMinutesLater)],
       comment: [{ value: entry?.comment, disabled: false }],
       isConfirmed: [{ value: entry?.isConfirmed || false, disabled: false }],
       costCategoryId: [entry?.categoryId, Validators.required],
@@ -400,8 +400,9 @@ export class ViewReportComponent implements OnInit {
     });
   }
 
-  formatDate(date: Date | undefined): string {
-    return date ? formatDate(date, 'yyyy-MM-ddTHH:mm', 'ru') : '';
+  private formatDateToString(date: Date): string {
+    const formattedDate = date.toLocaleString('sv-SE', { hour12: false });
+    return formattedDate.replace(' ', 'T');
   }
 
   get entries(): FormArray {
