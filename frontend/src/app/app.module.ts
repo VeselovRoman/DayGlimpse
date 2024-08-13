@@ -21,7 +21,6 @@ import { ViewReportComponent } from './view-report/view-report.component';
 import { RespondentListComponent } from './respondents-list/respondents-list.component';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
 import { jwtInterceptor } from './_interceptors/auth.interceptor';
-import { NewReportComponent } from './new-report/new-report.component';
 import { ToastrModule } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -66,7 +65,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ReportListComponent,
     ViewReportComponent,
     RespondentListComponent,
-    NewReportComponent,
     RespondentDialogComponent,
     BranchDialogComponent,
     AgentDialogComponent,

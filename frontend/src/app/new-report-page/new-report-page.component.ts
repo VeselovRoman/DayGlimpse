@@ -35,22 +35,24 @@ export class NewReportPageComponent implements OnInit {
   }
 
   initializeForm(): void {
+    const now = new Date();
+    const localDateTime = this.getLocalDateTimeString(now);
+
     this.newReportForm = this.formBuilder.group({
       agentName: [{ value: this.agentName, disabled: true }],
-      reportDate: [{ value: this.getUTCTimeString(), disabled: true }],
+      reportDate: [{ value: localDateTime, disabled: true }],
       respondentName: ['', Validators.required]
     });
   }
 
-  getUTCTimeString(): string {
-    const now = new Date();
-    const tzOffset = now.getTimezoneOffset() * 60000; // Offset in milliseconds
-    const utcTime = now.getTime() - tzOffset; // UTC time in milliseconds
+  getLocalDateTimeString(date: Date): string {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Add leading zero
+    const day = ('0' + date.getDate()).slice(-2); // Add leading zero
+    const hours = ('0' + date.getHours()).slice(-2); // Add leading zero
+    const minutes = ('0' + date.getMinutes()).slice(-2); // Add leading zero
   
-    const utcDate = new Date(utcTime);
-    const utcDateString = utcDate.toISOString().slice(0, 16); // Format as yyyy-MM-ddTHH:mm
-  
-    return utcDateString;
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   getAgentInfo(): void {

@@ -32,7 +32,7 @@ namespace server.Controllers
                 .Select(report => new ReportDto
                 {
                     Id = report.Id,
-                    ReportDate = report.ReportDate,
+                    ReportDate = report.ReportDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                     AgentId = report.AgentId,
                     AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
                     RespondentId = report.RespondentId,
@@ -42,22 +42,22 @@ namespace server.Controllers
                         .OrderBy(entry => entry.Order)
                         .ThenBy(re => re.Id)
                         .Select(entry => new ReportEntryDto
-                    {
-                        Id = entry.Id,
-                        ProcedureId = entry.ProcedureId,
-                        ProcedureName = entry.Procedure.Name,
-                        StartTime = entry.StartTime,
-                        EndTime = entry.EndTime,
-                        Comment = entry.Comment,
-                        AgentId = entry.AgentId,
-                        AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
-                        RespondentId = entry.RespondentId,
-                        RespondentName = entry.Respondent.Name,
-                        isConfirmed = entry.IsConfirmed,
-                        CategoryId = entry.CategoryId,
-                        CategoryName = entry.Category.CostCategory,
-                        Order = entry.Order
-                    }).ToList()
+                        {
+                            Id = entry.Id,
+                            ProcedureId = entry.ProcedureId,
+                            ProcedureName = entry.Procedure.Name,
+                            StartTime = entry.StartTime,
+                            EndTime = entry.EndTime,
+                            Comment = entry.Comment,
+                            AgentId = entry.AgentId,
+                            AgentName = report.Agent.FirstName + " " + report.Agent.LastName,
+                            RespondentId = entry.RespondentId,
+                            RespondentName = entry.Respondent.Name,
+                            isConfirmed = entry.IsConfirmed,
+                            CategoryId = entry.CategoryId,
+                            CategoryName = entry.Category.CostCategory,
+                            Order = entry.Order
+                        }).ToList()
                 })
                 .ToListAsync();
 
@@ -71,7 +71,7 @@ namespace server.Controllers
             {
                 var report = new Report
                 {
-                    ReportDate = DateTime.UtcNow,
+                    ReportDate = DateTime.Parse(createReportDto.ReportDate),
                     AgentId = createReportDto.AgentId,
                     RespondentId = createReportDto.RespondentId,
                     IsConfirmed = false
@@ -84,7 +84,7 @@ namespace server.Controllers
                 return new ReportDto
                 {
                     Id = report.Id,
-                    ReportDate = report.ReportDate,
+                    ReportDate = report.ReportDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                     AgentId = report.AgentId,
                     RespondentId = report.RespondentId,
                     isConfirmed = report.IsConfirmed
@@ -109,8 +109,8 @@ namespace server.Controllers
                     AgentId = createReportEntryDto.AgentId,
                     RespondentId = createReportEntryDto.RespondentId,
                     ProcedureId = createReportEntryDto.ProcedureId,
-                    StartTime = DateTime.SpecifyKind(createReportEntryDto.StartTime, DateTimeKind.Utc),
-                    EndTime = DateTime.SpecifyKind(createReportEntryDto.EndTime, DateTimeKind.Utc),
+                    StartTime = createReportEntryDto.StartTime,
+                    EndTime = createReportEntryDto.EndTime,
                     Comment = createReportEntryDto.Comment,
                     ReportId = reportId,
                     IsConfirmed = false,
@@ -162,7 +162,7 @@ namespace server.Controllers
                 var reportDto = new ReportDto
                 {
                     Id = report.Id,
-                    ReportDate = report.ReportDate,
+                    ReportDate = report.ReportDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                     AgentId = report.Agent?.Id ?? 0,
                     AgentName = agentName,
                     RespondentId = report.RespondentId,
@@ -172,18 +172,18 @@ namespace server.Controllers
                         .OrderBy(re => re.Order)
                         .ThenBy(re => re.Id)
                         .Select(re => new ReportEntryDto
-                    {
-                        Id = re.Id,
-                        ProcedureId = re.ProcedureId,
-                        ProcedureName = re.Procedure?.Name ?? "Неизвестная процедура",
-                        StartTime = re.StartTime,
-                        EndTime = re.EndTime,
-                        Comment = re.Comment,
-                        AgentId = re.AgentId,
-                        RespondentId = re.RespondentId,
-                        CategoryId = re.CategoryId,
-                        Order = re.Order
-                    }).ToList()
+                        {
+                            Id = re.Id,
+                            ProcedureId = re.ProcedureId,
+                            ProcedureName = re.Procedure?.Name ?? "Неизвестная процедура",
+                            StartTime = re.StartTime,
+                            EndTime = re.EndTime,
+                            Comment = re.Comment,
+                            AgentId = re.AgentId,
+                            RespondentId = re.RespondentId,
+                            CategoryId = re.CategoryId,
+                            Order = re.Order
+                        }).ToList()
                 };
                 return Ok(reportDto);
             }
@@ -293,8 +293,8 @@ namespace server.Controllers
 
                 // Update the entry with new data
                 entry.ProcedureId = updateReportEntryDto.ProcedureId;
-                entry.StartTime = DateTime.SpecifyKind(updateReportEntryDto.StartTime, DateTimeKind.Utc);
-                entry.EndTime = DateTime.SpecifyKind(updateReportEntryDto.EndTime, DateTimeKind.Utc);
+                entry.StartTime = DateTime.SpecifyKind(DateTime.Parse(updateReportEntryDto.StartTime), DateTimeKind.Unspecified);
+                entry.EndTime = DateTime.SpecifyKind(DateTime.Parse(updateReportEntryDto.EndTime), DateTimeKind.Unspecified);
                 entry.Comment = updateReportEntryDto.Comment;
                 entry.CategoryId = updateReportEntryDto.CategoryId;
                 entry.Order = updateReportEntryDto.Order;

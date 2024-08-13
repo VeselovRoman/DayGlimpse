@@ -8,7 +8,7 @@ namespace server.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public DateTime ReportDate { get; set; } = DateTime.UtcNow;
+        public DateTime ReportDate { get; set; }
         
         public int AgentId { get; set; }
         public Agent Agent { get; set; }

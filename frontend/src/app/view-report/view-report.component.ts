@@ -466,14 +466,11 @@ export class ViewReportComponent implements OnInit {
     this.reportForm.value.entries.forEach((entry: any, index: number) => {
       const formControl = this.entries.at(index);
 
-      const startTimeUTC = new Date(entry.startTime).toISOString();
-      const endTimeUTC = new Date(entry.endTime).toISOString();
-
       const updatedEntry: UpdateReportEntryDto = {
         id: entry.id,
         procedureId: entry.procedure.id,
-        startTime: startTimeUTC,
-        endTime: endTimeUTC,
+        startTime: entry.startTime,
+        endTime: entry.endTime,
         comment: entry.comment,
         CategoryId: entry.costCategoryId,
         order: index // Обновляем порядок

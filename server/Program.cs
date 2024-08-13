@@ -4,6 +4,8 @@ using server.Data;
 using server.Extensions;
 using server.Helpers;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Получаем конфигурацию
