@@ -60,11 +60,6 @@ export class ReportService {
     );
   }
 
-  // Подтверждает отчет по его идентификатору.
-  /*confirmReport(reportId: number): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}${reportId}/confirm`, {});
-  }*/
-
     confirmReport(reportId: number): Observable<any> {
       const url = `${this.baseUrl}${reportId}/confirm`;
       console.log(`Sending request to: ${url}`);
@@ -79,12 +74,6 @@ export class ReportService {
       );
     }
     
-  //Подтверждает запись отчета по ее идентификаторам.
-  /*confirmReportEntry(reportId: number, entryId: number): Observable<any> {
-    console.log(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`);
-    return this.http.put<any>(`${this.baseUrl}${reportId}/entries/${entryId}/confirm`, {});
-  }*/
-
     confirmReportEntry(reportId: number, entryId: number): Observable<any> {
       const url = `${this.baseUrl}${reportId}/entries/${entryId}/confirm`;
       console.log(`Sending request to: ${url}`);

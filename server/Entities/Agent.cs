@@ -13,7 +13,7 @@ namespace server.Entities
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+        public DateTime RegistrationDate { get; set; }
         public string City { get; set; }
         public int? BranchId { get; set; }
         public Branch Branch { get; set; }

@@ -12,12 +12,6 @@ namespace server.DTOs
         public bool isConfirmed { get; set; }
         public int? CategoryId { get; set; }
         public int Order { get; set; }
-        
-        public CreateReportEntryDto()
-        {
-            StartTime = DateTime.SpecifyKind(StartTime, DateTimeKind.Utc);
-            EndTime = DateTime.SpecifyKind(EndTime, DateTimeKind.Utc);
-        }
     }
 }
 

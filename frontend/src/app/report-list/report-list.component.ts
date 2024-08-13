@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { NewReportComponent } from '../new-report/new-report.component';
 import { AuthService } from '../_services/auth.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 

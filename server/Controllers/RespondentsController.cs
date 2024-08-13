@@ -45,7 +45,7 @@ namespace server.Controllers
             var respondent = new Respondent
             {
                 Name = createDto.Name,
-                RegistrationDate = DateTime.UtcNow,
+                RegistrationDate = DateTime.Now,
                 City = createDto.City,
                 BranchId = createDto.BranchId,
             };

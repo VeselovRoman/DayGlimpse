@@ -5,7 +5,7 @@ namespace server.DTOs
     public class ReportDto
     {
         public int Id { get; set; }
-        public DateTime ReportDate { get; set; }
+        public string ReportDate { get; set; }
         public int AgentId { get; set; }
         public string AgentName { get; set; }
         public int RespondentId { get; set; }

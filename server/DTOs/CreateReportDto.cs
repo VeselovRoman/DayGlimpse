@@ -4,7 +4,7 @@ namespace server.DTOs
     {
         public int AgentId { get; set; }
         public int RespondentId { get; set; }
-        public DateTime ReportDate { get; set; }
+        public string ReportDate { get; set; }
         public bool isConfirmed { get; set; }
     }
 }
