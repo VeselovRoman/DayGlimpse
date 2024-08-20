@@ -140,10 +140,13 @@
           </div>
         </mat-card-content>
         <mat-card-actions>
-          <button class="me-2" mat-flat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
-            [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить черновик</button>
-          <button mat-button type="button" class="me-2" (click)="openSubmitDialog()"
-            [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
+          <div class="floating-actions">
+            <button class="me-2" mat-flat-button type="button" (click)="saveReport()" [disabled]="!reportForm.valid"
+              [matTooltip]="'Сохранить новые и обновить измененные, но не подтверждать отчет'">Сохранить
+              черновик</button>
+            <button mat-button type="button" class="me-2" (click)="openSubmitDialog()"
+              [matTooltip]="'Подтвердить отчет. Дальнейшее изменение будет невозможно'">Подтвердить отчет...</button>
+          </div>
         </mat-card-actions>
       </mat-card>
     </form>

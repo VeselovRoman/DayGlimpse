@@ -653,16 +653,19 @@ export class ViewReportComponent implements OnInit {
   }
 
   openCommentEditorDialog(index: number): void {
+    const commentControl = this.entries.at(index)?.get('comment');
+    
     const currentComment = this.entries.at(index)?.get('comment')?.value || '';
     
     const dialogRef = this.dialog.open(CommentEditorDialogComponent, {
-      width: '600px',
+      width: '500px',
       data: { comment: currentComment }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
         this.entries.at(index)?.get('comment')?.setValue(result);
+        commentControl?.markAsDirty();
       }
     });
   }
