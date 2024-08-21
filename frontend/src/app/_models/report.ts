@@ -16,6 +16,7 @@ export interface Entry {
   procedureName: string;
   startTime: string;
   endTime: string;
+  duration: number;
   comment: string;
   agentId: number;
   agentName: string;

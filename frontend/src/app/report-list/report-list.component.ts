@@ -58,6 +58,15 @@ export class ReportListComponent implements OnInit {
           report.index = index + 1 + (this.paginator.pageIndex * this.paginator.pageSize);
         });
         
+        reports.forEach(report => {
+          report.reportEntries.forEach(entry => {
+            const start = new Date(entry.startTime);
+            const end = new Date(entry.endTime);
+            const duration = (end.getTime() - start.getTime()) / (1000 * 60); // Рассчитываем длительность в минутах
+            entry.duration = Math.round(duration); // Добавляем новое поле длительности
+          });
+        });
+
         // Создаем новый MatTableDataSource и устанавливаем пагинатор
         this.dataSource = new MatTableDataSource(this.reports);
 

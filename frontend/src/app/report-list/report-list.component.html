@@ -103,6 +103,10 @@
                 <th mat-header-cell *matHeaderCellDef> Конец </th>
                 <td mat-cell *matCellDef="let entry"> {{ entry.endTime | date:'HH:mm dd.MM.yyyy' }} </td>
               </ng-container>
+              <ng-container matColumnDef="duration">
+                <th mat-header-cell *matHeaderCellDef> Длительность (мин.) </th>
+                <td mat-cell *matCellDef="let entry"> {{ entry.duration }} </td>
+              </ng-container>
               <ng-container matColumnDef="category">
                 <th mat-header-cell *matHeaderCellDef> Категория </th>
                 <td mat-cell *matCellDef="let entry"> {{ entry.categoryName }} </td>
@@ -112,10 +116,10 @@
                 <td mat-cell *matCellDef="let entry"> {{ entry.comment }} </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="['index', 'id', 'procedureName', 'startTime', 'endTime', 'category', 'comment']">
+              <tr mat-header-row *matHeaderRowDef="['index', 'id', 'procedureName', 'startTime', 'endTime', 'duration', 'category', 'comment']">
               </tr>
               <tr mat-row
-                *matRowDef="let row; columns: ['index', 'id', 'procedureName', 'startTime', 'endTime', 'category', 'comment'];">
+                *matRowDef="let row; columns: ['index', 'id', 'procedureName', 'startTime', 'endTime', 'duration', 'category', 'comment'];">
               </tr>
               <!-- Row shown when there is no matching data. -->
             </table>
