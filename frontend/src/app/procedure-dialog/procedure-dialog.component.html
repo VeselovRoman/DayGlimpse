@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{ data.id ? 'Редактировать процедуру' : 'Добавить процедуру' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="procedureForm">
+    <mat-form-field appearance="fill" class="full-width" style="width: 100%;">
+      <mat-label>Название процедуры</mat-label>
+      <textarea matInput formControlName="name" required rows="6" cdkTextareaAutosize style="width: 100%;"></textarea>
+      <mat-error *ngIf="procedureForm.get('name')?.hasError('required')">
+        Название процедуры обязательно
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Отмена</button>
+  <button mat-button color="primary" [disabled]="!procedureForm.valid" (click)="onSave()">Сохранить</button>
+</mat-dialog-actions>

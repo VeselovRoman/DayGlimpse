@@ -18,6 +18,9 @@
             <li class="nav-item">
                 <a class="nav-link" routerLink="/reports">Отчеты</a>
             </li>
+            <li class="nav-item"  *ngIf="showProceduresMenu()">
+                <a class="nav-link" routerLink="/procedures">Процедуры</a>
+              </li>
         </ul>
 
         <div *ngIf="authService.isLoggedIn()" dropdown class="dropdown">

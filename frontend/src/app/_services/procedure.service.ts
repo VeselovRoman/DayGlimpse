@@ -9,12 +9,27 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ProcedureService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'Procedures/';
 
   constructor(private http: HttpClient) { }
 
-  //Получает список всех процедур.
+  // Получает список всех процедур
   getProcedures(): Observable<Procedure[]> {
-    return this.http.get<Procedure[]>(this.baseUrl + 'procedures');
+    return this.http.get<Procedure[]>(this.baseUrl);
+  }
+
+  // Получает одну процедуру по ID
+  getProcedure(id: number): Observable<Procedure> {
+    return this.http.get<Procedure>(`${this.baseUrl}${id}`);
+  }
+
+  // Создает новую процедуру
+  createProcedure(procedure: Procedure): Observable<Procedure> {
+    return this.http.post<Procedure>(this.baseUrl, procedure);
+  }
+
+  // Обновляет процедуру по ID
+  updateProcedure(id: number, procedure: Procedure): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}${id}`, procedure);
   }
 }

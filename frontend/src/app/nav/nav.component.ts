@@ -27,8 +27,18 @@ export class NavComponent implements OnInit {
     });
   }
  
+  showProceduresMenu(): boolean {
+    const agentId = +localStorage.getItem('agent_id')!;
+    return agentId === 2 || agentId === 25; // 2 - Веселов, 25 - Бехарский
+  }
+
   // Метод логина
   login() {
+    if (!this.model.username || !this.model.password) {
+      this.toasterService.error('Пожалуйста, введите логин и пароль');
+      return;
+    }
+    
     this.authService.login(this.model.username, this.model.password).subscribe({
       next: response => {
         this.model = response;

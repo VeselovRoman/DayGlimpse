@@ -35,6 +35,7 @@ public class AuthController : ControllerBase
                     Login = normalizedUsername,
                     FirstName = firstName,
                     LastName = lastName,
+                    RegistrationDate = DateTime.Now
                 };
                 _context.Agents.Add(agent);
                 await _context.SaveChangesAsync();

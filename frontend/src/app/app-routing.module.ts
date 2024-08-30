@@ -10,6 +10,7 @@ import { RespondentListComponent } from './respondents-list/respondents-list.com
 import { CategoryEditorComponent } from './category-editor/category-editor.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { NewReportPageComponent } from './new-report-page/new-report-page.component';
+import { ProcedureListComponent } from './procedure-list/procedure-list.component';
 
 const routes: Routes = [
   
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'reports/:id/edit', component: ViewReportComponent, canActivate: [AuthGuard] },
   { path: 'categories', component: CategoryEditorComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard] },
+  { path: 'procedures', component: ProcedureListComponent },
   { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' } // Перенаправляем на домашнюю страницу для неизвестных маршрутов
 ];

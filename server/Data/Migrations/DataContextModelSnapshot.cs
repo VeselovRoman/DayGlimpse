@@ -35,7 +35,7 @@ namespace server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Agent", b =>
@@ -70,7 +70,7 @@ namespace server.Data.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("Agents");
+                    b.ToTable("Agents", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Category", b =>
@@ -103,7 +103,7 @@ namespace server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Procedure", b =>
@@ -122,7 +122,7 @@ namespace server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Procedures");
+                    b.ToTable("Procedures", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Report", b =>
@@ -151,7 +151,7 @@ namespace server.Data.Migrations
 
                     b.HasIndex("RespondentId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.ReportEntry", b =>
@@ -204,7 +204,7 @@ namespace server.Data.Migrations
 
                     b.HasIndex("RespondentId");
 
-                    b.ToTable("ReportEntries");
+                    b.ToTable("ReportEntries", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Respondent", b =>
@@ -234,7 +234,7 @@ namespace server.Data.Migrations
 
                     b.HasIndex("BranchId");
 
-                    b.ToTable("Respondents");
+                    b.ToTable("Respondents", (string)null);
                 });
 
             modelBuilder.Entity("server.Entities.Agent", b =>

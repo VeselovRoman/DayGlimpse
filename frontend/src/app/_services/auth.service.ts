@@ -15,7 +15,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string): Observable<any> {
+  login(username: string | undefined | null, password: string): Observable<any> {
+ 
+    if (!username) {
+      console.error('Username is undefined or null');
+      return of(null);
+    }
+
     const normalizedUsername = username.toLowerCase();
 
     return this.http.post<any>(`${this.baseUrl}Auth/login`, { username: normalizedUsername, password })
